@@ -1,4 +1,3 @@
-
 const express = require('express');
 const bodyParser = require('body-parser');
 
@@ -6,7 +5,7 @@ const sequelize = require('./util/db-sql');
 const mongoose = require('./util/db-nosql');
 
 const User = require('./models/user');
-
+const Product = require('./models/product');
 
 const app = express();
 
@@ -15,4 +14,4 @@ const app = express();
 
 app.use(bodyParser.urlencoded({ extended: false }));
 
-sequelize.sync({force:true})
+sequelize.sync({ force: true });
