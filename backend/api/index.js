@@ -6,7 +6,8 @@ const sequelize = require('./util/db-sql');
 const mongoose = require('./util/db-nosql');
 
 const User = require('./models/user');
-
+const Order = require('./models/order')
+const DetailsOrder = require('./models/detailsOrder')
 
 const app = express();
 
