@@ -5,6 +5,7 @@ const bodyParser = require('body-parser');
 const sequelize = require('./util/db-sql');
 const mongoose = require('./util/db-nosql');
 
+const User = require('./models/user');
 
 
 const app = express();
@@ -13,3 +14,5 @@ const app = express();
 // const shopRoutes = require('./routes/shop');
 
 app.use(bodyParser.urlencoded({ extended: false }));
+
+sequelize.sync({force:true})
