@@ -2,7 +2,7 @@ const Sequelize = require('sequelize');
 
 const sequelize = new Sequelize('cs2', 'admin', 'cs2', {
   dialect: 'postgres',
-  host: 'localhost'
+  host: 'postgres'
 });
 
 try {
