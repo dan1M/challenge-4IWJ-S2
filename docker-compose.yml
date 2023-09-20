@@ -1,0 +1,69 @@
+version: '3'
+
+services:
+  postgres:
+    image: postgres:latest
+    container_name: postgres
+    restart: always
+    environment:
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: cs2
+      POSTGRES_DB: cs2
+    ports:
+      - 5432:5432
+    volumes:
+      - ./backend/postgres:/var/lib/postgresql/data
+
+  mongodb:
+    image: mongo:latest
+    container_name: mongodb
+    restart: always
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: admin
+      MONGO_INITDB_ROOT_PASSWORD: cs2
+      MONGO_INITDB_DATABASE: cs2
+    ports:
+      - 27017:27017
+    volumes:
+      - ./backend/mongo:/data/db
+
+  # backend:
+  #   image: node:latest
+  #   container_name: backend
+  #   restart: always
+  #   working_dir: /app
+  #   volumes:
+  #     - ./back:/app
+  #   command: npm run serve
+  #   ports:
+  #     - 8080:8080
+
+  frontend:
+    image: node:20.0.0-alpine
+    container_name: front
+    ports:
+      - 127.0.0.1:5173:5173
+    volumes:
+      - ./front:/home/node
+    working_dir: /home/node
+    command: sh -c "npm install && npm run dev -- --host"
+
+  adminer:
+    image: adminer
+    container_name: adminer
+    restart: always
+    environment:
+      ADMINER_DEFAULT_SERVER: postgres
+    ports:
+      - 8080:8080
+
+  mongo-express:
+    image: mongo-express
+    container_name: mongo-express
+    restart: always
+    ports:
+      - 8081:8081
+    environment:
+      ME_CONFIG_MONGODB_ADMINUSERNAME: root
+      ME_CONFIG_MONGODB_ADMINPASSWORD: cs2
+      ME_CONFIG_MONGODB_URL: mongodb://root:cs2@mongodb:27017
