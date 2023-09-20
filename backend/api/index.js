@@ -1,4 +1,3 @@
-
 const express = require('express');
 const bodyParser = require('body-parser');
 
@@ -9,8 +8,8 @@ const User = require('./models/user');
 const Product = require('./models/product');
 const Category = require('./models/category');
 
-const Order = require('./models/order')
-const DetailsOrder = require('./models/detailsOrder')
+const Order = require('./models/order');
+const DetailsOrder = require('./models/detailsOrder');
 
 const app = express();
 
@@ -19,4 +18,4 @@ const app = express();
 
 app.use(bodyParser.urlencoded({ extended: false }));
 
-sequelize.sync({force:true})
+sequelize.sync({ force: true });
