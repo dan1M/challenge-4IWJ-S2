@@ -17,7 +17,7 @@ const User = sequelize.define("user", {
   },
   address: DataTypes.STRING,
   password: DataTypes.STRING,
-
+  verifyEmail: DataTypes.BOOLEAN
 });
 
 module.exports = User;

@@ -10,5 +10,4 @@ const DetailsOrder = require('../models/detailsOrder');
 
 
 
-
 sequelize.sync({ force: true });
