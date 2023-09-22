@@ -8,6 +8,4 @@ const Category = require('../models/category');
 const Order = require('../models/order');
 const DetailsOrder = require('../models/detailsOrder');
 
-
-
 sequelize.sync({ force: true });
