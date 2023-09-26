@@ -24,7 +24,7 @@ router.post(
       .trim()
       .isLength({ min: 5 })
   ],
-  feedController.createPost
+  exampleController.createPost
 );
 
 // GET par ID example | pour mettre un élément dynamique dans la route comme un Id ou autre, on utilise ':id'
@@ -33,6 +33,6 @@ router.get('/example/:productId', exampleController.exampleGetById);
 
 
 // Bref vous avez capté
-router.delete('/post/:postId', feedController.deletePost);
+router.delete('/post/:postId', exampleController.deletePost);
 
 module.exports = router;
