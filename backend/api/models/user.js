@@ -9,15 +9,27 @@ const User = sequelize.define("user", {
     allowNull: false,
     primaryKey: true,
   },
-  firstname: DataTypes.STRING,
-  lastname: DataTypes.STRING,
+  firstname: {
+    type: DataTypes.STRING,
+    allowNull: false,
+  },
+  lastname: {
+    type: DataTypes.STRING,
+    allowNull: false,
+  },
   email: {
     type: DataTypes.STRING,
+    allowNull: false,
     unique: true,
   },
-  address: DataTypes.STRING,
-  password: DataTypes.STRING,
-  verifyEmail: DataTypes.BOOLEAN
+  password: {
+    type: DataTypes.STRING,
+    allowNull: false
+  },
+  verifyEmail: {
+    type: DataTypes.BOOLEAN,
+    allowNull: true
+  } 
 });
 
 module.exports = User;
