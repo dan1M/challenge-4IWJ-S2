@@ -17,20 +17,15 @@ router.post(
   '/post',
   [
     // Le nom des champs pour la validation correspond aux même que ceux que le user va envoyer sur le front
-    body('title')
-      .trim()
-      .isLength({ min: 5 }),
-    body('description')
-      .trim()
-      .isLength({ min: 5 })
+    body('title').trim().isLength({ min: 5 }),
+    body('description').trim().isLength({ min: 5 }),
   ],
-  exampleController.createPost
+  exampleController.createPost,
 );
 
 // GET par ID example | pour mettre un élément dynamique dans la route comme un Id ou autre, on utilise ':id'
 // C'est cet id qu'on récupère dans le controller avec 'req.params.productId'
 router.get('/example/:productId', exampleController.exampleGetById);
-
 
 // Bref vous avez capté
 router.delete('/post/:postId', exampleController.deletePost);

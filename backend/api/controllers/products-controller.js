@@ -3,7 +3,6 @@ const { validationResult } = require('express-validator/check');
 const Product = '../models/product.js'; // Mettre le chemin de votre model Mongo
 
 // Exemple GET ALL (CRUD)
-
 exports.findAll = (req, res, next) => {
   // On utilise simplement find() qui renvoie tous les documents de la collection
   Product.find()
@@ -25,8 +24,7 @@ exports.findAll = (req, res, next) => {
 };
 
 // Exemple POST (CRUD)
-
-exports.examplePost = (req, res, next) => {
+exports.create = (req, res, next) => {
   // Récupération des erreurs de la validation (voir le fichier de route)
   const errors = validationResult(req);
   // Si il y a une erreur alors on renvoie une erreur 422
