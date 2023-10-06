@@ -2,14 +2,14 @@ const { DataTypes } = require('sequelize');
 
 const sequelize = require('../util/db-sql');
 
-const Category = sequelize.define('category', {
+const Order = sequelize.define('order', {
   id: {
     type: DataTypes.INTEGER,
     autoIncrement: true,
     allowNull: false,
     primaryKey: true,
   },
-  name: DataTypes.STRING,
+  status: DataTypes.STRING,
 });
 
-module.exports = Category;
+module.exports = Order;
