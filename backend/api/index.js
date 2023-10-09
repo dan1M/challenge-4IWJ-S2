@@ -3,6 +3,7 @@ const bodyParser = require('body-parser');
 
 const scheme = require('./util/scheme');
 const authRoutes = require('./routes/auth');
+const productsRoutes = require('./routes/product-routes');
 
 const port = 3000;
 
@@ -25,6 +26,7 @@ app.use((req, res, next) => {
 });
 
 app.use('/auth', authRoutes);
+app.use('/products', productsRoutes);
 
 app.use((error, req, res, next) => {
   const status = error.statusCode || 500;

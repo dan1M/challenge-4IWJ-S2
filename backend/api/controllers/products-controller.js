@@ -1,19 +1,39 @@
-// validationResult est une fonction qui permet de vérifier si la requête a bien respecté la validation défini dans le fichier de route
 const { validationResult } = require('express-validator/check');
-const Product = '../models/product.js'; // Mettre le chemin de votre model Mongo
+const Product = require('../models/product.js');
 
-// Exemple GET ALL (CRUD)
 exports.findAll = (req, res, next) => {
-  // On utilise simplement find() qui renvoie tous les documents de la collection
-  Product.find()
+  Product.findAll()
     .then(products => {
-      // Si pas d'erreur, on renvoie une response 200, avec un objet JSON contenant un message de votre choix et les données
       res.status(200).json({
-        message: 'Fetched posts successfully.',
-        products: products,
+        message: 'Fetched products successfully.',
+        data: products,
       });
     })
+    .catch(err => {
+      if (!err.statusCode) {
+        err.statusCode = 500;
+      }
+      next(err);
+    });
+};
+
+exports.findOne = (req, res, next) => {
+  // On récupère l'Id qui est dans l'URL avec l'objet 'params' de la requête
+  const postId = req.params.postId;
+  // Utilisez 'findById' de mongoose
+  Product.findById(postId)
+    .then(product => {
+      // Si le produit n'existe pas on renvoie une erreur 404 (Not found) pour rentrer dans le catch
+      if (!product) {
+        const error = new Error('Could not find product.');
+        error.statusCode = 404;
+        throw error;
+      }
+      // Si pas d'erreur, on renvoie une response avec un status 200 et un objet JSON qui contient un message de votre choix et la data
+      res.status(200).json({ message: 'Product fetched.', product: product });
+    })
     // Si vous entrez ici c'est que la requete n'a pas fonctionné (500) pour une raison inconnue (soucis réseau etc..)
+    // Ou le produit n'existe pas (404)
     .catch(err => {
       if (!err.statusCode) {
         err.statusCode = 500;
@@ -23,7 +43,6 @@ exports.findAll = (req, res, next) => {
     });
 };
 
-// Exemple POST (CRUD)
 exports.create = (req, res, next) => {
   // Récupération des erreurs de la validation (voir le fichier de route)
   const errors = validationResult(req);
@@ -62,34 +81,6 @@ exports.create = (req, res, next) => {
         next(err);
       })
   );
-};
-
-// Exemple GET par ID (CRUD)
-
-exports.exampleGetById = (req, res, next) => {
-  // On récupère l'Id qui est dans l'URL avec l'objet 'params' de la requête
-  const postId = req.params.postId;
-  // Utilisez 'findById' de mongoose
-  Product.findById(postId)
-    .then(product => {
-      // Si le produit n'existe pas on renvoie une erreur 404 (Not found) pour rentrer dans le catch
-      if (!product) {
-        const error = new Error('Could not find product.');
-        error.statusCode = 404;
-        throw error;
-      }
-      // Si pas d'erreur, on renvoie une response avec un status 200 et un objet JSON qui contient un message de votre choix et la data
-      res.status(200).json({ message: 'Product fetched.', product: product });
-    })
-    // Si vous entrez ici c'est que la requete n'a pas fonctionné (500) pour une raison inconnue (soucis réseau etc..)
-    // Ou le produit n'existe pas (404)
-    .catch(err => {
-      if (!err.statusCode) {
-        err.statusCode = 500;
-      }
-      // Le next(err) va appeler la route spécialement faite pour les erreurs (voir index.js)
-      next(err);
-    });
 };
 
 exports.exampleDelete = (req, res, next) => {
