@@ -12,7 +12,6 @@ router.get('/', brandController.getAll);
 router.post(
   '/',
   [body('id'), body('name').trim().isLength({ min: 5 })],
->>>>>>> Stashed changes
 
   brandController.create,
 );
