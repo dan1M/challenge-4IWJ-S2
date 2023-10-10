@@ -1,8 +1,8 @@
-const { DataTypes } = require("sequelize");
+const { DataTypes } = require('sequelize');
 
-const sequelize = require("../util/db-sql");
+const sequelize = require('../util/db-sql');
 
-const DetailsOrder = sequelize.define("detailsOrder", {
+const DetailsOrder = sequelize.define('detailsOrder', {
   id: {
     type: DataTypes.INTEGER,
     autoIncrement: true,
@@ -10,8 +10,7 @@ const DetailsOrder = sequelize.define("detailsOrder", {
     primaryKey: true,
   },
   quantity: DataTypes.INTEGER,
-  price: DataTypes.DOUBLE
-  
+  price: DataTypes.DOUBLE,
 });
 
 module.exports = DetailsOrder;

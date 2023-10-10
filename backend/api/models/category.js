@@ -1,8 +1,8 @@
-const { DataTypes } = require("sequelize");
+const { DataTypes } = require('sequelize');
 
-const sequelize = require("../util/db-sql");
+const sequelize = require('../util/db-sql');
 
-const Category = sequelize.define("category", {
+const Category = sequelize.define('category', {
   id: {
     type: DataTypes.INTEGER,
     autoIncrement: true,
