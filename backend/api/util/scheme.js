@@ -1,11 +1,12 @@
-const sequelize = require("./db-sql");
-const mongoose = require("./db-nosql");
+const sequelize = require('./db-sql');
+const mongoose = require('./db-nosql');
 
-const User = require("../models/user");
-const Product = require("../models/product");
-const Category = require("../models/category");
+const User = require('../models/user');
+const Product = require('../models/product');
+const Category = require('../models/category');
+const Brand = require('../models/brand');
 
-const Order = require("../models/order");
-const DetailsOrder = require("../models/detailsOrder");
+const Order = require('../models/order');
+const DetailsOrder = require('../models/detailsOrder');
 
 // sequelize.sync({ force: true });
