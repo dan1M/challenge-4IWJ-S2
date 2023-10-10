@@ -1,8 +1,10 @@
 const { validationResult } = require('express-validator/check');
-const Brand = require('../models/brand');
+const Brand = require('../models/sql/brand');
+const BrandMongo = require('../models/nosql/brand');
+
 const e = require('express');
 
-exports.brandGetAll = async (req, res, next) => {
+exports.getAll = async (req, res, next) => {
   try {
     const brands = await Brand.findAll();
     res.status(200).json({
@@ -17,27 +19,26 @@ exports.brandGetAll = async (req, res, next) => {
   }
 };
 
-// Exemple POST (CRUD)
-
-exports.brandPost = async (req, res, next) => {
+exports.create = async (req, res, next) => {
   try {
     const errors = validationResult(req);
     // Si il y a une erreur alors on renvoie une erreur 422
     if (!errors.isEmpty()) {
       const error = new Error('Validation failed.');
-      error.statusCode = 422;
       error.data = errors.array();
-      // le throw error vous ramenera dans le catch tout en bas
+      error.statusCode = 422;
       throw error;
     }
-    // Si pas d'erreur on récupère les infos rentrés par le user. Ils seront dans l'objet body de la requête.
-    const id = req.body.id;
     const name = req.body.name;
 
     const brand = await Brand.create({
-      id: id,
       name: name,
     });
+
+    await BrandMongo.create({
+      name: name,
+    });
+
     res.status(201).json({ message: 'Brand created!', id: brand.id });
   } catch (err) {
     if (!err.statusCode) {
@@ -48,7 +49,7 @@ exports.brandPost = async (req, res, next) => {
 };
 
 // Exemple GET par ID (CRUD)
-exports.brandGetById = async (req, res, next) => {
+exports.findOne = async (req, res, next) => {
   // On récupère l'Id qui est dans l'URL avec l'objet 'params' de la requête
   const brandId = req.params.brandId;
   // Utilisez 'findById' de mongoose
@@ -68,7 +69,7 @@ exports.brandGetById = async (req, res, next) => {
   }
 };
 
-exports.brandDelete = async (req, res, next) => {
+exports.delete = async (req, res, next) => {
   const brandId = req.params.brandId;
   try {
     const brand = await Brand.findByPk(brandId);
@@ -91,11 +92,12 @@ exports.brandDelete = async (req, res, next) => {
   }
 };
 
-exports.updateBrand = async (req, res, next) => {
+exports.update = async (req, res, next) => {
   const brandId = req.params.brandId;
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
-    const error = new Error('Validation failed, entered data is incorrect.');
+    const error = new Error('Validation failed.');
+    error.data = errors.array();
     error.statusCode = 422;
     throw error;
   }

@@ -1,8 +1,8 @@
 const { DataTypes } = require('sequelize');
 
-const sequelize = require('../util/db-sql');
+const sequelize = require('../../util/db-sql');
 
-const Category = sequelize.define('category', {
+const Brand = sequelize.define('brand', {
   id: {
     type: DataTypes.INTEGER,
     autoIncrement: true,
@@ -12,4 +12,4 @@ const Category = sequelize.define('category', {
   name: DataTypes.STRING,
 });
 
-module.exports = Category;
+module.exports = Brand;

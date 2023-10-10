@@ -6,10 +6,11 @@ const brandController = require('../controllers/brand');
 
 const router = express.Router();
 
-router.get('/', brandController.brandGetAll);
+router.get('/', brandController.getAll);
 
 // POST /example
 router.post(
+<<<<<<< Updated upstream
   '/create',
   [
     body('name')
@@ -17,24 +18,32 @@ router.post(
       .not()
       .isEmpty()
   ],
+=======
+  '/',
+  [body('id'), body('name').trim().isLength({ min: 5 })],
+>>>>>>> Stashed changes
 
-  brandController.brandPost,
+  brandController.create,
 );
 
 router.put(
   '/:brandId',
+<<<<<<< Updated upstream
   [
     body('name')
       .trim()
       .not()
       .isEmpty()
   ],
+=======
+  [body('id'), body('name').trim().isLength({ min: 5 })],
+>>>>>>> Stashed changes
 
-  brandController.updateBrand,
+  brandController.update,
 );
 
-router.get('/:brandId', brandController.brandGetById);
+router.get('/:brandId', brandController.findOne);
 
-router.delete('/:brandId', brandController.brandDelete);
+router.delete('/:brandId', brandController.delete);
 
 module.exports = router;
