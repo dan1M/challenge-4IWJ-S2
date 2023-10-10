@@ -9,7 +9,7 @@ const Product = sequelize.define('product', {
     allowNull: false,
     primaryKey: true,
   },
-  name: {
+  title: {
     type: DataTypes.TEXT,
   },
   description: {
