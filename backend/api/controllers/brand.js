@@ -35,10 +35,6 @@ exports.create = async (req, res, next) => {
       name: name,
     });
 
-    await BrandMongo.create({
-      name: name,
-    });
-
     res.status(201).json({ message: 'Brand created!', id: brand.id });
   } catch (err) {
     if (!err.statusCode) {

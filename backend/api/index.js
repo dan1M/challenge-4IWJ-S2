@@ -4,6 +4,7 @@ const bodyParser = require('body-parser');
 const scheme = require('./util/scheme');
 const authRoutes = require('./routes/auth');
 const brandRoutes = require('./routes/brand');
+const categoryRoutes = require('./routes/category');
 
 const port = 3000;
 
@@ -27,6 +28,7 @@ app.use((req, res, next) => {
 
 app.use('/auth', authRoutes);
 app.use('/brands', brandRoutes);
+app.use('/categories', categoryRoutes);
 
 app.use((error, req, res, next) => {
   const status = error.statusCode || 500;
@@ -34,4 +36,3 @@ app.use((error, req, res, next) => {
   const data = error.data;
   res.status(status).json({ message: message, invalid_data: data });
 });
-

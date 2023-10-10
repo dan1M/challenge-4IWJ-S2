@@ -11,14 +11,14 @@ router.get('/', brandController.getAll);
 // POST /example
 router.post(
   '/',
-  [body('id'), body('name').trim().isLength({ min: 5 })],
+  [body('name').trim().isLength({ min: 5 })],
 
   brandController.create,
 );
 
 router.put(
   '/:brandId',
-  [body('id'), body('name').trim().isLength({ min: 5 })],
+  [body('name').trim().isLength({ min: 5 })],
 
   brandController.update,
 );
