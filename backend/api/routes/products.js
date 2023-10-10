@@ -1,7 +1,7 @@
 const express = require('express');
 const { body } = require('express-validator/check');
 
-const productsController = require('../controllers/products-controller');
+const productsController = require('../controllers/products');
 
 const router = express.Router();
 

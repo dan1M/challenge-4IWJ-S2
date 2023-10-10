@@ -1,5 +1,5 @@
 const { validationResult } = require('express-validator/check');
-const Product = require('../models/product.js');
+const Product = require('../models/sql/product.js');
 
 exports.findAll = (req, res, next) => {
   Product.findAll()

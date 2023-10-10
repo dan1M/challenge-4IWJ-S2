@@ -3,7 +3,7 @@ const bodyParser = require('body-parser');
 
 const scheme = require('./util/scheme');
 const authRoutes = require('./routes/auth');
-const productsRoutes = require('./routes/product-routes');
+const productsRoutes = require('./routes/products');
 const brandRoutes = require('./routes/brand');
 const categoryRoutes = require('./routes/category');
 

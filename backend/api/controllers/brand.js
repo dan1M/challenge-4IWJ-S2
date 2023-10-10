@@ -1,8 +1,5 @@
 const { validationResult } = require('express-validator/check');
 const Brand = require('../models/sql/brand');
-const BrandMongo = require('../models/nosql/brand');
-
-const e = require('express');
 
 exports.getAll = async (req, res, next) => {
   try {
@@ -20,9 +17,8 @@ exports.getAll = async (req, res, next) => {
 };
 
 exports.create = async (req, res, next) => {
+  const errors = validationResult(req);
   try {
-    const errors = validationResult(req);
-    // Si il y a une erreur alors on renvoie une erreur 422
     if (!errors.isEmpty()) {
       const error = new Error('Validation failed.');
       error.data = errors.array();
@@ -30,7 +26,6 @@ exports.create = async (req, res, next) => {
       throw error;
     }
     const name = req.body.name;
-
     const brand = await Brand.create({
       name: name,
     });
@@ -39,8 +34,8 @@ exports.create = async (req, res, next) => {
   } catch (err) {
     if (!err.statusCode) {
       err.statusCode = 500;
-      next(err);
     }
+    next(err);
   }
 };
 
