@@ -10,4 +10,4 @@ const Order = require('../models/sql/order');
 const DetailsOrder = require('../models/sql/detailsOrder');
 
 // Pour mettre à jour la structure des tables (supprime les données)
-//sequelize.sync({ force: true });
+// sequelize.sync({ force: true });

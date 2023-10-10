@@ -9,17 +9,20 @@ const Product = sequelize.define('product', {
     allowNull: false,
     primaryKey: true,
   },
-  name: {
+  title: {
     type: DataTypes.TEXT,
   },
   description: {
     type: DataTypes.TEXT,
+    allowNull: true,
   },
   price: {
     type: DataTypes.DOUBLE,
   },
   stock: {
     type: DataTypes.INTEGER,
+    allowNull: true,
+    defaultValue: 0,
   },
 });
 

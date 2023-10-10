@@ -3,6 +3,7 @@ const bodyParser = require('body-parser');
 
 const scheme = require('./util/scheme');
 const authRoutes = require('./routes/auth');
+const productsRoutes = require('./routes/product-routes');
 const brandRoutes = require('./routes/brand');
 
 const port = 3000;
@@ -26,6 +27,7 @@ app.use((req, res, next) => {
 });
 
 app.use('/auth', authRoutes);
+app.use('/products', productsRoutes);
 app.use('/brands', brandRoutes);
 
 app.use((error, req, res, next) => {
