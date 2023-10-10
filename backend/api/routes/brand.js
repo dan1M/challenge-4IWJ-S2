@@ -10,15 +10,6 @@ router.get('/', brandController.getAll);
 
 // POST /example
 router.post(
-<<<<<<< Updated upstream
-  '/create',
-  [
-    body('name')
-      .trim()
-      .not()
-      .isEmpty()
-  ],
-=======
   '/',
   [body('id'), body('name').trim().isLength({ min: 5 })],
 >>>>>>> Stashed changes
@@ -28,16 +19,7 @@ router.post(
 
 router.put(
   '/:brandId',
-<<<<<<< Updated upstream
-  [
-    body('name')
-      .trim()
-      .not()
-      .isEmpty()
-  ],
-=======
   [body('id'), body('name').trim().isLength({ min: 5 })],
->>>>>>> Stashed changes
 
   brandController.update,
 );
