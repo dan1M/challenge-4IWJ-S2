@@ -24,12 +24,17 @@ const User = sequelize.define('user', {
   },
   password: {
     type: DataTypes.STRING,
-    allowNull: false
+    allowNull: false,
   },
   verifyEmail: {
     type: DataTypes.BOOLEAN,
-    allowNull: true
-  } 
+    allowNull: true,
+  },
+  roles: {
+    type: DataTypes.ARRAY(DataTypes.STRING),
+    allowNull: true,
+    defaultValue: ['ROLE_USER'],
+  },
 });
 
 module.exports = User;

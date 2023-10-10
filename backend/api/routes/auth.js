@@ -32,7 +32,7 @@ router.put(
     body('lastname')
       .trim()
       .not()
-      .isEmpty(),
+      .isEmpty()
   ],
   authController.signup,
 );
