@@ -9,7 +9,10 @@ const Brand = sequelize.define('brand', {
     allowNull: false,
     primaryKey: true,
   },
-  name: DataTypes.STRING,
+  name: {
+    type: DataTypes.STRING,
+    unique: true,
+  },
 });
 
 module.exports = Brand;

@@ -1,5 +1,7 @@
 const { validationResult } = require('express-validator/check');
 const Category = require('../models/sql/category');
+const CategoryMongo = require('../models/nosql/category');
+
 const e = require('express');
 
 exports.getAll = async (req, res, next) => {
@@ -31,7 +33,11 @@ exports.create = async (req, res, next) => {
       name: name,
     });
 
-    res.status(201).json({ message: 'Category created!', id: category.id });
+    await CategoryMongo.create({
+      name: name,
+    });
+
+    res.status(201).json({ message: 'Category created!', category: category });
   } catch (err) {
     if (!err.statusCode) {
       err.statusCode = 500;
@@ -68,6 +74,8 @@ exports.delete = async (req, res, next) => {
       throw error;
     }
     await category.destroy();
+    await CategoryMongo.deleteOne({ name: category.name });
+
     res.status(200).json({ message: 'Deleted category.', category: category });
   } catch (err) {
     if (!err.statusCode) {
@@ -95,6 +103,8 @@ exports.update = async (req, res, next) => {
     }
     const name = req.body.name;
     await category.update({ name: name });
+    await CategoryMongo.updateOne({ name: name });
+
     res.status(200).json({ message: 'Category updated!', category: category });
   } catch (err) {
     if (!err.statusCode) {
