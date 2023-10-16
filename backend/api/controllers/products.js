@@ -1,5 +1,6 @@
 const { validationResult } = require('express-validator/check');
 const Product = require('../models/sql/product.js');
+const ProductMongo = require('../models/nosql/product.js');
 
 exports.findAll = async (req, res, next) => {
   try {
@@ -55,9 +56,14 @@ exports.create = async (req, res, next) => {
       description: description,
       stock: stock,
     });
-    res
-      .status(201)
-      .json({ message: 'Product created!', productId: product.id });
+
+    await ProductMongo.create({
+      title: title,
+      description: description,
+      price: price,
+    });
+
+    res.status(201).json({ message: 'Product created!', productId: product });
   } catch (err) {
     if (!err.statusCode) {
       err.statusCode = 500;
@@ -95,6 +101,12 @@ exports.update = async (req, res, next) => {
       stock: stock,
     });
 
+    await ProductMongo.updateOne({
+      title: title,
+      description: description,
+      price: price,
+    });
+
     res.status(200).json({ message: 'Product updated!', product: product });
   } catch (err) {
     if (!err.statusCode) {
@@ -114,6 +126,7 @@ exports.delete = async (req, res, next) => {
       throw error;
     }
     await product.destroy();
+    await ProductMongo.deleteOne({ title: product.title });
     res.status(200).json({ message: 'Deleted product.', product: product });
   } catch (err) {
     if (!err.statusCode) {
