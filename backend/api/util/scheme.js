@@ -1,11 +1,15 @@
-const sequelize = require("./db-sql");
-const mongoose = require("./db-nosql");
+const sequelize = require('./db-sql');
+const mongoose = require('./db-nosql');
 
-const User = require("../models/sql/user");
-const Product = require("../models/sql/product");
-const Category = require("../models/sql/category");
+const User = require('../models/sql/user');
+const Token = require('../models/sql/token');
 
-const Order = require("../models/sql/order");
-const DetailsOrder = require("../models/sql/detailsOrder");
+const Product = require('../models/sql/product');
+const Category = require('../models/sql/category');
+
+const Order = require('../models/sql/order');
+const DetailsOrder = require('../models/sql/detailsOrder');
+
+Token.belongsTo(User);
 
 sequelize.sync({ force: true });

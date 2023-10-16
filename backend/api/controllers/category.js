@@ -67,11 +67,7 @@ exports.delete = async (req, res, next) => {
       error.statusCode = 404;
       throw error;
     }
-    await Category.destroy({
-      where: {
-        id: categoryId,
-      },
-    });
+    await category.destroy();
     res.status(200).json({ message: 'Deleted category.', category: category });
   } catch (err) {
     if (!err.statusCode) {
@@ -98,17 +94,8 @@ exports.update = async (req, res, next) => {
       throw error;
     }
     const name = req.body.name;
-    const updatedCategory = await Category.update(
-      { name: name },
-      {
-        where: {
-          id: categoryId,
-        },
-      },
-    );
-    res
-      .status(200)
-      .json({ message: 'Category updated!', category: updatedCategory });
+    await category.update({ name: name });
+    res.status(200).json({ message: 'Category updated!', category: category });
   } catch (err) {
     if (!err.statusCode) {
       err.statusCode = 500;

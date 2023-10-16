@@ -69,11 +69,7 @@ exports.delete = async (req, res, next) => {
       error.statusCode = 404;
       throw error;
     }
-    await Brand.destroy({
-      where: {
-        id: brandId,
-      },
-    });
+    await brand.destroy();
     res.status(200).json({ message: 'Brand deleted.', brand: brand });
   } catch (err) {
     if (!err.statusCode) {
@@ -101,15 +97,9 @@ exports.update = async (req, res, next) => {
       error.statusCode = 404;
       throw error;
     }
-    const updatedBrand = await Brand.update(
-      { name: name },
-      {
-        where: {
-          id: brandId,
-        },
-      },
-    );
-    res.status(200).json({ message: 'Brand updated!', brand: updatedBrand });
+    await brand.update({ name: name });
+
+    res.status(200).json({ message: 'Brand updated!', brand: brand });
   } catch (err) {
     if (!err.statusCode) {
       err.statusCode = 500;
