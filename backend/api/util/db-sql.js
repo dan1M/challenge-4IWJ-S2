@@ -1,9 +1,14 @@
 const Sequelize = require('sequelize');
 
-const sequelize = new Sequelize('cs2', 'admin', 'cs2', {
-  dialect: 'postgres',
-  host: 'postgres',
-});
+const sequelize = new Sequelize(
+  process.env.POSTGRES_DB,
+  process.env.POSTGRES_USER,
+  process.env.POSTGRES_PASSWORD,
+  {
+    dialect: 'postgres',
+    host: 'postgres',
+  },
+);
 
 try {
   sequelize.authenticate();
