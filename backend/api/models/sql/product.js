@@ -11,6 +11,7 @@ const Product = sequelize.define('product', {
   },
   title: {
     type: DataTypes.TEXT,
+    unique: true,
   },
   description: {
     type: DataTypes.TEXT,

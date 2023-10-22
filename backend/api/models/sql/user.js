@@ -26,9 +26,10 @@ const User = sequelize.define('user', {
     type: DataTypes.STRING,
     allowNull: false,
   },
-  verifyEmail: {
+  active: {
     type: DataTypes.BOOLEAN,
     allowNull: true,
+    defaultValue: false
   },
   roles: {
     type: DataTypes.ARRAY(DataTypes.STRING),

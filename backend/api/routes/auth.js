@@ -23,20 +23,20 @@ router.put(
       .trim()
       .isLength({ min: 12 })
       .withMessage('Le mot de passe doit comporter au moins 12 caractères')
-      .matches(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]+$/)
-      .withMessage('Le mot de passe doit contenir des symboles, des chiffres, des lettres minuscules et des lettres majuscules'),
-    body('firstname')
-      .trim()
-      .not()
-      .isEmpty(),
-    body('lastname')
-      .trim()
-      .not()
-      .isEmpty()
+      .matches(
+        /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]+$/,
+      )
+      .withMessage(
+        'Le mot de passe doit contenir des symboles, des chiffres, des lettres minuscules et des lettres majuscules',
+      ),
+    body('firstname').trim().not().isEmpty(),
+    body('lastname').trim().not().isEmpty(),
   ],
   authController.signup,
 );
 
 router.post('/login', authController.login);
+
+router.get('/verify/:token', authController.verify);
 
 module.exports = router;

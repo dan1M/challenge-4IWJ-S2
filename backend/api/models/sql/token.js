@@ -2,17 +2,17 @@ const { DataTypes } = require('sequelize');
 
 const sequelize = require('../../util/db-sql');
 
-const Brand = sequelize.define('brand', {
+const Token = sequelize.define('token', {
   id: {
     type: DataTypes.INTEGER,
     autoIncrement: true,
     allowNull: false,
     primaryKey: true,
   },
-  name: {
+  token: {
     type: DataTypes.STRING,
-    unique: true,
+    allowNull: false,
   },
 });
 
-module.exports = Brand;
+module.exports = Token;

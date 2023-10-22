@@ -1,13 +1,15 @@
+require('dotenv').config();
 const express = require('express');
 const bodyParser = require('body-parser');
 
 const scheme = require('./util/scheme');
+const mailer = require('./util/mailer');
 const authRoutes = require('./routes/auth');
 const productsRoutes = require('./routes/products');
 const brandRoutes = require('./routes/brand');
 const categoryRoutes = require('./routes/category');
 
-const port = 3000;
+const port = process.env.PORT;
 
 const app = express();
 

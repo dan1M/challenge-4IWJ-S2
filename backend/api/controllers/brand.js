@@ -1,5 +1,7 @@
 const { validationResult } = require('express-validator/check');
 const Brand = require('../models/sql/brand');
+const BrandMongo = require('../models/nosql/brand');
+const { modelNames } = require('mongoose');
 
 exports.getAll = async (req, res, next) => {
   try {
@@ -30,7 +32,11 @@ exports.create = async (req, res, next) => {
       name: name,
     });
 
-    res.status(201).json({ message: 'Brand created!', id: brand.id });
+    await BrandMongo.create({
+      name: name,
+    });
+
+    await res.status(201).json({ message: 'Brand created!', brand: brand });
   } catch (err) {
     if (!err.statusCode) {
       err.statusCode = 500;
@@ -69,11 +75,9 @@ exports.delete = async (req, res, next) => {
       error.statusCode = 404;
       throw error;
     }
-    await Brand.destroy({
-      where: {
-        id: brandId,
-      },
-    });
+    await brand.destroy();
+    await BrandMongo.deleteOne({ name: brand.name });
+
     res.status(200).json({ message: 'Brand deleted.', brand: brand });
   } catch (err) {
     if (!err.statusCode) {
@@ -101,15 +105,10 @@ exports.update = async (req, res, next) => {
       error.statusCode = 404;
       throw error;
     }
-    const updatedBrand = await Brand.update(
-      { name: name },
-      {
-        where: {
-          id: brandId,
-        },
-      },
-    );
-    res.status(200).json({ message: 'Brand updated!', brand: updatedBrand });
+    await brand.update({ name: name });
+    await BrandMongo.updateOne({ name: name });
+
+    res.status(200).json({ message: 'Brand updated!', brand: brand });
   } catch (err) {
     if (!err.statusCode) {
       err.statusCode = 500;

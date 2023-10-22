@@ -15,19 +15,6 @@ services:
     volumes:
       - ./backend/postgres:/var/lib/postgresql/data
 
-  mongodb:
-    image: mongo:latest
-    container_name: mongodb
-    restart: always
-    environment:
-      MONGO_INITDB_ROOT_USERNAME: admin
-      MONGO_INITDB_ROOT_PASSWORD: cs2
-      MONGO_INITDB_DATABASE: cs2
-    ports:
-      - 27017:27017
-    volumes:
-      - ./backend/mongo:/data/db
-
   backend:
     image: node:latest
     container_name: backend
