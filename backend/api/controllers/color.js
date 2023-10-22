@@ -1,12 +1,14 @@
 const { validationResult } = require('express-validator/check');
 const Color = require('../models/sql/color');
+const ColorMongo = require('../models/nosql/color');
+const { modelNames } = require('mongoose');
 
 exports.getAll = async (req, res, next) => {
   try {
     const colors = await Color.findAll();
     res.status(200).json({
       message: 'Fetched colors successfully.',
-      brands: brands,
+      colors: colors,
     });
   } catch (err) {
     if (!err.statusCode) {
@@ -26,11 +28,15 @@ exports.create = async (req, res, next) => {
       throw error;
     }
     const name = req.body.name;
-    const brand = await Brand.create({
+    const color = await Color.create({
       name: name,
     });
 
-    res.status(201).json({ message: 'Brand created!', id: brand.id });
+    await ColorMongo.create({
+      name: name,
+    });
+
+    await res.status(201).json({ message: 'Color created!', color: color });
   } catch (err) {
     if (!err.statusCode) {
       err.statusCode = 500;
@@ -42,16 +48,16 @@ exports.create = async (req, res, next) => {
 // Exemple GET par ID (CRUD)
 exports.findOne = async (req, res, next) => {
   // On récupère l'Id qui est dans l'URL avec l'objet 'params' de la requête
-  const brandId = req.params.brandId;
+  const colorId = req.params.colorId;
   // Utilisez 'findById' de mongoose
   try {
-    const brand = await Brand.findByPk(brandId);
-    if (!brand) {
-      const error = new Error('Could not find brand.');
+    const color = await Color.findByPk(colorId);
+    if (!color) {
+      const error = new Error('Could not find color.');
       error.statusCode = 404;
       throw error;
     }
-    res.status(200).json({ message: 'Brand fetched.', brand: brand });
+    res.status(200).json({ message: 'color fetched.', color: color });
   } catch (err) {
     if (!err.statusCode) {
       err.statusCode = 500;
@@ -61,20 +67,18 @@ exports.findOne = async (req, res, next) => {
 };
 
 exports.delete = async (req, res, next) => {
-  const brandId = req.params.brandId;
+  const colorId = req.params.colorId;
   try {
-    const brand = await Brand.findByPk(brandId);
-    if (!brand) {
-      const error = new Error('Could not find brand.');
+    const color = await Color.findByPk(colorId);
+    if (!color) {
+      const error = new Error('Could not find color.');
       error.statusCode = 404;
       throw error;
     }
-    await Brand.destroy({
-      where: {
-        id: brandId,
-      },
-    });
-    res.status(200).json({ message: 'Brand deleted.', brand: brand });
+    await color.destroy();
+    //await ColorMongo.deleteOne({ name: color.name });
+
+    res.status(200).json({ message: 'color deleted.', color: color });
   } catch (err) {
     if (!err.statusCode) {
       err.statusCode = 500;
@@ -84,7 +88,7 @@ exports.delete = async (req, res, next) => {
 };
 
 exports.update = async (req, res, next) => {
-  const brandId = req.params.brandId;
+  const colorId = req.params.colorId;
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
     const error = new Error('Validation failed.');
@@ -95,21 +99,17 @@ exports.update = async (req, res, next) => {
   const name = req.body.name;
 
   try {
-    const brand = await Brand.findByPk(brandId);
-    if (!brand) {
-      const error = new Error('Could not find brand.');
+    const color = await Color.findByPk(colorId);
+    if (!color) {
+      const error = new Error('Could not find color.');
       error.statusCode = 404;
       throw error;
     }
-    const updatedBrand = await Brand.update(
-      { name: name },
-      {
-        where: {
-          id: brandId,
-        },
-      },
-    );
-    res.status(200).json({ message: 'Brand updated!', brand: updatedBrand });
+
+    await color.update({ name: name });
+    await ColorMongo.updateOne({ name: name });
+
+    res.status(200).json({ message: 'color updated!', color: color });
   } catch (err) {
     if (!err.statusCode) {
       err.statusCode = 500;

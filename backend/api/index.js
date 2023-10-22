@@ -8,6 +8,9 @@ const authRoutes = require('./routes/auth');
 const productsRoutes = require('./routes/products');
 const brandRoutes = require('./routes/brand');
 const categoryRoutes = require('./routes/category');
+const colorRoutes = require('./routes/color');
+const sizeRoutes = require('./routes/size');
+const stockRoutes = require('./routes/stock');
 
 const port = process.env.PORT;
 
@@ -33,6 +36,11 @@ app.use('/auth', authRoutes);
 app.use('/products', productsRoutes);
 app.use('/brands', brandRoutes);
 app.use('/categories', categoryRoutes);
+app.use('/colors', colorRoutes);
+app.use('/sizes', sizeRoutes);
+app.use('/stocks', stockRoutes);
+
+
 
 app.use((error, req, res, next) => {
   const status = error.statusCode || 500;
