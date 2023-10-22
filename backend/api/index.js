@@ -11,6 +11,7 @@ const categoryRoutes = require('./routes/category');
 const colorRoutes = require('./routes/color');
 const sizeRoutes = require('./routes/size');
 const stockRoutes = require('./routes/stock');
+const orderRoutes = require('./routes/order');
 
 const port = process.env.PORT;
 
@@ -39,7 +40,7 @@ app.use('/categories', categoryRoutes);
 app.use('/colors', colorRoutes);
 app.use('/sizes', sizeRoutes);
 app.use('/stocks', stockRoutes);
-
+app.use('/orders', orderRoutes);
 
 
 app.use((error, req, res, next) => {
