@@ -1,7 +1,9 @@
-<script setup></script>
+<script setup>
+import Login from './pages/Login.vue';
+</script>
 
 <template>
-  <h1 class="test">OE LE TITRE</h1>
+  <Login />
 </template>
 
 <style scoped></style>
