@@ -86,7 +86,7 @@ const handleSumbit = () => {
     <h1 class="uppercase font-bold text-lg tracking-wider text-center">
       Inscription
     </h1>
-    <form class="flex flex-col items-center pt-8 space-y-6">
+    <form class="flex flex-col pt-8 space-y-6">
       <div class="flex flex-col">
         <label
           for="email"
@@ -101,7 +101,6 @@ const handleSumbit = () => {
           required
           autofocus
           class="border p-2"
-          size="40"
         />
         <small class="text-zinc-500">
           Un email de confirmation vous sera envoyé à cette adresse
@@ -123,7 +122,6 @@ const handleSumbit = () => {
           v-model="firstname"
           required
           class="border p-2"
-          size="40"
         />
       </div>
       <div class="flex flex-col">
@@ -139,7 +137,6 @@ const handleSumbit = () => {
           v-model="lastname"
           required
           class="border p-2"
-          size="40"
         />
       </div>
       <div class="flex flex-col">
@@ -155,7 +152,6 @@ const handleSumbit = () => {
           v-model="password"
           required
           class="border p-2"
-          size="40"
         />
         <small class="error" v-if="passwordError">
           {{ passwordError }}
@@ -174,7 +170,6 @@ const handleSumbit = () => {
           v-model="passwordConfirmation"
           required
           class="border p-2"
-          size="40"
         />
         <small class="error" v-if="passwordConfirmationError">
           {{ passwordConfirmationError }}
@@ -207,7 +202,7 @@ const handleSumbit = () => {
           </a>
         </small>
       </div>
-      <div>
+      <div class="self-center">
         <button
           type="button"
           @click="handleSumbit"

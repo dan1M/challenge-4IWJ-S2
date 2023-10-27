@@ -10,7 +10,7 @@ const password = ref('');
     <h1 class="uppercase font-bold text-lg tracking-wider text-center">
       Connexion à votre compte
     </h1>
-    <form class="flex flex-col items-center pt-8 space-y-6">
+    <form class="flex flex-col pt-8 space-y-6">
       <div class="flex flex-col">
         <label
           for="email"
@@ -50,7 +50,7 @@ const password = ref('');
           {{ passwordError }}
         </small>
       </div>
-      <div>
+      <div class="self-center">
         <button
           type="button"
           @click="handleSumbit"
@@ -59,7 +59,7 @@ const password = ref('');
           Connexion
         </button>
       </div>
-      <div>
+      <div class="self-center">
         <button type="button" class="text-sm hover:underline">
           Mot de passe perdu?
         </button>
