@@ -3,7 +3,7 @@ const Brand = require('../models/sql/brand');
 const BrandMongo = require('../models/nosql/brand');
 const { modelNames } = require('mongoose');
 
-exports.getAll = async (req, res, next) => {
+exports.findAll = async (req, res, next) => {
   try {
     const brands = await Brand.findAll();
     res.status(200).json({

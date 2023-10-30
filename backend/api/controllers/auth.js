@@ -3,6 +3,7 @@ const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const { transporter } = require('../util/mailer');
 const User = require('../models/sql/user');
+const Lockout = require('../models/sql/lockout');
 const Token = require('../models/sql/token');
 const ejs = require('ejs');
 
@@ -78,6 +79,18 @@ exports.login = async (req, res, next) => {
   const password = req.body.password;
   let loadedUser;
   try {
+    // Vérifiez si le compte est verrouillé
+    const lockoutInfo = await Lockout.findOne({ where: { email: email } });
+    if (lockoutInfo && lockoutInfo.attempts >= 3) {
+      const currentTime = new Date().getTime();
+      const lastAttemptTime = lockoutInfo.lastAttempt.getTime();
+      const lockoutDuration = 30 * 60 * 1000; // 30 minutes in milliseconds
+      if (currentTime - lastAttemptTime < lockoutDuration) {
+        const error = new Error('Account locked. Please try again later.');
+        error.statusCode = 401;
+        throw error;
+      }
+    }
     const user = await User.findOne({ where: { email: email } });
     if (!user) {
       const error = new Error('A user with this email could not be found.');
@@ -94,10 +107,32 @@ exports.login = async (req, res, next) => {
     }
     const isEqual = await bcrypt.compare(password, user.password);
     if (!isEqual) {
+      // Enregistrez la tentative infructueuse
+      if (lockoutInfo) {
+        await Lockout.update(
+          { attempts: lockoutInfo.attempts + 1, lastAttempt: new Date() },
+          { where: { email: email } },
+        );
+      } else {
+        await Lockout.create({
+          email: email,
+          attempts: 1,
+          lastAttempt: new Date(),
+        });
+      }
       const error = new Error('Wrong password!');
       error.statusCode = 422;
       throw error;
     }
+
+    // Réinitialisez le compteur de tentatives infructueuses
+    if (lockoutInfo) {
+      await Lockout.update(
+        { attempts: 0, lastAttempt: new Date() },
+        { where: { email: email } },
+      );
+    }
+
     const token = jwt.sign(
       {
         email: loadedUser.email,
