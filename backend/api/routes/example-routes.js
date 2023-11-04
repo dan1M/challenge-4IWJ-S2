@@ -9,8 +9,8 @@ const exampleController = require('../controllers/example');
 const router = express.Router();
 
 // GET /example
-// Sur la route '/example', j'appelle la fonction exampleGetAll de mon controller
-router.get('/example', exampleController.exampleGetAll);
+// Sur la route '/example', j'appelle la fonction examplefindAll de mon controller
+router.get('/example', exampleController.examplefindAll);
 
 // POST /example
 router.post(

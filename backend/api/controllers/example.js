@@ -4,7 +4,7 @@ const Product = '../jai-inventé'; // Mettre le chemin de votre model Mongo
 
 // Exemple GET ALL (CRUD)
 
-exports.exampleGetAll = (req, res, next) => {
+exports.examplefindAll = (req, res, next) => {
   // On utilise simplement find() qui renvoie tous les documents de la collection
   Product.find()
     .then(products => {

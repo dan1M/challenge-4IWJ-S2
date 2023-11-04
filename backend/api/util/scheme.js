@@ -2,6 +2,8 @@ const sequelize = require('./db-sql');
 const mongoose = require('./db-nosql');
 
 const User = require('../models/sql/user');
+const Lockout = require('../models/sql/lockout');
+
 const Token = require('../models/sql/token');
 
 const Product = require('../models/sql/product');

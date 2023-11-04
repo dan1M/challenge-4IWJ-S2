@@ -6,13 +6,16 @@ const Brand = require('../models/sql/brand');
 
 const brandController = require('../controllers/brand');
 
+const isAuth = require('../middleware/is-auth');
+
 const router = express.Router();
 
-router.get('/', brandController.getAll);
+router.get('/', isAuth, brandController.findAll);
 
 // POST /example
 router.post(
   '/',
+  isAuth,
   [
     body('name')
       .trim()
@@ -30,13 +33,15 @@ router.post(
 
 router.put(
   '/:brandId',
+  isAuth,
+
   [body('name').trim().isLength({ min: 5 })],
 
   brandController.update,
 );
 
-router.get('/:brandId', brandController.findOne);
+router.get('/:brandId', isAuth, brandController.findOne);
 
-router.delete('/:brandId', brandController.delete);
+router.delete('/:brandId', isAuth, brandController.delete);
 
 module.exports = router;

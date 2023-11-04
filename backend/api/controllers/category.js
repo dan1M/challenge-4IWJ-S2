@@ -4,7 +4,7 @@ const CategoryMongo = require('../models/nosql/category');
 
 const e = require('express');
 
-exports.getAll = async (req, res, next) => {
+exports.findAll = async (req, res, next) => {
   try {
     const categories = await Category.findAll();
     res.status(200).json({
