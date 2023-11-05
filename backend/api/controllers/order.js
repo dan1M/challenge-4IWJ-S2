@@ -9,12 +9,7 @@ const Product = require('../models/sql/product');
 exports.findAll = async (req, res, next) => {
   try {
     const orders = await Order.findAll({
-      include: {
-        model: DetailsOrder,
-        where: {
-          order_id: sequelize.col('order.id') 
-        }
-      },
+      include: [DetailsOrder],
     });
     res.status(200).json({
       message: 'Fetched orders successfully.',
@@ -31,13 +26,36 @@ exports.findAll = async (req, res, next) => {
 exports.findOne = async (req, res, next) => {
   const orderId = req.params.orderId;
   try {
-    const order = await Order.findByPk(orderId, { includes: DetailsOrder });
+    const order = await Order.findByPk(orderId, { include: [DetailsOrder]});
     if (!order) {
       const error = new Error('Could not find order.');
       error.statusCode = 404;
       throw error;
     }
     res.status(200).json({ message: 'Order fetched.', order: order });
+  } catch (err) {
+    if (!err.statusCode) {
+      err.statusCode = 500;
+    }
+    next(err);
+  }
+};
+
+exports.findUserOrders = async (req, res, next) => {
+  const userId = req.params.userId; 
+  try {
+    const orders = await Order.findAll({
+      where: { user_id: userId },
+      include: [DetailsOrder]
+    });
+    
+    if (!orders || orders.length === 0) {
+      const error = new Error('Could not find orders for this user.');
+      error.statusCode = 404;
+      throw error;
+    }
+
+    res.status(200).json({ message: 'orders fetched.', order: orders });
   } catch (err) {
     if (!err.statusCode) {
       err.statusCode = 500;

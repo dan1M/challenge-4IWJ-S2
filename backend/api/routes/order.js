@@ -10,6 +10,7 @@ const router = express.Router();
 router.get('/', orderController.findAll);
 
 router.get('/:orderId', orderController.findOne);
+router.get('/user/:userId', orderController.findUserOrders);
 
 router.post(
   '/',
