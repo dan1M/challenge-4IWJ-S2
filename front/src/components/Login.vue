@@ -1,8 +1,27 @@
 <script setup>
-import { ref } from 'vue';
+import useCustomForm from '@/composables/useCustomForm';
+import { z } from 'zod';
 
-const email = ref('');
-const password = ref('');
+const formData = {
+  email: '',
+  password: '',
+};
+const validationSchema = z.object({
+  email: z.string().email(),
+  password: z.string().min(3),
+});
+const endpoint = '/api/auth/login';
+const {
+  email,
+  password,
+  validationErrors,
+  serverError,
+  isSubmitting,
+  isFormValid,
+  submitForm,
+  cancelRequest,
+  resetForm,
+} = useCustomForm(formData, validationSchema, endpoint);
 </script>
 
 <template>
@@ -27,8 +46,8 @@ const password = ref('');
           class="border p-2"
           size="30"
         />
-        <small class="error" v-if="emailError">
-          {{ emailError }}
+        <small class="error" v-if="validationErrors.email && email">
+          {{ validationErrors.email }}
         </small>
       </div>
       <div class="flex flex-col">
@@ -46,14 +65,14 @@ const password = ref('');
           class="border p-2"
           size="30"
         />
-        <small class="error" v-if="passwordError">
-          {{ passwordError }}
+        <small class="error" v-if="validationErrors.password && password">
+          {{ validationErrors.password }}
         </small>
       </div>
       <div class="self-center">
         <button
           type="button"
-          @click="handleSumbit"
+          @click="submitForm"
           class="bg-black text-white px-16 py-3 hover:bg-white hover:border hover:border-black hover:text-black transition duration-300 uppercase tracking-wider font-bold"
         >
           Connexion
@@ -68,4 +87,9 @@ const password = ref('');
   </main>
 </template>
 
-<style scoped></style>
+<style scoped>
+.error {
+  color: red;
+  display: block;
+}
+</style>

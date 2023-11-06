@@ -1,5 +1,5 @@
 <script setup>
-import { ref, computed, reactive } from 'vue';
+import { ref, computed } from 'vue';
 import { z } from 'zod';
 
 const firstname = ref('');
