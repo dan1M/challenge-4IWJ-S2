@@ -5,14 +5,17 @@ const productsController = require('../controllers/products');
 
 const Product = require('../models/sql/product');
 
+const isAuth = require('../middleware/is-auth');
+
 const router = express.Router();
 
-router.get('/', productsController.findAll);
+router.get('/', isAuth, productsController.findAll);
 
-router.get('/:productId', productsController.findOne);
+router.get('/:productId', isAuth, productsController.findOne);
 
 router.post(
   '/',
+  isAuth,
   [
     body('title')
       .trim()
@@ -34,6 +37,7 @@ router.post(
 
 router.put(
   '/:productId',
+  isAuth,
   [
     body('title').optional().trim().isLength({ min: 2 }),
     body('description').optional().trim(),
@@ -43,6 +47,6 @@ router.put(
   productsController.update,
 );
 
-router.delete('/:productId', productsController.delete);
+router.delete('/:productId', isAuth, productsController.delete);
 
 module.exports = router;
