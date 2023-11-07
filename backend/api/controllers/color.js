@@ -6,10 +6,7 @@ const { modelNames } = require('mongoose');
 exports.getAll = async (req, res, next) => {
   try {
     const colors = await Color.findAll();
-    res.status(200).json({
-      message: 'Fetched colors successfully.',
-      colors: colors,
-    });
+    res.status(200).json(colors);
   } catch (err) {
     if (!err.statusCode) {
       err.statusCode = 500;
@@ -36,7 +33,7 @@ exports.create = async (req, res, next) => {
       name: name,
     });
 
-    await res.status(201).json({ message: 'Color created!', color: color });
+    await res.status(201).json();
   } catch (err) {
     if (!err.statusCode) {
       err.statusCode = 500;
@@ -57,7 +54,7 @@ exports.findOne = async (req, res, next) => {
       error.statusCode = 404;
       throw error;
     }
-    res.status(200).json({ message: 'color fetched.', color: color });
+    res.status(200).json(color);
   } catch (err) {
     if (!err.statusCode) {
       err.statusCode = 500;
@@ -78,7 +75,7 @@ exports.delete = async (req, res, next) => {
     await color.destroy();
     //await ColorMongo.deleteOne({ name: color.name });
 
-    res.status(200).json({ message: 'color deleted.', color: color });
+    res.status(204).json();
   } catch (err) {
     if (!err.statusCode) {
       err.statusCode = 500;
@@ -109,7 +106,7 @@ exports.update = async (req, res, next) => {
     await color.update({ name: name });
     await ColorMongo.updateOne({ name: name });
 
-    res.status(200).json({ message: 'color updated!', color: color });
+    res.status(200).json();
   } catch (err) {
     if (!err.statusCode) {
       err.statusCode = 500;

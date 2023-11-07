@@ -6,10 +6,7 @@ const { modelNames } = require('mongoose');
 exports.findAll = async (req, res, next) => {
   try {
     const brands = await Brand.findAll();
-    res.status(200).json({
-      message: 'Fetched brands successfully.',
-      brands: brands,
-    });
+    res.status(200).json(brands);
   } catch (err) {
     if (!err.statusCode) {
       err.statusCode = 500;
@@ -35,8 +32,7 @@ exports.create = async (req, res, next) => {
     await BrandMongo.create({
       name: name,
     });
-
-    await res.status(201).json({ message: 'Brand created!', brand: brand });
+    await res.status(201).json();
   } catch (err) {
     if (!err.statusCode) {
       err.statusCode = 500;
@@ -57,7 +53,7 @@ exports.findOne = async (req, res, next) => {
       error.statusCode = 404;
       throw error;
     }
-    res.status(200).json({ message: 'Brand fetched.', brand: brand });
+    res.status(200).json(brand);
   } catch (err) {
     if (!err.statusCode) {
       err.statusCode = 500;
@@ -78,7 +74,7 @@ exports.delete = async (req, res, next) => {
     await brand.destroy();
     await BrandMongo.deleteOne({ name: brand.name });
 
-    res.status(200).json({ message: 'Brand deleted.', brand: brand });
+    res.status(204).json();
   } catch (err) {
     if (!err.statusCode) {
       err.statusCode = 500;
@@ -108,7 +104,7 @@ exports.update = async (req, res, next) => {
     await brand.update({ name: name });
     await BrandMongo.updateOne({ name: name });
 
-    res.status(200).json({ message: 'Brand updated!', brand: brand });
+    res.status(200).json();
   } catch (err) {
     if (!err.statusCode) {
       err.statusCode = 500;

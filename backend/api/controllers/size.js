@@ -6,10 +6,7 @@ const { modelNames } = require('mongoose');
 exports.getAll = async (req, res, next) => {
   try {
     const sizes = await Size.findAll();
-    res.status(200).json({
-      message: 'Fetched sizes successfully.',
-      sizes: sizes,
-    });
+    res.status(200).json(sizes);
   } catch (err) {
     if (!err.statusCode) {
       err.statusCode = 500;
@@ -36,7 +33,7 @@ exports.create = async (req, res, next) => {
       name: name,
     });
 
-    await res.status(201).json({ message: 'Size created!', size: size });
+    await res.status(201).json();
   } catch (err) {
     if (!err.statusCode) {
       err.statusCode = 500;
@@ -57,7 +54,7 @@ exports.findOne = async (req, res, next) => {
       error.statusCode = 404;
       throw error;
     }
-    res.status(200).json({ message: 'size fetched.', size: size });
+    res.status(200).json(size);
   } catch (err) {
     if (!err.statusCode) {
       err.statusCode = 500;
@@ -78,8 +75,7 @@ exports.delete = async (req, res, next) => {
     await size.destroy();
     await SizeMongo.deleteOne({ name: size.name });
 
-
-    res.status(200).json({ message: 'size deleted.', size: size });
+    res.status(204).json();
   } catch (err) {
     if (!err.statusCode) {
       err.statusCode = 500;
@@ -110,7 +106,7 @@ exports.update = async (req, res, next) => {
     await size.update({ name: name });
     await SizeMongo.updateOne({ name: name });
 
-    res.status(200).json({ message: 'size updated!', size: size });
+    res.status(200).json();
   } catch (err) {
     if (!err.statusCode) {
       err.statusCode = 500;

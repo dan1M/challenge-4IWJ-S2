@@ -62,7 +62,7 @@ exports.signup = async (req, res, next) => {
           if (err) {
             throw err;
           }
-          res.status(201).json({ message: 'User created!', userId: user.id });
+          res.status(201).json();
         });
       },
     );
@@ -141,7 +141,7 @@ exports.login = async (req, res, next) => {
       'somesupersecretsecret',
       { expiresIn: '1h' },
     );
-    res.status(200).json({ token: token, userId: loadedUser.id.toString() });
+    res.status(200).json(token);
   } catch (err) {
     if (!err.statusCode) {
       err.statusCode = 500;
