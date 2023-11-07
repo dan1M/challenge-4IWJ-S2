@@ -45,6 +45,7 @@ const {
           autofocus
           class="border p-2"
           size="30"
+          autocomplete="username"
         />
         <small class="error" v-if="validationErrors.email && email">
           {{ validationErrors.email }}
@@ -64,6 +65,7 @@ const {
           required
           class="border p-2"
           size="30"
+          autocomplete="current-password"
         />
         <small class="error" v-if="validationErrors.password && password">
           {{ validationErrors.password }}

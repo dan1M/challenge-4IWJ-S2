@@ -9,53 +9,57 @@ const password = ref('');
 const passwordConfirmation = ref('');
 const newsletter = ref(false);
 
-const emailSchema = z.string().email({
-  message: 'Email invalide',
+const initialFormData = {
+  firstname: '',
+  lastname: '',
+  email: '',
+  password: '',
+  passwordConfirmation: '',
+  newsletter: false,
+};
+
+const validationSchema = z.object({
+  firstname: z.string(),
+  lastname: z.string(),
+  email: z.string().email({
+    message: 'Email invalide',
+  }),
+  password: z
+    .string()
+    .regex(/[a-z]/, {
+      message: 'Il manque une minuscule',
+    })
+    .regex(/[A-Z]/, {
+      message: 'Il manque une majuscule',
+    })
+    .regex(/\d/, {
+      message: 'Il manque un chiffre',
+    })
+    .regex(/[^a-zA-Z0-9]/, {
+      message: 'Il manque un caractère spécial',
+    })
+    .min(12, {
+      message: '12 caractères minimum',
+    }),
+  passwordConfirmation: z
+    .string()
+    .regex(/[a-z]/, {
+      message: 'Il manque une minuscule',
+    })
+    .regex(/[A-Z]/, {
+      message: 'Il manque une majuscule',
+    })
+    .regex(/\d/, {
+      message: 'Il manque un chiffre',
+    })
+    .regex(/[^a-zA-Z0-9]/, {
+      message: 'Il manque un caractère spécial',
+    })
+    .min(12, {
+      message: '12 caractères minimum',
+    }),
+  newsletter: z.boolean(),
 });
-const passwordSchema = z
-  .string()
-  .regex(/[a-z]/, {
-    message: 'Il manque une minuscule',
-  })
-  .regex(/[A-Z]/, {
-    message: 'Il manque une majuscule',
-  })
-  .regex(/\d/, {
-    message: 'Il manque un chiffre',
-  })
-  .regex(/[^a-zA-Z0-9]/, {
-    message: 'Il manque un caractère spécial',
-  })
-  .min(12, {
-    message: '12 caractères minimum',
-  });
-
-const emailError = computed(() => {
-  if (email.value === '') {
-    return '';
-  }
-  const parsedEmail = emailSchema.safeParse(email.value);
-
-  if (parsedEmail.success) {
-    return '';
-  }
-
-  return parsedEmail.error.issues[0].message;
-});
-
-const passwordError = computed(() => {
-  if (password.value === '') {
-    return '';
-  }
-  const parsedPassword = passwordSchema.safeParse(password.value);
-
-  if (parsedPassword.success) {
-    return '';
-  }
-
-  return parsedPassword.error.issues[0].message;
-});
-
 const passwordConfirmationError = computed(() => {
   if (password.value !== passwordConfirmation.value) {
     return 'Les mots de passe ne correspondent pas';
