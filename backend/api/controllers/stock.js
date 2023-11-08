@@ -4,10 +4,7 @@ const Stock = require('../models/sql/stock.js');
 exports.findAll = async (req, res, next) => {
   try {
     const stocks = await Stock.findAll();
-    res.status(200).json({
-      message: 'Fetched stocks successfully.',
-      data: stocks,
-    });
+    res.status(200).json(stocks);
   } catch (err) {
     if (!err.statusCode) {
       err.statusCode = 500;
@@ -25,7 +22,7 @@ exports.findOne = async (req, res, next) => {
       error.statusCode = 404;
       throw error;
     }
-    res.status(200).json({ message: 'Stock fetched.', stock: stock });
+    res.status(200).json(stock);
   } catch (err) {
     if (!err.statusCode) {
       err.statusCode = 500;
@@ -35,19 +32,19 @@ exports.findOne = async (req, res, next) => {
 };
 
 exports.findStocksByProduct = async (req, res, next) => {
-  const productId = req.params.productId; 
+  const productId = req.params.productId;
   try {
     const stocks = await Stock.findAll({
       where: { product_id: productId },
     });
-    
+
     if (!stocks || stocks.length === 0) {
       const error = new Error('Could not find stocks for this product.');
       error.statusCode = 404;
       throw error;
     }
 
-    res.status(200).json({ message: 'stocks fetched.', stock: stocks });
+    res.status(200).json(stocks);
   } catch (err) {
     if (!err.statusCode) {
       err.statusCode = 500;
@@ -84,7 +81,7 @@ exports.create = async (req, res, next) => {
       price: price,
     });*/
 
-    res.status(201).json({ message: 'Stock created!', stock: stock });
+    res.status(201).json();
   } catch (err) {
     if (!err.statusCode) {
       err.statusCode = 500;
@@ -121,14 +118,7 @@ exports.update = async (req, res, next) => {
       size_id: size,
       color_id: color,
     });
-
-    /*await ProductMongo.updateOne({
-      title: title,
-      description: description,
-      price: price,
-    });*/
-
-    res.status(200).json({ message: 'Stock updated!', stock: stock });
+    res.status(200).json();
   } catch (err) {
     if (!err.statusCode) {
       err.statusCode = 500;
@@ -147,8 +137,7 @@ exports.delete = async (req, res, next) => {
       throw error;
     }
     await stock.destroy();
-    //await ProductMongo.deleteOne({ title: product.title });
-    res.status(200).json({ message: 'Deleted stock.', stock: stock });
+    res.status(204).json();
   } catch (err) {
     if (!err.statusCode) {
       err.statusCode = 500;

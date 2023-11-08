@@ -7,10 +7,7 @@ const e = require('express');
 exports.findAll = async (req, res, next) => {
   try {
     const categories = await Category.findAll();
-    res.status(200).json({
-      message: 'Fetched categories successfully.',
-      categories: categories,
-    });
+    res.status(200).json(categories);
   } catch (err) {
     if (!err.statusCode) {
       err.statusCode = 500;
@@ -37,7 +34,7 @@ exports.create = async (req, res, next) => {
       name: name,
     });
 
-    res.status(201).json({ message: 'Category created!', category: category });
+    res.status(201).json();
   } catch (err) {
     if (!err.statusCode) {
       err.statusCode = 500;
@@ -55,7 +52,7 @@ exports.findOne = async (req, res, next) => {
       error.statusCode = 404;
       throw error;
     }
-    res.status(200).json({ message: 'Category fetched.', category: category });
+    res.status(200).json(category);
   } catch (err) {
     if (!err.statusCode) {
       err.statusCode = 500;
@@ -76,7 +73,7 @@ exports.delete = async (req, res, next) => {
     await category.destroy();
     await CategoryMongo.deleteOne({ name: category.name });
 
-    res.status(200).json({ message: 'Deleted category.', category: category });
+    res.status(204).json();
   } catch (err) {
     if (!err.statusCode) {
       err.statusCode = 500;
@@ -105,7 +102,7 @@ exports.update = async (req, res, next) => {
     await category.update({ name: name });
     await CategoryMongo.updateOne({ name: name });
 
-    res.status(200).json({ message: 'Category updated!', category: category });
+    res.status(200).json();
   } catch (err) {
     if (!err.statusCode) {
       err.statusCode = 500;
