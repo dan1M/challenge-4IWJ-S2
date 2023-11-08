@@ -9,7 +9,7 @@ const isAuth = require('../middleware/is-auth');
 
 const router = express.Router();
 
-router.get('/', isAuth, productsController.findAll);
+router.get('/', productsController.findAll);
 
 router.get('/:productId', isAuth, productsController.findOne);
 
