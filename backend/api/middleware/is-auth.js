@@ -1,11 +1,12 @@
 const jwt = require('jsonwebtoken');
 
 module.exports = (req, res, next) => {
-  const token = req.cookies[process.env.JWT_NAME];
+  const token = req.signedCookies[process.env.JWT_NAME];
+  console.log(req);
   if (!token) return res.sendStatus(401);
   const user = jwt.verify(token, process.env.JWT_SECRET);
   if (!user) {
-    res.clearCookie('JWT');
+    res.clearCookie(process.env.JWT_NAME);
     return res.sendStatus(401);
   }
 
