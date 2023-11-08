@@ -1,7 +1,5 @@
 <script setup lang="ts"></script>
 
 <template>
-  <router-view></router-view>
+  <footer><p>footer</p></footer>
 </template>
-
-<style scoped></style>
