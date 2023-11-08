@@ -5,10 +5,7 @@ const ProductMongo = require('../models/nosql/product.js');
 exports.findAll = async (req, res, next) => {
   try {
     const products = await Product.findAll();
-    res.status(200).json({
-      message: 'Fetched products successfully.',
-      data: products,
-    });
+    res.status(200).json(products);
   } catch (err) {
     if (!err.statusCode) {
       err.statusCode = 500;
@@ -26,7 +23,7 @@ exports.findOne = async (req, res, next) => {
       error.statusCode = 404;
       throw error;
     }
-    res.status(200).json({ message: 'Product fetched.', product: product });
+    res.status(200).json(product);
   } catch (err) {
     if (!err.statusCode) {
       err.statusCode = 500;
@@ -63,7 +60,7 @@ exports.create = async (req, res, next) => {
       price: price,
     });
 
-    res.status(201).json({ message: 'Product created!', productId: product });
+    res.status(201).json();
   } catch (err) {
     if (!err.statusCode) {
       err.statusCode = 500;
@@ -107,7 +104,7 @@ exports.update = async (req, res, next) => {
       price: price,
     });
 
-    res.status(200).json({ message: 'Product updated!', product: product });
+    res.status(200).json();
   } catch (err) {
     if (!err.statusCode) {
       err.statusCode = 500;
@@ -127,7 +124,7 @@ exports.delete = async (req, res, next) => {
     }
     await product.destroy();
     await ProductMongo.deleteOne({ title: product.title });
-    res.status(200).json({ message: 'Deleted product.', product: product });
+    res.status(204).json();
   } catch (err) {
     if (!err.statusCode) {
       err.statusCode = 500;
