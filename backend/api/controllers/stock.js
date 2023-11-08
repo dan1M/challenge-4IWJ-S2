@@ -81,7 +81,7 @@ exports.create = async (req, res, next) => {
       price: price,
     });*/
 
-    res.status(201).json();
+    res.sendStatus(201);
   } catch (err) {
     if (!err.statusCode) {
       err.statusCode = 500;
@@ -118,7 +118,7 @@ exports.update = async (req, res, next) => {
       size_id: size,
       color_id: color,
     });
-    res.status(200).json();
+    res.sendStatus(200);
   } catch (err) {
     if (!err.statusCode) {
       err.statusCode = 500;
@@ -137,7 +137,7 @@ exports.delete = async (req, res, next) => {
       throw error;
     }
     await stock.destroy();
-    res.status(204).json();
+    res.sendStatus(204);
   } catch (err) {
     if (!err.statusCode) {
       err.statusCode = 500;

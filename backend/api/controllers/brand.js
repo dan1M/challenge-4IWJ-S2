@@ -32,7 +32,7 @@ exports.create = async (req, res, next) => {
     await BrandMongo.create({
       name: name,
     });
-    await res.status(201).json();
+    await res.sendStatus(201);
   } catch (err) {
     if (!err.statusCode) {
       err.statusCode = 500;
@@ -74,7 +74,7 @@ exports.delete = async (req, res, next) => {
     await brand.destroy();
     await BrandMongo.deleteOne({ name: brand.name });
 
-    res.status(204).json();
+    res.sendStatus(204);
   } catch (err) {
     if (!err.statusCode) {
       err.statusCode = 500;
@@ -104,7 +104,7 @@ exports.update = async (req, res, next) => {
     await brand.update({ name: name });
     await BrandMongo.updateOne({ name: name });
 
-    res.status(200).json();
+    res.sendStatus(200);
   } catch (err) {
     if (!err.statusCode) {
       err.statusCode = 500;

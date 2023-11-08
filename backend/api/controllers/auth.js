@@ -33,10 +33,10 @@ exports.signup = async (req, res, next) => {
       userId: user.id,
       token: jwt.sign(
         {
-          email: user.email,
-          userId: user.id.toString(),
+          name: `${user.firstname} ${user.lastname}`,
+          if: user.id.toString(),
         },
-        'somesupersecretsecret',
+        process.env.JWT_SECRET,
         { expiresIn: '1h' },
       ),
     });
@@ -62,7 +62,7 @@ exports.signup = async (req, res, next) => {
           if (err) {
             throw err;
           }
-          res.status(201).json();
+          res.sendStatus(201);
         });
       },
     );
@@ -94,7 +94,7 @@ exports.login = async (req, res, next) => {
     const user = await User.findOne({ where: { email: email } });
     if (!user) {
       const error = new Error('A user with this email could not be found.');
-      error.statusCode = 404;
+      error.statusCode = 401;
       throw error;
     }
     loadedUser = user;
@@ -135,13 +135,20 @@ exports.login = async (req, res, next) => {
 
     const token = jwt.sign(
       {
-        email: loadedUser.email,
-        userId: loadedUser.id.toString(),
+        name: `${loadedUser.firstname} ${loadedUser.lastname}`,
+        roles: loadedUser.roles,
+        id: loadedUser.id.toString(),
       },
-      'somesupersecretsecret',
-      { expiresIn: '1h' },
+      process.env.JWT_SECRET,
+      { expiresIn: '1m' },
     );
-    res.status(200).json(token);
+    res.sendStatus(200);
+    res.cookie('JWT', token, {
+      // secure: true,
+      signed: true,
+      httpOnly: true,
+    });
+    res.json(loadedUser);
   } catch (err) {
     if (!err.statusCode) {
       err.statusCode = 500;

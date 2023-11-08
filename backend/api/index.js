@@ -1,6 +1,7 @@
 require('dotenv').config();
 const express = require('express');
 const bodyParser = require('body-parser');
+const cookieParser = require('cookie-parser');
 
 const scheme = require('./util/scheme');
 const mailer = require('./util/mailer');
@@ -22,6 +23,7 @@ app.listen(port, () => {
 });
 
 app.use(bodyParser.json()); // application/json
+app.use(cookieParser(process.env.JWT_SECRET));
 
 app.use((req, res, next) => {
   res.setHeader('Access-Control-Allow-Origin', '*');
