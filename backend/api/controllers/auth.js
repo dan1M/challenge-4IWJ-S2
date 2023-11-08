@@ -84,7 +84,7 @@ exports.login = async (req, res, next) => {
     if (lockoutInfo && lockoutInfo.attempts >= 3) {
       const currentTime = new Date().getTime();
       const lastAttemptTime = lockoutInfo.lastAttempt.getTime();
-      const lockoutDuration = 30 * 60 * 1000; // 30 minutes in milliseconds
+      const lockoutDuration = 10 * 60 * 1000; // 10 minutes in milliseconds
       if (currentTime - lastAttemptTime < lockoutDuration) {
         const error = new Error('Account locked. Please try again later.');
         error.statusCode = 401;
@@ -140,15 +140,14 @@ exports.login = async (req, res, next) => {
         id: loadedUser.id.toString(),
       },
       process.env.JWT_SECRET,
-      { expiresIn: '1m' },
+      { expiresIn: '30d' },
     );
-    res.status(200);
+    res.sendStatus(200);
     res.cookie(process.env.JWT_NAME, token, {
       // secure: true,
       signed: true,
       httpOnly: true,
     });
-    res.json(loadedUser);
   } catch (err) {
     if (!err.statusCode) {
       err.statusCode = 500;

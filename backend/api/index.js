@@ -3,7 +3,6 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const cookieParser = require('cookie-parser');
 
-const scheme = require('./util/scheme');
 const mailer = require('./util/mailer');
 const authRoutes = require('./routes/auth');
 const productsRoutes = require('./routes/products');
