@@ -104,7 +104,7 @@ exports.update = async (req, res, next) => {
       price: price,
     });
 
-    res.status(200).json();
+    res.sendStatus(200);
   } catch (err) {
     if (!err.statusCode) {
       err.statusCode = 500;
@@ -124,7 +124,7 @@ exports.delete = async (req, res, next) => {
     }
     await product.destroy();
     await ProductMongo.deleteOne({ title: product.title });
-    res.status(204).json();
+    res.sendStatus(204);
   } catch (err) {
     if (!err.statusCode) {
       err.statusCode = 500;

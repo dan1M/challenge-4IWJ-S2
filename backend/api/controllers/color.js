@@ -33,7 +33,7 @@ exports.create = async (req, res, next) => {
       name: name,
     });
 
-    await res.status(201).json();
+    await res.sendStatus(201);
   } catch (err) {
     if (!err.statusCode) {
       err.statusCode = 500;
@@ -75,7 +75,7 @@ exports.delete = async (req, res, next) => {
     await color.destroy();
     //await ColorMongo.deleteOne({ name: color.name });
 
-    res.status(204).json();
+    res.sendStatus(204);
   } catch (err) {
     if (!err.statusCode) {
       err.statusCode = 500;
@@ -106,7 +106,7 @@ exports.update = async (req, res, next) => {
     await color.update({ name: name });
     await ColorMongo.updateOne({ name: name });
 
-    res.status(200).json();
+    res.sendStatus(200);
   } catch (err) {
     if (!err.statusCode) {
       err.statusCode = 500;

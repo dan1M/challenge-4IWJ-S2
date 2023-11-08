@@ -34,7 +34,7 @@ exports.create = async (req, res, next) => {
       name: name,
     });
 
-    res.status(201).json();
+    res.sendStatus(201);
   } catch (err) {
     if (!err.statusCode) {
       err.statusCode = 500;
@@ -73,7 +73,7 @@ exports.delete = async (req, res, next) => {
     await category.destroy();
     await CategoryMongo.deleteOne({ name: category.name });
 
-    res.status(204).json();
+    res.sendStatus(204);
   } catch (err) {
     if (!err.statusCode) {
       err.statusCode = 500;
@@ -102,7 +102,7 @@ exports.update = async (req, res, next) => {
     await category.update({ name: name });
     await CategoryMongo.updateOne({ name: name });
 
-    res.status(200).json();
+    res.sendStatus(200);
   } catch (err) {
     if (!err.statusCode) {
       err.statusCode = 500;
