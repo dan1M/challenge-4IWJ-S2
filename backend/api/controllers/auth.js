@@ -142,8 +142,8 @@ exports.login = async (req, res, next) => {
       process.env.JWT_SECRET,
       { expiresIn: '1m' },
     );
-    res.sendStatus(200);
-    res.cookie('JWT', token, {
+    res.status(200);
+    res.cookie(process.env.JWT_NAME, token, {
       // secure: true,
       signed: true,
       httpOnly: true,
