@@ -11,10 +11,7 @@ exports.findAll = async (req, res, next) => {
     const orders = await Order.findAll({
       include: [DetailsOrder],
     });
-    res.status(200).json({
-      message: 'Fetched orders successfully.',
-      data: orders,
-    });
+    res.status(200).json(orders);
   } catch (err) {
     if (!err.statusCode) {
       err.statusCode = 500;
@@ -32,7 +29,7 @@ exports.findOne = async (req, res, next) => {
       error.statusCode = 404;
       throw error;
     }
-    res.status(200).json({ message: 'Order fetched.', order: order });
+    res.status(200).json(order );
   } catch (err) {
     if (!err.statusCode) {
       err.statusCode = 500;
@@ -55,7 +52,7 @@ exports.findUserOrders = async (req, res, next) => {
       throw error;
     }
 
-    res.status(200).json({ message: 'orders fetched.', order: orders });
+    res.status(200).json(orders);
   } catch (err) {
     if (!err.statusCode) {
       err.statusCode = 500;
@@ -123,7 +120,7 @@ exports.delete = async (req, res, next) => {
     }
     await order.destroy();
     //await ProductMongo.deleteOne({ title: product.title });
-    res.status(200).json({ message: 'Deleted order.', oredr: order });
+    res.status(204).json();
   } catch (err) {
     if (!err.statusCode) {
       err.statusCode = 500;

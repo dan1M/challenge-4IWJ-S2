@@ -14,6 +14,14 @@ const Stock = sequelize.define('stock', {
     allowNull: true,
     defaultValue: 0,
   },
+},
+{
+  indexes: [
+      {
+          unique: true,
+          fields: ['product_id', 'size_id', 'color_id']
+      }
+  ]
 });
 
 module.exports = Stock;
