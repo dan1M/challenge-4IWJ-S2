@@ -10,10 +10,6 @@ module.exports = {
     './src/**/*.{ts,tsx,vue}',
   ],
   theme: {
-    colors: {
-      primary: '#5c6ac4',
-      'primary-foreground': 'hsl(0, 0%, 98%)',
-    },
     container: {
       center: true,
       padding: '2rem',
@@ -22,6 +18,21 @@ module.exports = {
       },
     },
     extend: {
+      colors: {
+        primary: {
+          50: '#fdf2f7',
+          100: '#fce7f1',
+          200: '#fbcfe4',
+          300: '#f8a9cd',
+          400: '#f373aa',
+          500: '#e93d82',
+          600: '#d92967',
+          700: '#bc1a4e',
+          800: '#9c1841',
+          900: '#821939',
+          950: '#4f081d',
+        },
+      },
       keyframes: {
         'accordion-down': {
           from: { height: 0 },

@@ -1,20 +1,28 @@
 import { createApp } from 'vue';
 import './style.css';
 import App from './App.vue';
-import { createRouter, createWebHistory } from 'vue-router';
+import { RouteRecordRaw, createRouter, createWebHistory } from 'vue-router';
+import DefaultLayout from './layouts/DefaultLayout.vue';
+import DashboardLayout from './layouts/DashboardLayout.vue';
 
 import HomePage from './pages/Home.vue';
 import AboutPage from './pages/About.vue';
-import UsersPage from './pages/Users.vue';
-import OneUserPage from './pages/OneUser.vue';
-import ProtectedPage from './pages/ProtectedRoute.vue';
 
-const routes = [
-  { path: '/', component: HomePage, name: 'home' },
-  { path: '/about', component: AboutPage, name: 'about' },
-  { path: '/protected', component: ProtectedPage, name: 'protected' },
-  { path: '/users', component: UsersPage, name: 'users' },
-  { path: '/users/:id', component: OneUserPage, name: 'user' },
+const routes: RouteRecordRaw[] = [
+  {
+    path: '/',
+    component: DefaultLayout,
+    name: 'default-layout',
+    children: [
+      { path: '/', name: 'home', component: HomePage },
+      { path: '/about', name: 'about', component: AboutPage },
+    ],
+  },
+  {
+    path: '/dashboard',
+    component: DashboardLayout,
+    name: 'dashboard-layout',
+  },
 ];
 
 export const router = createRouter({

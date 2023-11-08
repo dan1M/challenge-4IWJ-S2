@@ -1,4 +1,4 @@
-<script setup>
+<script setup lang="ts">
 import { router } from '../main';
 import { onMounted } from 'vue';
 

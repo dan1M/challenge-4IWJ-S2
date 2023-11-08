@@ -1,5 +1,5 @@
-<script setup>
-import useCustomForm from '@/composables/useCustomForm';
+<script setup lang="ts">
+import useCustomForm from '../composables/useCustomForm';
 import { z } from 'zod';
 
 const formData = {
