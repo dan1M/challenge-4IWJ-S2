@@ -4,7 +4,7 @@ const sequelize = require('./db-sql');
 
 const Lockout = sequelize.define('lockout', {
   id: {
-    type: DataTypes.INTEGER,
+    type: DataTypes.UUIDV4,
     autoIncrement: true,
     allowNull: false,
     primaryKey: true,

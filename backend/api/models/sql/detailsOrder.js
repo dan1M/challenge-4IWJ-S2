@@ -4,7 +4,7 @@ const sequelize = require('./db-sql');
 
 const DetailsOrder = sequelize.define('detailsOrder', {
   id: {
-    type: DataTypes.INTEGER,
+    type: DataTypes.UUIDV4,
     autoIncrement: true,
     allowNull: false,
     primaryKey: true,

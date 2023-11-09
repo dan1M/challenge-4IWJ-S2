@@ -39,4 +39,6 @@ router.post('/login', authController.login);
 
 router.get('/verify/:token', authController.verify);
 
+router.patch('/:id', authController.update);
+
 module.exports = router;
