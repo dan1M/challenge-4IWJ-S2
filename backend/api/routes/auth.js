@@ -46,8 +46,8 @@ router.patch('/:id', authController.update);
 
 router.delete('/:id', isAdmin, authController.delete);
 
-router.post('/password-reset', authController.passwordReset);
+router.post('/reset-password', authController.resetPassword);
 
-router.post('/password-reset/:userId/:token', authController.changePassword);
+router.post('/reset-password/:userId/:token', authController.changePassword);
 
 module.exports = router;

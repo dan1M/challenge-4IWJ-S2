@@ -142,12 +142,12 @@ exports.login = async (req, res, next) => {
       process.env.JWT_SECRET,
       { expiresIn: '30d' },
     );
-    res.sendStatus(200);
     res.cookie(process.env.JWT_NAME, token, {
       // secure: true,
       signed: true,
       httpOnly: true,
     });
+    res.sendStatus(200);
   } catch (err) {
     if (!err.statusCode) {
       err.statusCode = 500;
@@ -225,7 +225,7 @@ exports.delete = async (req, res, next) => {
   }
 };
 
-exports.passwordReset = async (req, res, next) => {
+exports.resetPassword = async (req, res, next) => {
   try {
     const user = await User.findOne({
       where: {
@@ -259,7 +259,7 @@ exports.passwordReset = async (req, res, next) => {
     ejs.renderFile(
       '/app/assets/template/template-account-confirmation.ejs',
       {
-        link: `${process.env.HOST}/auth/password-reset/${user.id}/${token.token}`,
+        link: `${process.env.HOST}/auth/reset-password/${user.id}/${token.token}`,
       },
       (err, html) => {
         if (err) {
