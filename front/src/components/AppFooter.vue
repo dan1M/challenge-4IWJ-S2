@@ -1,4 +1,11 @@
 <script setup lang="ts">
+import {
+  DropdownMenu,
+  DropdownMenuTrigger,
+  DropdownMenuContent,
+  DropdownMenuItem,
+} from '@/components/ui/dropdown-menu';
+import { Button } from '@/components/ui/button';
 import { Facebook, Instagram, Twitter } from 'lucide-vue-next';
 </script>
 
@@ -75,7 +82,25 @@ import { Facebook, Instagram, Twitter } from 'lucide-vue-next';
             </ul>
           </div>
         </div>
-        <div class="max-w-xs">
+        <div class="flex flex-col justify-between max-w-xs">
+          <DropdownMenu>
+            <DropdownMenuTrigger as-child>
+              <Button variant="outline" class="w-fit self-end">
+                <img src="../assets/fr.png" alt="" width="20" class="mr-2" />
+                <span>Français</span>
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent>
+              <DropdownMenuItem @click="" class="cursor-pointer">
+                <img src="../assets/fr.png" alt="" width="20" class="mr-2" />
+                <span>Français</span>
+              </DropdownMenuItem>
+              <DropdownMenuItem @click="" class="cursor-pointer">
+                <img src="../assets/uk.png" alt="" width="20" class="mr-2" />
+                <span>English</span>
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
           <img
             src="../assets/paiement-securise-garanti.png"
             alt=""
