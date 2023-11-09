@@ -1,27 +1,40 @@
+const { v4: uuidv4 } = require('uuid');
+
 const { DataTypes } = require('sequelize');
 
 const sequelize = require('./db-sql');
 
-const Lockout = sequelize.define('lockout', {
-  id: {
-    type: DataTypes.UUIDV4,
-    autoIncrement: true,
-    allowNull: false,
-    primaryKey: true,
+const Lockout = sequelize.define(
+  'lockout',
+  {
+    id: {
+      type: DataTypes.UUID,
+      allowNull: false,
+      primaryKey: true,
+    },
+    email: {
+      type: DataTypes.STRING,
+      allowNull: false,
+      unique: true,
+    },
+    lastAttempt: {
+      type: DataTypes.DATE,
+      allowNull: true,
+    },
+    attempts: {
+      type: DataTypes.INTEGER,
+      allowNull: true,
+    },
   },
-  email: {
-    type: DataTypes.STRING,
-    allowNull: false,
-    unique: true,
+  {
+    hooks: {
+      beforeValidate: (lockout, options) => {
+        console.log('Before Create Hook');
+        lockout.id = uuidv4();
+        console.log('Generated ID:', lockout.id);
+      },
+    },
   },
-  lastAttempt: {
-    type: DataTypes.DATE,
-    allowNull: true,
-  },
-  attempts: {
-    type: DataTypes.INTEGER,
-    allowNull: true,
-  },
-});
+);
 
 module.exports = Lockout;

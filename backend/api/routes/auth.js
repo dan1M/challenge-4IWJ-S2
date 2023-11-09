@@ -41,4 +41,6 @@ router.get('/verify/:token', authController.verify);
 
 router.patch('/:id', authController.update);
 
+router.delete('/:id', authController.delete);
+
 module.exports = router;

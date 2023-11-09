@@ -43,4 +43,4 @@ DetailsOrder.belongsTo(Order, {
   foreignKey: 'order_id',
 });
 
-sequelize.sync({ alter: true });
+sequelize.sync({ force: true });

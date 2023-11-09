@@ -2,14 +2,26 @@ const { DataTypes } = require('sequelize');
 
 const sequelize = require('./db-sql');
 
-const Size = sequelize.define('size', {
-  id: {
-    type: DataTypes.UUIDV4,
-    autoIncrement: true,
-    allowNull: false,
-    primaryKey: true,
+const Size = sequelize.define(
+  'size',
+  {
+    id: {
+      type: DataTypes.UUID,
+
+      allowNull: false,
+      primaryKey: true,
+    },
+    name: DataTypes.STRING,
   },
-  name: DataTypes.STRING,
-});
+  {
+    hooks: {
+      beforeValidate: (size, options) => {
+        console.log('Before Create Hook');
+        size.id = uuidv4();
+        console.log('Generated ID:', size.id);
+      },
+    },
+  },
+);
 
 module.exports = Size;
