@@ -3,9 +3,9 @@ const Color = require('../models/sql/color');
 const ColorMongo = require('../models/nosql/color');
 const { modelNames } = require('mongoose');
 
-exports.getAll = async (req, res, next) => {
+exports.findAll = async (req, res, next) => {
   try {
-    const colors = await Color.findAll();
+    const colors = await ColorMongo.find();
     res.status(200).json(colors);
   } catch (err) {
     if (!err.statusCode) {
@@ -33,7 +33,7 @@ exports.create = async (req, res, next) => {
       name: name,
     });
 
-    await res.status(201).json();
+    await res.sendStatus(201);
   } catch (err) {
     if (!err.statusCode) {
       err.statusCode = 500;
@@ -48,7 +48,7 @@ exports.findOne = async (req, res, next) => {
   const colorId = req.params.colorId;
   // Utilisez 'findById' de mongoose
   try {
-    const color = await Color.findByPk(colorId);
+    const color = await ColorMongo.findById(colorId);
     if (!color) {
       const error = new Error('Could not find color.');
       error.statusCode = 404;
@@ -75,7 +75,7 @@ exports.delete = async (req, res, next) => {
     await color.destroy();
     //await ColorMongo.deleteOne({ name: color.name });
 
-    res.status(204).json();
+    res.sendStatus(204);
   } catch (err) {
     if (!err.statusCode) {
       err.statusCode = 500;
@@ -104,9 +104,9 @@ exports.update = async (req, res, next) => {
     }
 
     await color.update({ name: name });
-    await ColorMongo.updateOne({ name: name });
+    const colorMongo = await ColorMongo.updateOne({ name: name });
 
-    res.status(200).json();
+    res.status(200).json(colorMongo);
   } catch (err) {
     if (!err.statusCode) {
       err.statusCode = 500;

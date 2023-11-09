@@ -8,7 +8,7 @@ const sizeController = require('../controllers/size');
 
 const router = express.Router();
 
-router.get('/', sizeController.getAll);
+router.get('/', sizeController.findAll);
 
 // POST /example
 router.post(

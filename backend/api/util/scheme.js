@@ -16,33 +16,30 @@ const Size = require('../models/sql/size');
 const Color = require('../models/sql/color');
 const Stock = require('../models/sql/stock');
 
-
 Token.belongsTo(User);
 
 // Stock relations
 Stock.belongsTo(Product, {
-    foreignKey: 'product_id',
-  });
-  Stock.belongsTo(Size, {
-    foreignKey: 'size_id',
-  });
-  Stock.belongsTo(Color, {
-    foreignKey: 'color_id',
-  });
+  foreignKey: 'product_id',
+});
+Stock.belongsTo(Size, {
+  foreignKey: 'size_id',
+});
+Stock.belongsTo(Color, {
+  foreignKey: 'color_id',
+});
 
 // Order relation
 Order.belongsTo(User, {
-    foreignKey: 'user_id'
+  foreignKey: 'user_id',
 });
 
 // detailsOrder relations
 DetailsOrder.belongsTo(Product, {
-    foreignKey: 'product_id'
-})
+  foreignKey: 'product_id',
+});
 DetailsOrder.belongsTo(Order, {
-    foreignKey: 'order_id'
-})
-
-
+  foreignKey: 'order_id',
+});
 
 //sequelize.sync({ force: true });

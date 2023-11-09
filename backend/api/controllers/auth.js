@@ -33,10 +33,10 @@ exports.signup = async (req, res, next) => {
       userId: user.id,
       token: jwt.sign(
         {
-          email: user.email,
-          userId: user.id.toString(),
+          name: `${user.firstname} ${user.lastname}`,
+          id: user.id,
         },
-        'somesupersecretsecret',
+        process.env.JWT_SECRET,
         { expiresIn: '1h' },
       ),
     });
@@ -62,7 +62,7 @@ exports.signup = async (req, res, next) => {
           if (err) {
             throw err;
           }
-          res.status(201).json();
+          res.sendStatus(201);
         });
       },
     );
@@ -84,7 +84,7 @@ exports.login = async (req, res, next) => {
     if (lockoutInfo && lockoutInfo.attempts >= 3) {
       const currentTime = new Date().getTime();
       const lastAttemptTime = lockoutInfo.lastAttempt.getTime();
-      const lockoutDuration = 30 * 60 * 1000; // 30 minutes in milliseconds
+      const lockoutDuration = 10 * 60 * 1000; // 10 minutes in milliseconds
       if (currentTime - lastAttemptTime < lockoutDuration) {
         const error = new Error('Account locked. Please try again later.');
         error.statusCode = 401;
@@ -94,7 +94,7 @@ exports.login = async (req, res, next) => {
     const user = await User.findOne({ where: { email: email } });
     if (!user) {
       const error = new Error('A user with this email could not be found.');
-      error.statusCode = 404;
+      error.statusCode = 401;
       throw error;
     }
     loadedUser = user;
@@ -135,13 +135,19 @@ exports.login = async (req, res, next) => {
 
     const token = jwt.sign(
       {
-        email: loadedUser.email,
-        userId: loadedUser.id.toString(),
+        name: `${loadedUser.firstname} ${loadedUser.lastname}`,
+        roles: loadedUser.roles,
+        id: loadedUser.id.toString(),
       },
-      'somesupersecretsecret',
-      { expiresIn: '1h' },
+      process.env.JWT_SECRET,
+      { expiresIn: '30d' },
     );
-    res.status(200).json(token);
+    res.cookie(process.env.JWT_NAME, token, {
+      // secure: true,
+      signed: true,
+      httpOnly: true,
+    });
+    res.sendStatus(200);
   } catch (err) {
     if (!err.statusCode) {
       err.statusCode = 500;
@@ -171,7 +177,145 @@ exports.verify = async (req, res, next) => {
       },
     );
     await token.destroy();
-    res.send('Email verified sucessfully!');
+    res.status(200).send('Email verified sucessfully!');
+  } catch (err) {
+    if (!err.statusCode) {
+      err.statusCode = 500;
+    }
+    next(err);
+  }
+};
+
+exports.update = async (req, res, next) => {
+  try {
+    const user = await User.update(req.body, {
+      where: {
+        id: req.params.id,
+      },
+    });
+    if (!user) {
+      const error = new Error('Could not find user.');
+      error.statusCode = 404;
+      throw error;
+    }
+    res.status(200).json(user);
+  } catch (err) {
+    if (!err.statusCode) {
+      err.statusCode = 500;
+    }
+    next(err);
+  }
+};
+
+exports.delete = async (req, res, next) => {
+  try {
+    const user = await User.findByPk(req.params.id);
+    if (!user) {
+      const error = new Error('Could not find user.');
+      error.statusCode = 404;
+      throw error;
+    }
+    await user.destroy();
+    res.sendStatus(204);
+  } catch (err) {
+    if (!err.statusCode) {
+      err.statusCode = 500;
+    }
+    next(err);
+  }
+};
+
+exports.resetPassword = async (req, res, next) => {
+  try {
+    const user = await User.findOne({
+      where: {
+        email: req.body.email,
+      },
+    });
+    if (!user) {
+      const error = new Error('Could not find user.');
+      error.statusCode = 404;
+      throw error;
+    }
+    const token = await Token.findOne({
+      where: {
+        userId: user.id,
+      },
+    });
+    if (!token) {
+      token = await Token.create({
+        userId: user.id,
+        token: jwt.sign(
+          {
+            name: `${user.firstname} ${user.lastname}`,
+            id: user.id,
+          },
+          process.env.JWT_SECRET,
+          { expiresIn: '1h' },
+        ),
+      });
+    }
+
+    ejs.renderFile(
+      '/app/assets/template/template-account-confirmation.ejs',
+      {
+        link: `${process.env.HOST}/auth/reset-password/${user.id}/${token.token}`,
+      },
+      (err, html) => {
+        if (err) {
+          throw err;
+        }
+        const mailOptions = {
+          from: 'challenge.s2@server.com',
+          to: user.email,
+          subject: 'Password reset',
+          html: html,
+        };
+        transporter.sendMail(mailOptions, err => {
+          if (err) {
+            throw err;
+          }
+          res.sendStatus(200);
+        });
+      },
+    );
+  } catch (err) {
+    if (!err.statusCode) {
+      err.statusCode = 500;
+    }
+    next(err);
+  }
+};
+
+exports.changePassword = async (req, res, next) => {
+  try {
+    const user = await User.findByPk(req.params.userId);
+    if (!user) {
+      const error = new Error('Could not find user.');
+      error.statusCode = 404;
+      throw error;
+    }
+    const token = await Token.findOne({
+      where: {
+        userId: user.id,
+      },
+    });
+    if (!token) {
+      const error = new Error('Could not find token.');
+      error.statusCode = 404;
+      throw error;
+    }
+    const hashedPw = await bcrypt.hash(req.body.password, 12);
+    await User.update(
+      { password: hashedPw },
+      {
+        where: {
+          id: user.id,
+        },
+      },
+    );
+    await token.destroy();
+    res.send('password reset sucessfully.');
   } catch (err) {
     if (!err.statusCode) {
       err.statusCode = 500;
