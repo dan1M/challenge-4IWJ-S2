@@ -6,7 +6,7 @@ const e = require('express');
 
 exports.findAll = async (req, res, next) => {
   try {
-    const categories = await Category.findAll();
+    const categories = await CategoryMongo.find();
     res.status(200).json(categories);
   } catch (err) {
     if (!err.statusCode) {
@@ -30,11 +30,11 @@ exports.create = async (req, res, next) => {
       name: name,
     });
 
-    await CategoryMongo.create({
+    const categoryMongo = await CategoryMongo.create({
       name: name,
     });
 
-    res.sendStatus(201);
+    res.status(201).json(categoryMongo);
   } catch (err) {
     if (!err.statusCode) {
       err.statusCode = 500;
@@ -46,7 +46,7 @@ exports.create = async (req, res, next) => {
 exports.findOne = async (req, res, next) => {
   const categoryId = req.params.categoryId;
   try {
-    const category = await Category.findByPk(categoryId);
+    const category = await CategoryMongo.findById(categoryId);
     if (!category) {
       const error = new Error('Could not find category.');
       error.statusCode = 404;
@@ -100,9 +100,9 @@ exports.update = async (req, res, next) => {
     }
     const name = req.body.name;
     await category.update({ name: name });
-    await CategoryMongo.updateOne({ name: name });
+    const categoryMongo = await CategoryMongo.updateOne({ name: name });
 
-    res.sendStatus(200);
+    res.status(200).json(categoryMongo);
   } catch (err) {
     if (!err.statusCode) {
       err.statusCode = 500;

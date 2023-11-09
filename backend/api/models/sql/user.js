@@ -4,7 +4,7 @@ const sequelize = require('../../util/db-sql');
 
 const User = sequelize.define('user', {
   id: {
-    type: DataTypes.INTEGER,
+    type: DataTypes.UUIDV4,
     autoIncrement: true,
     allowNull: false,
     primaryKey: true,
@@ -29,7 +29,7 @@ const User = sequelize.define('user', {
   active: {
     type: DataTypes.BOOLEAN,
     allowNull: true,
-    defaultValue: false
+    defaultValue: false,
   },
   roles: {
     type: DataTypes.ARRAY(DataTypes.STRING),

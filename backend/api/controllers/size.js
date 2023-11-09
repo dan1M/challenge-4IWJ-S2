@@ -3,9 +3,9 @@ const Size = require('../models/sql/size');
 const SizeMongo = require('../models/nosql/size');
 const { modelNames } = require('mongoose');
 
-exports.getAll = async (req, res, next) => {
+exports.findAll = async (req, res, next) => {
   try {
-    const sizes = await Size.findAll();
+    const sizes = await SizeMongo.find();
     res.status(200).json(sizes);
   } catch (err) {
     if (!err.statusCode) {
@@ -48,7 +48,7 @@ exports.findOne = async (req, res, next) => {
   const sizeId = req.params.sizeId;
   // Utilisez 'findById' de mongoose
   try {
-    const size = await Size.findByPk(sizeId);
+    const size = await SizeMongo.findById(sizeId);
     if (!size) {
       const error = new Error('Could not find size.');
       error.statusCode = 404;
@@ -104,9 +104,9 @@ exports.update = async (req, res, next) => {
     }
 
     await size.update({ name: name });
-    await SizeMongo.updateOne({ name: name });
+    const sizeMongo = await SizeMongo.updateOne({ name: name });
 
-    res.sendStatus(200);
+    res.status(200).json(sizeMongo);
   } catch (err) {
     if (!err.statusCode) {
       err.statusCode = 500;
