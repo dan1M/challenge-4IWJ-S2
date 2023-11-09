@@ -1,6 +1,17 @@
 <script setup lang="ts">
 import Logo from './BrandLogo.vue';
 import BurgerSvg from '@/components/icons/burger-svg.vue';
+import { LogOut, Store, User } from 'lucide-vue-next';
+import { Avatar, AvatarImage } from '@/components/ui/avatar';
+import {
+  DropdownMenu,
+  DropdownMenuTrigger,
+  DropdownMenuContent,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuItem,
+} from '@/components/ui/dropdown-menu';
+
 const navLinks = [
   { name: 'Chaussures Femme', routeName: 'products' },
   { name: 'Chaussures en promo', routeName: 'products' },
@@ -11,38 +22,46 @@ const navLinks = [
 <template>
   <header>
     <nav class="bg-white border-gray-200 px-4 lg:px-6 py-2.5">
-      <div
-        class="flex flex-wrap justify-between items-center mx-auto max-w-screen-xl"
-      >
+      <div class="flex flex-wrap justify-between items-center mx-auto">
         <Logo />
-        <div class="relative hidden md:block">
-          <div
-            class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none"
-          >
-            <vIcon name="hi-search" />
-          </div>
-          <input
-            type="text"
-            id="search-navbar"
-            class="block p-2 pl-10 text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-blue-500 focus:border-blue-500"
-            placeholder="Rechercher..."
-          />
-        </div>
-
         <div class="flex items-center lg:order-2">
-          <a
-            href="#"
+          <!-- Check user is set (connected) -->
+          <DropdownMenu v-if="false">
+            <DropdownMenuTrigger as-child>
+              <Avatar class="border mr-4" as="button">
+                <AvatarImage src="/vite.svg" alt="Avatar Utilisateur" />
+              </Avatar>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent>
+              <DropdownMenuLabel>Nom prénom</DropdownMenuLabel>
+              <DropdownMenuSeparator />
+              <DropdownMenuItem>
+                <User class="mr-2 h-4 w-4" />
+                <span>Mon compte</span>
+              </DropdownMenuItem>
+              <DropdownMenuItem>
+                <Store class="mr-2 h-4 w-4" />
+                <span>Dashboard Admin</span>
+              </DropdownMenuItem>
+              <DropdownMenuItem>
+                <LogOut class="mr-2 h-4 w-4 text-red-500" />
+                <span class="text-red-500">Se déconnecter</span>
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
+          <router-link
+            to="#"
             class="text-gray-800 flex flex-col items-center hover:bg-gray-50 focus:ring-4 focus:ring-gray-300 font-medium rounded-lg text-sm px-4 lg:px-5 py-2 lg:py-2.5 mr-2 focus:outline-none"
           >
             Se connecter
-          </a>
-          <a
-            href="#"
+          </router-link>
+          <router-link
+            to="#"
             class="text-gray-800 flex flex-col items-center hover:bg-gray-50 focus:ring-4 focus:ring-gray-300 font-medium rounded-lg text-xs px-4 lg:px-5 py-2 lg:py-2.5 focus:outline-none"
           >
             <vIcon name="bi-bag" scale="2" />
             <span>Panier</span>
-          </a>
+          </router-link>
           <button
             data-collapse-toggle="mobile-menu-2"
             type="button"
@@ -64,7 +83,7 @@ const navLinks = [
             <li v-for="link in navLinks" :key="link.name">
               <router-link
                 :to="{ name: link.routeName }"
-                class="block py-2 pr-4 pl-3 text-gray-700 border-b border-gray-100 hover:bg-gray-50 lg:hover:bg-transparent lg:border-0 lg:hover:text-primary-700 lg:p-0"
+                class="block py-2 pr-4 pl-3 text-gray-700 font-bold uppercase tracking-wide border-b border-gray-100 hover:bg-gray-50 lg:hover:bg-transparent lg:border-0 lg:hover:text-primary-700 lg:p-0"
               >
                 {{ link.name }}
               </router-link>
