@@ -8,7 +8,7 @@ const colorController = require('../controllers/color');
 
 const router = express.Router();
 
-router.get('/', colorController.getAll);
+router.get('/', colorController.findAll);
 
 // POST /example
 router.post(

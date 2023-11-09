@@ -1,10 +1,10 @@
 const { DataTypes } = require('sequelize');
 
-const sequelize = require('../../util/db-sql');
+const sequelize = require('./db-sql');
 
 const Size = sequelize.define('size', {
   id: {
-    type: DataTypes.INTEGER,
+    type: DataTypes.UUIDV4,
     autoIncrement: true,
     allowNull: false,
     primaryKey: true,

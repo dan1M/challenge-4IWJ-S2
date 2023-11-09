@@ -5,11 +5,11 @@ const Stock = require('../models/sql/stock.js');
 const Category = require('../models/sql/category');
 const Size = require('../models/sql/size.js');
 const Color = require('../models/sql/color.js');
-const {Types} = require('mongoose');
+const { Types } = require('mongoose');
 
 exports.findAll = async (req, res, next) => {
   try {
-    const products = await Product.findAll();
+    const products = await ProductMongo.find();
     res.status(200).json(products);
   } catch (err) {
     if (!err.statusCode) {
@@ -22,7 +22,7 @@ exports.findAll = async (req, res, next) => {
 exports.findOne = async (req, res, next) => {
   const productId = req.params.productId;
   try {
-    const product = await Product.findByPk(productId);
+    const product = await ProductMongo.findById(productId);
     if (!product) {
       const error = new Error('Could not find product.');
       error.statusCode = 404;
@@ -85,11 +85,11 @@ exports.create = async (req, res, next) => {
         price: productVariant.price,
         size: {
           id: size.id,
-          name: size.name
+          name: size.name,
         },
         color: {
           id: color.id,
-          name: color.name
+          name: color.name,
         },
       });
     }
@@ -102,7 +102,7 @@ exports.create = async (req, res, next) => {
       variants: variants,
     });
 
-    res.status(201).json();
+    res.status(201).json(productMongo);
   } catch (err) {
     if (!err.statusCode) {
       err.statusCode = 500;
@@ -140,13 +140,13 @@ exports.update = async (req, res, next) => {
       stock: stock,
     });
 
-    await ProductMongo.updateOne({
+    const productMongo = await ProductMongo.updateOne({
       title: title,
       description: description,
       price: price,
     });
 
-    res.sendStatus(200);
+    res.status(200).json(productMongo);
   } catch (err) {
     if (!err.statusCode) {
       err.statusCode = 500;
