@@ -3,9 +3,6 @@ import './style.css';
 import App from './App.vue';
 import { RouteRecordRaw, createRouter, createWebHistory } from 'vue-router';
 
-import { OhVueIcon, addIcons } from 'oh-vue-icons';
-import { BiBag, HiSearch } from 'oh-vue-icons/icons';
-
 import DefaultLayout from './layouts/DefaultLayout.vue';
 import DashboardLayout from './layouts/DashboardLayout.vue';
 
@@ -36,12 +33,8 @@ export const router = createRouter({
   routes,
 });
 
-addIcons(BiBag, HiSearch);
-
 const app = createApp(App);
 
 app.use(router);
-
-app.component('vIcon', OhVueIcon);
 
 app.mount('#app');

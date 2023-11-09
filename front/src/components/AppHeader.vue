@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import Logo from './BrandLogo.vue';
-import BurgerSvg from '@/components/icons/burger-svg.vue';
-import { LogOut, Store, User } from 'lucide-vue-next';
+import { LogOut, Store, User, ShoppingCart, Menu } from 'lucide-vue-next';
 import { Avatar, AvatarImage } from '@/components/ui/avatar';
 import {
   DropdownMenu,
@@ -57,9 +56,9 @@ const navLinks = [
           </router-link>
           <router-link
             to="#"
-            class="text-gray-800 flex flex-col items-center hover:bg-gray-50 focus:ring-4 focus:ring-gray-300 font-medium rounded-lg text-xs px-4 lg:px-5 py-2 lg:py-2.5 focus:outline-none"
+            class="text-gray-800 flex flex-col justify-center items-center hover:bg-gray-50 focus:ring-4 focus:ring-gray-300 font-medium rounded-lg text-xs px-4 lg:px-5 py-2 lg:py-2.5 focus:outline-none"
           >
-            <vIcon name="bi-bag" scale="2" />
+            <ShoppingCart :size="36" />
             <span>Panier</span>
           </router-link>
           <button
@@ -70,7 +69,7 @@ const navLinks = [
             aria-expanded="false"
           >
             <span class="sr-only">Open main menu</span>
-            <BurgerSvg />
+            <Menu />
           </button>
         </div>
         <div

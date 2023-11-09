@@ -1,9 +1,13 @@
+<script setup lang="ts">
+import { Search } from 'lucide-vue-next';
+</script>
+
 <template>
   <div class="relative hidden md:block">
     <div
       class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none"
     >
-      <vIcon name="hi-search" />
+      <Search :size="20" color="grey" />
     </div>
     <input
       type="text"
