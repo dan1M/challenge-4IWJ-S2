@@ -1,7 +1,10 @@
 const express = require('express');
 const { body } = require('express-validator/check');
 
+const isAdmin = require('../middleware/is-admin');
+
 const User = require('../models/sql/user');
+
 const authController = require('../controllers/auth');
 
 const router = express.Router();
@@ -41,6 +44,10 @@ router.get('/verify/:token', authController.verify);
 
 router.patch('/:id', authController.update);
 
-router.delete('/:id', authController.delete);
+router.delete('/:id', isAdmin, authController.delete);
+
+router.post('/password-reset', authController.passwordReset);
+
+router.post('/password-reset/:userId/:token', authController.changePassword);
 
 module.exports = router;
