@@ -190,7 +190,7 @@ exports.update = async (req, res, next) => {
   try {
     const user = await User.update(req.body, {
       where: {
-        id: parseInt(req.params.id),
+        id: req.params.id,
       },
     });
     if (!user) {
