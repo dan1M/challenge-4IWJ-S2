@@ -18,6 +18,10 @@ const Stock = require('../models/sql/stock');
 
 Token.belongsTo(User);
 
+Product.belongsTo(Category, {
+  foreignKey: 'category_id',
+});
+
 // Stock relations
 Stock.belongsTo(Product, {
   foreignKey: 'product_id',

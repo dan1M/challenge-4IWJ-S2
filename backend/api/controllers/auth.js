@@ -140,7 +140,7 @@ exports.login = async (req, res, next) => {
         id: loadedUser.id.toString(),
       },
       process.env.JWT_SECRET,
-      { expiresIn: '1m' },
+      { expiresIn: '30d' },
     );
     res.status(200);
     res.cookie(process.env.JWT_NAME, token, {

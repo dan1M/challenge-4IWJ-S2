@@ -7,6 +7,10 @@ const Product = require('../models/sql/product');
 
 const isAuth = require('../middleware/is-auth');
 
+const Category = require('../models/sql/category');
+const Color = require('../models/sql/color');
+const Size = require('../models/sql/size');
+
 const router = express.Router();
 
 router.get('/', isAuth, productsController.findAll);
@@ -25,12 +29,35 @@ router.post(
           where: { title: value },
         });
         if (existingProduct) {
-          throw new Error(`Product '${existingProduct.name}' already exists.`);
+          throw new Error(`Product '${existingProduct.title}' already exists.`);
         }
       }),
     body('description').trim(),
-    body('price').isFloat({ gt: 0 }),
-    body('stock').optional().isInt({ gt: -1 }),
+    body('category')
+      .isInt()
+      .custom(async value => {
+        const existingCategory = await Category.findByPk(value);
+        if (!existingCategory) {
+          throw new Error('Could not find category.');
+        }
+      }),
+    body('variants').isArray(),
+    body('variants.*.size')
+      .isInt()
+      .custom(async value => {
+        const existingSize = await Size.findByPk(value);
+        if (!existingSize) {
+          throw new Error('Could not find size.');
+        }
+      }),
+    body('variants.*.colors.*.color')
+      .isInt()
+      .custom(async value => {
+        const existingColor = await Color.findByPk(value);
+        if (!existingColor) {
+          throw new Error('Could not find color.');
+        }
+      }),
   ],
   productsController.create,
 );
@@ -41,8 +68,6 @@ router.put(
   [
     body('title').optional().trim().isLength({ min: 2 }),
     body('description').optional().trim(),
-    body('price').optional().isFloat({ gt: 0 }),
-    body('stock').optional().isInt({ gt: -1 }),
   ],
   productsController.update,
 );
