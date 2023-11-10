@@ -1,4 +1,14 @@
-<script setup lang="ts"></script>
+<script setup lang="ts">
+import { FwbCarousel } from 'flowbite-vue';
+import { reactive } from 'vue';
+import { useFetch } from '@vueuse/core';
+
+const pictures = reactive([
+  // { src: '/vite.svg', alt: 'Image 1' },
+]);
+
+// useFetch('');
+</script>
 <template>
-  <h1 class="text-primary-500">ACCUEIL</h1>
+  <FwbCarousel :pictures="pictures" slide />
 </template>

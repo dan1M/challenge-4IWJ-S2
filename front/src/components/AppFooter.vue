@@ -17,7 +17,6 @@ const { actualLanguage } = storeToRefs(useUserStore());
 <template>
   <footer class="p-4 bg-white sm:p-6">
     <div class="mx-auto">
-      <hr class="my-6 border-gray-200 sm:mx-auto lg:my-8" />
       <div class="md:flex md:justify-between">
         <div class="md:flex md:space-x-12 space-y-8 md:space-y-0">
           <div>
