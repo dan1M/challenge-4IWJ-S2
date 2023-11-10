@@ -1,6 +1,6 @@
 require('dotenv').config();
 
-require('./models/sql/db-sql');
+const sequelize = require('./models/sql/db-sql');
 require('./models/nosql/db-nosql');
 
 const User = require('./models/sql/user');
