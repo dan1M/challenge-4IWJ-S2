@@ -2,12 +2,13 @@ import { createApp } from 'vue';
 import './style.css';
 import App from './App.vue';
 import { RouteRecordRaw, createRouter, createWebHistory } from 'vue-router';
+
 import DefaultLayout from './layouts/DefaultLayout.vue';
 import DashboardLayout from './layouts/DashboardLayout.vue';
 
 import HomePage from './pages/Home.vue';
 import AboutPage from './pages/About.vue';
-import AuthPage from './pages/Auth.vue';
+import ProductsPage from './pages/Products.vue';
 
 const routes: RouteRecordRaw[] = [
   {
@@ -17,7 +18,7 @@ const routes: RouteRecordRaw[] = [
     children: [
       { path: '/', name: 'home', component: HomePage },
       { path: '/about', name: 'about', component: AboutPage },
-      { path: '/auth', name: 'auth', component: AuthPage },
+      { path: '/products', name: 'products', component: ProductsPage },
     ],
   },
   {
