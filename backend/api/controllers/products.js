@@ -4,7 +4,7 @@ const ProductMongo = require('../models/nosql/product.js');
 
 exports.findAll = async (req, res, next) => {
   try {
-    const products = await ProductMongo.find();
+    const products = await ProductMongo.find({});
     res.status(200).json(products);
   } catch (err) {
     if (!err.statusCode) {
