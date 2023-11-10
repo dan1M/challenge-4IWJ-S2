@@ -8,6 +8,8 @@ module.exports = {
     './components/**/*.{ts,tsx,vue}',
     './app/**/*.{ts,tsx,vue}',
     './src/**/*.{ts,tsx,vue}',
+    'node_modules/flowbite-vue/**/*.{js,jsx,ts,tsx}',
+    'node_modules/flowbite/**/*.{js,jsx,ts,tsx}',
   ],
   theme: {
     container: {
@@ -49,5 +51,5 @@ module.exports = {
       },
     },
   },
-  plugins: [animate],
+  plugins: [animate, require('flowbite/plugin')],
 };

@@ -7,6 +7,11 @@ import {
 } from '@/components/ui/dropdown-menu';
 import { Button } from '@/components/ui/button';
 import { Facebook, Instagram, Twitter } from 'lucide-vue-next';
+import { useUserStore, LANGUAGES } from '@/stores/user-store';
+import { storeToRefs } from 'pinia';
+
+const { updateLanguage } = useUserStore();
+const { actualLanguage } = storeToRefs(useUserStore());
 </script>
 
 <template>
@@ -86,18 +91,29 @@ import { Facebook, Instagram, Twitter } from 'lucide-vue-next';
           <DropdownMenu>
             <DropdownMenuTrigger as-child>
               <Button variant="outline" class="w-fit self-end">
-                <img src="../assets/fr.png" alt="" width="20" class="mr-2" />
-                <span>Français</span>
+                <img
+                  :src="'/lang/' + actualLanguage.code + '.png'"
+                  :alt="actualLanguage.name"
+                  width="20"
+                  class="mr-2"
+                />
+                <span>{{ actualLanguage.name }}</span>
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent>
-              <DropdownMenuItem @click="" class="cursor-pointer">
-                <img src="../assets/fr.png" alt="" width="20" class="mr-2" />
-                <span>Français</span>
-              </DropdownMenuItem>
-              <DropdownMenuItem @click="" class="cursor-pointer">
-                <img src="../assets/uk.png" alt="" width="20" class="mr-2" />
-                <span>English</span>
+              <DropdownMenuItem
+                v-for="lang in LANGUAGES"
+                @click="updateLanguage(lang.code)"
+                class="cursor-pointer"
+                :key="lang.code"
+              >
+                <img
+                  :src="'/lang/' + lang.code + '.png'"
+                  :alt="lang.name"
+                  width="20"
+                  class="mr-2"
+                />
+                <span>{{ lang.name }}</span>
               </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>

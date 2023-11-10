@@ -1,6 +1,8 @@
 import { createApp } from 'vue';
 import './style.css';
 import App from './App.vue';
+import { createPinia } from 'pinia';
+import { useUserStore } from './stores/user-store';
 import { RouteRecordRaw, createRouter, createWebHistory } from 'vue-router';
 
 import DefaultLayout from './layouts/DefaultLayout.vue';
@@ -25,6 +27,7 @@ const routes: RouteRecordRaw[] = [
     path: '/dashboard',
     component: DashboardLayout,
     name: 'dashboard-layout',
+    meta: { requiresDashboardAccess: true },
   },
 ];
 
@@ -32,9 +35,17 @@ export const router = createRouter({
   history: createWebHistory(),
   routes,
 });
+router.beforeEach(to => {
+  const userStore = useUserStore();
+
+  if (to.meta.requiresDashboardAccess && !userStore.canAccessDashboard)
+    return '/';
+});
 
 const app = createApp(App);
+const pinia = createPinia();
 
 app.use(router);
+app.use(pinia);
 
 app.mount('#app');
