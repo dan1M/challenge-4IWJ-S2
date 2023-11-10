@@ -1,6 +1,7 @@
 import { reactive, ref, computed, toRefs } from 'vue';
 import { z } from 'zod';
 import _ from 'lodash';
+import { useToast } from '@/components/ui/toast';
 
 export default function useCustomForm(
   initialFormData,
@@ -17,6 +18,8 @@ export default function useCustomForm(
     validationErrors[key] = '';
   });
   let currentAbortController = null;
+
+  const { toast } = useToast();
 
   const isFormValid = computed(() => {
     // Reset validation errors
@@ -58,9 +61,11 @@ export default function useCustomForm(
         if (!response.ok) {
           throw new Error('Something went wrong, request failed!');
         }
+        toast({ title: 'Vous avez bien souscris à notre Newsletter !' });
         serverError.value = null;
       })
       .catch(error => {
+        toast({ title: 'Une erreur est survenue!', variant: 'destructive' });
         if (error.name === 'AbortError') {
           throw new Error('Request canceled by user!');
         } else {
