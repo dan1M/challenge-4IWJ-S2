@@ -34,7 +34,7 @@ exports.signup = async (req, res, next) => {
       token: jwt.sign(
         {
           name: `${user.firstname} ${user.lastname}`,
-          if: user.id.toString(),
+          id: user.id,
         },
         process.env.JWT_SECRET,
         { expiresIn: '1h' },
@@ -142,12 +142,12 @@ exports.login = async (req, res, next) => {
       process.env.JWT_SECRET,
       { expiresIn: '30d' },
     );
-    res.sendStatus(200);
     res.cookie(process.env.JWT_NAME, token, {
       // secure: true,
       signed: true,
       httpOnly: true,
     });
+    res.sendStatus(200);
   } catch (err) {
     if (!err.statusCode) {
       err.statusCode = 500;
@@ -177,7 +177,7 @@ exports.verify = async (req, res, next) => {
       },
     );
     await token.destroy();
-    res.send('Email verified sucessfully!');
+    res.status(200).send('Email verified sucessfully!');
   } catch (err) {
     if (!err.statusCode) {
       err.statusCode = 500;
@@ -190,15 +190,132 @@ exports.update = async (req, res, next) => {
   try {
     const user = await User.update(req.body, {
       where: {
-        id: parseInt(req.params.id),
+        id: req.params.id,
       },
     });
     if (!user) {
-      const error = new Error('Could not find brand.');
+      const error = new Error('Could not find user.');
       error.statusCode = 404;
       throw error;
     }
     res.status(200).json(user);
+  } catch (err) {
+    if (!err.statusCode) {
+      err.statusCode = 500;
+    }
+    next(err);
+  }
+};
+
+exports.delete = async (req, res, next) => {
+  try {
+    const user = await User.findByPk(req.params.id);
+    if (!user) {
+      const error = new Error('Could not find user.');
+      error.statusCode = 404;
+      throw error;
+    }
+    await user.destroy();
+    res.sendStatus(204);
+  } catch (err) {
+    if (!err.statusCode) {
+      err.statusCode = 500;
+    }
+    next(err);
+  }
+};
+
+exports.resetPassword = async (req, res, next) => {
+  try {
+    const user = await User.findOne({
+      where: {
+        email: req.body.email,
+      },
+    });
+    if (!user) {
+      const error = new Error('Could not find user.');
+      error.statusCode = 404;
+      throw error;
+    }
+    const token = await Token.findOne({
+      where: {
+        userId: user.id,
+      },
+    });
+    if (!token) {
+      token = await Token.create({
+        userId: user.id,
+        token: jwt.sign(
+          {
+            name: `${user.firstname} ${user.lastname}`,
+            id: user.id,
+          },
+          process.env.JWT_SECRET,
+          { expiresIn: '1h' },
+        ),
+      });
+    }
+
+    ejs.renderFile(
+      '/app/assets/template/template-account-confirmation.ejs',
+      {
+        link: `${process.env.HOST}/auth/reset-password/${user.id}/${token.token}`,
+      },
+      (err, html) => {
+        if (err) {
+          throw err;
+        }
+        const mailOptions = {
+          from: 'challenge.s2@server.com',
+          to: user.email,
+          subject: 'Password reset',
+          html: html,
+        };
+        transporter.sendMail(mailOptions, err => {
+          if (err) {
+            throw err;
+          }
+          res.sendStatus(200);
+        });
+      },
+    );
+  } catch (err) {
+    if (!err.statusCode) {
+      err.statusCode = 500;
+    }
+    next(err);
+  }
+};
+
+exports.changePassword = async (req, res, next) => {
+  try {
+    const user = await User.findByPk(req.params.userId);
+    if (!user) {
+      const error = new Error('Could not find user.');
+      error.statusCode = 404;
+      throw error;
+    }
+    const token = await Token.findOne({
+      where: {
+        userId: user.id,
+      },
+    });
+    if (!token) {
+      const error = new Error('Could not find token.');
+      error.statusCode = 404;
+      throw error;
+    }
+    const hashedPw = await bcrypt.hash(req.body.password, 12);
+    await User.update(
+      { password: hashedPw },
+      {
+        where: {
+          id: user.id,
+        },
+      },
+    );
+    await token.destroy();
+    res.send('password reset sucessfully.');
   } catch (err) {
     if (!err.statusCode) {
       err.statusCode = 500;

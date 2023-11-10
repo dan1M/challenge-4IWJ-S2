@@ -1,8 +1,12 @@
 <script setup lang="ts">
-import AppHeader from '@/components/AppHeader.vue';
+import DashboardHeader from '@/components/DashboardHeader.vue';
+import DashboardFooter from '@/components/DashboardFooter.vue';
+import DashboardSidebar from '@/components/DashboardSidebar.vue';
 </script>
 
 <template>
-  <AppHeader />
+  <DashboardHeader />
+  <DashboardSidebar />
   <router-view />
+  <DashboardFooter />
 </template>
