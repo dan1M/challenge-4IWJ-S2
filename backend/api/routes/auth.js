@@ -1,8 +1,12 @@
 const express = require('express');
 const { body } = require('express-validator/check');
 
+const isAdmin = require('../middleware/is-admin');
+
 const User = require('../models/sql/user');
+
 const authController = require('../controllers/auth');
+const isAuth = require('../middleware/is-auth');
 
 const router = express.Router();
 
@@ -38,5 +42,17 @@ router.put(
 router.post('/login', authController.login);
 
 router.get('/verify/:token', authController.verify);
+
+router.get('/me', isAuth, authController.getUserInfo);
+
+router.patch('/:id', authController.update);
+
+router.delete('/:id', isAdmin, authController.delete);
+
+router.post('/reset-password', authController.resetPassword);
+
+router.post('/reset-password/:userId/:token', authController.changePassword);
+
+router.get('/:userId/:token', authController.changePassword);
 
 module.exports = router;

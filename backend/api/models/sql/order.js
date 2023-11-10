@@ -1,15 +1,27 @@
 const { DataTypes } = require('sequelize');
 
-const sequelize = require('../../util/db-sql');
+const sequelize = require('./db-sql');
 
-const Order = sequelize.define('order', {
-  id: {
-    type: DataTypes.INTEGER,
-    autoIncrement: true,
-    allowNull: false,
-    primaryKey: true,
+const Order = sequelize.define(
+  'order',
+  {
+    id: {
+      type: DataTypes.UUID,
+
+      allowNull: false,
+      primaryKey: true,
+    },
+    status: DataTypes.STRING,
   },
-  status: DataTypes.STRING,
-});
+  {
+    hooks: {
+      beforeValidate: (order, options) => {
+        console.log('Before Create Hook');
+        order.id = uuidv4();
+        console.log('Generated ID:', order.id);
+      },
+    },
+  },
+);
 
 module.exports = Order;

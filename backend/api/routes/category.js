@@ -5,15 +5,15 @@ const categoryController = require('../controllers/category');
 
 const Category = require('../models/sql/category');
 
-const isAuth = require('../middleware/is-auth');
+const isAdmin = require('../middleware/is-admin');
 
 const router = express.Router();
 
-router.get('/', isAuth, categoryController.findAll);
+router.get('/', categoryController.findAll);
 
 router.post(
   '/',
-  isAuth,
+  isAdmin,
   [
     body('name')
       .trim()
@@ -32,10 +32,10 @@ router.post(
   categoryController.create,
 );
 
-router.put('/:categoryId', isAuth, categoryController.update);
+router.put('/:categoryId', isAdmin, categoryController.update);
 
-router.get('/:categoryId', isAuth, categoryController.findOne);
+router.get('/:categoryId', categoryController.findOne);
 
-router.delete('/:categoryId', isAuth, categoryController.delete);
+router.delete('/:categoryId', isAdmin, categoryController.delete);
 
 module.exports = router;

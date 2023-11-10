@@ -8,5 +8,6 @@ const connection = async () => {
     console.log(err);
   }
 };
-
 connection();
+
+module.exports = connection;
