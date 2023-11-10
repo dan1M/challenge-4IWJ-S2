@@ -10,10 +10,14 @@ module.exports = (req, res, next) => {
     res.clearCookie(process.env.JWT_NAME);
     return res.sendStatus(401);
   }
-  if (!user.roles.includes('ROLE_ADMIN')) {
-    return res.sendStatus(401);
-  }
 
-  req.user = user;
+  const { name, roles } = user;
+
+  const response = {
+    name: name,
+    roles: roles,
+  };
+
+  req.user = response;
   next();
 };

@@ -7,6 +7,7 @@ import DashboardLayout from './layouts/DashboardLayout.vue';
 
 import HomePage from './pages/Home.vue';
 import AboutPage from './pages/About.vue';
+import AuthPage from './pages/Auth.vue';
 
 const routes: RouteRecordRaw[] = [
   {
@@ -16,6 +17,7 @@ const routes: RouteRecordRaw[] = [
     children: [
       { path: '/', name: 'home', component: HomePage },
       { path: '/about', name: 'about', component: AboutPage },
+      { path: '/auth', name: 'auth', component: AuthPage },
     ],
   },
   {
