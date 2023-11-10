@@ -1,11 +1,11 @@
 require('dotenv').config();
+require('./models/nosql/db-nosql');
 const path = require('node:path');
 const cors = require('cors');
 const express = require('express');
 const bodyParser = require('body-parser');
 const cookieParser = require('cookie-parser');
 const multer = require('multer');
-
 const mailer = require('./util/mailer');
 const authRoutes = require('./routes/auth');
 const productsRoutes = require('./routes/products');

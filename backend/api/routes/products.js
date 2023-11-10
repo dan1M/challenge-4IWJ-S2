@@ -9,9 +9,9 @@ const isAdmin = require('../middleware/is-admin');
 
 const router = express.Router();
 
-router.get('/', isAdmin, productsController.findAll);
+router.get('/', productsController.findAll);
 
-router.get('/:productId', isAdmin, productsController.findOne);
+router.get('/:productId', productsController.findOne);
 
 router.post(
   '/',
