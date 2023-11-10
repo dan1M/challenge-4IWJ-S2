@@ -1,13 +1,24 @@
 <script setup lang="ts">
 import { FwbCarousel } from 'flowbite-vue';
-import { reactive } from 'vue';
-import { useFetch } from '@vueuse/core';
+import { onMounted, ref } from 'vue';
 
-const pictures = reactive([
-  // { src: '/vite.svg', alt: 'Image 1' },
-]);
+const pictures = ref([{ src: '/vite.svg', alt: 'Image 1' }]);
 
-// useFetch('');
+const getProducts = () => {
+  fetch('https://fakestoreapi.com/products?limit=5')
+    .then(res => res.json())
+    .then(data => {
+      console.log(data);
+      const images = data.map(item => ({
+        src: item.image,
+        alt: item.title,
+      }));
+      pictures.value = images;
+    });
+};
+onMounted(() => {
+  getProducts();
+});
 </script>
 <template>
   <FwbCarousel :pictures="pictures" slide />
