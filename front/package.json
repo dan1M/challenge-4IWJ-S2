@@ -11,11 +11,15 @@
     "format": "prettier . --write"
   },
   "dependencies": {
+    "@vueuse/core": "^10.6.0",
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.0.0",
+    "flowbite": "^2.0.0",
+    "flowbite-vue": "^0.1.0",
     "lodash": "^4.17.21",
     "lucide-vue-next": "^0.292.0",
     "oh-vue-icons": "^1.0.0-rc3",
+    "pinia": "^2.1.7",
     "radix-vue": "^1.1.1",
     "tailwind-merge": "^2.0.0",
     "tailwindcss-animate": "^1.0.7",
