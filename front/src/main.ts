@@ -1,5 +1,7 @@
-import { createApp } from 'vue';
 import './style.css';
+import 'vue3-carousel/dist/carousel.css';
+
+import { createApp } from 'vue';
 import App from './App.vue';
 import { createPinia } from 'pinia';
 import { useUserStore } from './stores/user-store';
@@ -11,7 +13,6 @@ import DashboardLayout from './layouts/DashboardLayout.vue';
 import HomePage from './pages/Home.vue';
 import AboutPage from './pages/About.vue';
 import ProductsPage from './pages/Products.vue';
-import AuthPage from './pages/Auth.vue'
 
 const routes: RouteRecordRaw[] = [
   {

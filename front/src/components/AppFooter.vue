@@ -41,13 +41,7 @@ const { email, submitForm } = useCustomForm(
           class="bg-white border border-gray-300 text-gray-900 md:w-64 mb-2 md:mb-0 md:me-4 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5"
           required
         />
-        <button
-          type="button"
-          @click="submitForm"
-          class="text-white bg-primary-700 hover:bg-primary-800 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center"
-        >
-          S'abonner
-        </button>
+        <Button type="button" @click="submitForm">S'abonner</Button>
       </form>
     </div>
   </div>

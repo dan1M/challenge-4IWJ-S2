@@ -1,6 +1,15 @@
 <script setup lang="ts">
+import { onMounted, ref } from 'vue';
 import Logo from './BrandLogo.vue';
-import { LogOut, Store, User, ShoppingCart, Menu } from 'lucide-vue-next';
+import {
+  LogOut,
+  Store,
+  User,
+  ShoppingCart,
+  Menu,
+  Bell,
+  PackageSearch,
+} from 'lucide-vue-next';
 import { Avatar, AvatarImage } from '@/components/ui/avatar';
 import {
   DropdownMenu,
@@ -10,12 +19,33 @@ import {
   DropdownMenuSeparator,
   DropdownMenuItem,
 } from '@/components/ui/dropdown-menu';
+import { Badge } from '@/components/ui/badge';
+import { useUserStore } from '@/stores/user-store';
+import { storeToRefs } from 'pinia';
 
 const navLinks = [
   { name: 'Chaussures Femme', routeName: 'products' },
   { name: 'Chaussures en promo', routeName: 'products' },
   { name: 'Nouveautés ✨', routeName: '' },
 ];
+const { canAccessDashboard } = storeToRefs(useUserStore());
+
+const userInfo = ref({
+  firstname: 'Nom',
+  lastname: 'Prénom',
+});
+
+const getUserInfo = () => {
+  fetch('http://localhost:3000/auth/me', { credentials: 'include' })
+    .then(res => res.json())
+    .then(data => {
+      console.log(data);
+      // TODO : set user info from data
+    });
+};
+onMounted(() => {
+  getUserInfo();
+});
 </script>
 
 <template>
@@ -32,15 +62,27 @@ const navLinks = [
               </Avatar>
             </DropdownMenuTrigger>
             <DropdownMenuContent>
-              <DropdownMenuLabel>Nom prénom</DropdownMenuLabel>
+              <DropdownMenuLabel>
+                {{ userInfo.firstname }}{{ ' ' }}
+                {{ userInfo.lastname }}
+              </DropdownMenuLabel>
               <DropdownMenuSeparator />
+              <DropdownMenuItem v-if="canAccessDashboard">
+                <Store class="mr-2 h-4 w-4" />
+                <span>Dashboard Admin</span>
+              </DropdownMenuItem>
               <DropdownMenuItem>
                 <User class="mr-2 h-4 w-4" />
                 <span>Mon compte</span>
               </DropdownMenuItem>
               <DropdownMenuItem>
-                <Store class="mr-2 h-4 w-4" />
-                <span>Dashboard Admin</span>
+                <Bell class="mr-2 h-4 w-4" />
+                <span>Mes alertes</span>
+                <Badge variant="destructive" class="ml-2">1</Badge>
+              </DropdownMenuItem>
+              <DropdownMenuItem>
+                <PackageSearch class="mr-2 h-4 w-4" />
+                <span>Mes commandes</span>
               </DropdownMenuItem>
               <DropdownMenuItem>
                 <LogOut class="mr-2 h-4 w-4 text-red-500" />
@@ -82,7 +124,7 @@ const navLinks = [
             <li v-for="link in navLinks" :key="link.name">
               <router-link
                 :to="{ name: link.routeName }"
-                class="block py-2 pr-4 pl-3 text-gray-700 font-bold uppercase tracking-wide border-b border-gray-100 hover:bg-gray-50 lg:hover:bg-transparent lg:border-0 lg:hover:text-primary-700 lg:p-0"
+                class="block py-2 pr-4 pl-3 text-gray-700 font-bold uppercase tracking-wide border-b border-gray-100 hover:bg-gray-50 lg:hover:bg-transparent lg:border-0 lg:hover:text-primary-500 lg:p-0"
               >
                 {{ link.name }}
               </router-link>

@@ -56,6 +56,7 @@ export default function useCustomForm(
         'Content-Type': 'application/json',
       },
       signal: abortController.signal,
+      credentials: 'include',
     })
       .then(response => {
         if (!response.ok) {
