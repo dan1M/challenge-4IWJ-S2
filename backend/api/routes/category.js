@@ -34,7 +34,7 @@ router.post(
 
 router.patch('/:categoryId', isAdmin, categoryController.update);
 
-router.get('/:categoryId', isAdmin, categoryController.findOne);
+router.get('/:categoryId', categoryController.findOne);
 
 router.delete('/:categoryId', isAdmin, categoryController.delete);
 
