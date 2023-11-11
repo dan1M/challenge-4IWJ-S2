@@ -9,7 +9,7 @@ const isAdmin = require('../middleware/is-admin');
 
 const router = express.Router();
 
-router.get('/', isAdmin, categoryController.findAll);
+router.get('/', categoryController.findAll);
 
 router.post(
   '/',
@@ -32,7 +32,7 @@ router.post(
   categoryController.create,
 );
 
-router.put('/:categoryId', isAdmin, categoryController.update);
+router.patch('/:categoryId', isAdmin, categoryController.update);
 
 router.get('/:categoryId', isAdmin, categoryController.findOne);
 

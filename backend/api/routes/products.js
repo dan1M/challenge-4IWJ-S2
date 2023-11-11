@@ -13,9 +13,9 @@ const Size = require('../models/sql/size');
 
 const router = express.Router();
 
-router.get('/', isAdmin, productsController.findAll);
+router.get('/', productsController.findAll);
 
-router.get('/:productId', isAdmin, productsController.findOne);
+router.get('/:productId', productsController.findOne);
 
 router.post(
   '/',
@@ -34,7 +34,8 @@ router.post(
       }),
     body('description').trim(),
     body('category')
-      .isInt()
+      .trim()
+      .isLength({ min: 2 })
       .custom(async value => {
         const existingCategory = await Category.findByPk(value);
         if (!existingCategory) {
@@ -43,7 +44,8 @@ router.post(
       }),
     body('variants').isArray(),
     body('variants.*.size')
-      .isInt()
+      .trim()
+      .isLength({ min: 2 })
       .custom(async value => {
         const existingSize = await Size.findByPk(value);
         if (!existingSize) {
@@ -51,7 +53,8 @@ router.post(
         }
       }),
     body('variants.*.colors.*.color')
-      .isInt()
+      .trim()
+      .isLength({ min: 2 })
       .custom(async value => {
         const existingColor = await Color.findByPk(value);
         if (!existingColor) {
@@ -62,7 +65,7 @@ router.post(
   productsController.create,
 );
 
-router.put(
+router.patch(
   '/:productId',
   isAdmin,
   [

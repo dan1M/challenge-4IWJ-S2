@@ -1,5 +1,8 @@
 const { validationResult } = require('express-validator/check');
 const Stock = require('../models/sql/stock.js');
+const {
+  updateOrCreateMongoProduct,
+} = require('../util/updateOrCreateMongoProduct');
 
 exports.findAll = async (req, res, next) => {
   try {
@@ -75,11 +78,8 @@ exports.create = async (req, res, next) => {
       color_id: color,
     });
 
-    /*await ProductMongo.create({
-      title: title,
-      description: description,
-      price: price,
-    });*/
+    await updateOrCreateMongoProduct(product);
+
 
     res.sendStatus(201);
   } catch (err) {
@@ -101,24 +101,22 @@ exports.update = async (req, res, next) => {
       throw error;
     }
 
-    const quantity = req.body.quantity;
-    const product = req.body.product;
-    const size = req.body.size;
-    const color = req.body.color;
-
-    const stock = await Stock.findByPk(stockId);
-    if (!stock) {
-      const error = new Error('Could not find stock.');
-      error.statusCode = 404;
-      throw error;
-    }
-    await stock.update({
-      quantity: quantity,
-      product_id: product,
-      size_id: size,
-      color_id: color,
+    const [nbUpdated, stocks] = await Stock.update(req.body, {
+      where: {
+        id: stockId,
+      },
+      returning: true,
     });
-    res.sendStatus(200);
+    if (stocks[0]) {
+      await updateOrCreateMongoProduct(stocks[0].product_id);
+
+      res.status(200).json(stocks[0]);
+
+    } else {
+      res.sendStatus(404);
+    }
+
+    
   } catch (err) {
     if (!err.statusCode) {
       err.statusCode = 500;
@@ -137,6 +135,8 @@ exports.delete = async (req, res, next) => {
       throw error;
     }
     await stock.destroy();
+    await updateOrCreateMongoProduct(stock.product_id);
+
     res.sendStatus(204);
   } catch (err) {
     if (!err.statusCode) {

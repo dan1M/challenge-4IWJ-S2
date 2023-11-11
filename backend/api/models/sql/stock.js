@@ -1,4 +1,5 @@
 const { DataTypes } = require('sequelize');
+const { v4: uuidv4 } = require('uuid');
 
 const sequelize = require('./db-sql');
 
@@ -20,7 +21,20 @@ const Stock = sequelize.define(
       type: DataTypes.INTEGER,
       allowNull: false,
       defaultValue: 0,
-    }
+    },
+    product_id:{
+      type: DataTypes.UUID,
+      allowNull: false,
+    },
+    color_id:{
+      type: DataTypes.UUID,
+      allowNull: false,
+    },
+    size_id:{
+      type: DataTypes.UUID,
+      allowNull: false,
+    },
+
   },
   {
     hooks: {

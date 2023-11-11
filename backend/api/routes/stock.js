@@ -58,7 +58,7 @@ router.post(
   stockController.create,
 );
 
-router.put(
+router.patch(
   '/:stockId',
   [
     body('quantity').isFloat({ gt: 0 }),

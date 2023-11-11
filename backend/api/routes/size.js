@@ -28,7 +28,7 @@ router.post(
   sizeController.create,
 );
 
-router.put(
+router.patch(
   '/:sizeId',
   [body('name').trim().isLength({ min: 2 })],
 

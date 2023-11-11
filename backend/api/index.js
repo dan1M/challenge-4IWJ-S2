@@ -1,4 +1,5 @@
 require('dotenv').config();
+require('./models/nosql/db-nosql');
 const path = require('node:path');
 const cors = require('cors');
 const express = require('express');
