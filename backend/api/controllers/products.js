@@ -11,7 +11,49 @@ const {
 
 exports.findAll = async (req, res, next) => {
   try {
-    const products = await ProductMongo.find({});
+    const filter = {};
+    const queryParameters = Object.keys(req.query);
+
+    const searchText = req.query.searchText;
+    if (searchText) {
+      filter.$or = [
+        { title: { $regex: new RegExp(searchText, 'i') } }, 
+        { description: { $regex: new RegExp(searchText, 'i') } }, 
+      ];
+    }
+
+    queryParameters.forEach(param => {
+      switch (param) {
+        case 'title':
+          filter.title = { $regex: new RegExp(req.query.title, 'i') };
+          break;
+        case 'category':
+          filter['category.name'] = req.query.category;
+          break;
+        case 'brand':
+          filter.brand = req.query.brand;
+          break;
+        case 'priceMin':
+          filter['variants.price'] = filter['variants.price'] || {};
+          filter['variants.price'].$gte = parseFloat(req.query.priceMin);
+          break;
+        case 'priceMax':
+          filter['variants.price'] = filter['variants.price'] || {};
+          filter['variants.price'].$lte = parseFloat(req.query.priceMax);
+          break;
+        case 'onSale':
+          filter.onSale = true;
+          break;
+        case 'inStock':
+          filter['variants.quantity'] = { $gt: 0 };
+          break;
+        default:
+          break;
+      }
+    });
+
+
+    const products = await ProductMongo.find(filter);
     res.status(200).json(products);
   } catch (err) {
     if (!err.statusCode) {
@@ -103,7 +145,6 @@ exports.update = async (req, res, next) => {
       },
       returning: true,
     });
-
 
     if (products[0]) {
       await updateOrCreateMongoProduct(productId);
