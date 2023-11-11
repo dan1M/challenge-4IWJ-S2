@@ -13,6 +13,7 @@ import DashboardLayout from './layouts/DashboardLayout.vue';
 import HomePage from './pages/Home.vue';
 import AboutPage from './pages/About.vue';
 import ProductsPage from './pages/Products.vue';
+import NotFound from './pages/NotFound.vue';
 
 const routes: RouteRecordRaw[] = [
   {
@@ -29,20 +30,31 @@ const routes: RouteRecordRaw[] = [
     path: '/dashboard',
     component: DashboardLayout,
     name: 'dashboard-layout',
-    meta: { requiresDashboardAccess: true },
+    beforeEnter: async (to, from, next) => {
+      const userStore = useUserStore();
+
+      if (!userStore.canAccessDashboard) {
+        next({ name: 'home', replace: true });
+      } else {
+        next();
+      }
+    },
   },
+  { path: '/:pathMatch(.*)*', name: 'not-found', component: NotFound },
 ];
 
 export const router = createRouter({
   history: createWebHistory(),
   routes,
 });
-router.beforeEach(to => {
-  const userStore = useUserStore();
 
-  if (to.meta.requiresDashboardAccess && !userStore.canAccessDashboard)
-    return '/';
-});
+// router.beforeEach(to => {
+//   const userStore = useUserStore();
+
+//   if (!userStore.canAccessDashboard) {
+//     return { name: 'home' };
+//   }
+// });
 
 const app = createApp(App);
 const pinia = createPinia();
