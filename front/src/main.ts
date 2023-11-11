@@ -11,6 +11,7 @@ import DashboardLayout from './layouts/DashboardLayout.vue';
 import HomePage from './pages/Home.vue';
 import AboutPage from './pages/About.vue';
 import ProductsPage from './pages/Products.vue';
+import AuthPage from './pages/Auth.vue'
 
 const routes: RouteRecordRaw[] = [
   {
