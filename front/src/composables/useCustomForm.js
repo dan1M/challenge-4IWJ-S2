@@ -7,13 +7,15 @@ export default function useCustomForm(
   initialFormData,
   validationSchema,
   submitEndpoint = '',
+  method,
 ) {
-  const baseUrl = 'http://localhost:3000';
+  const baseUrl = 'http://localhost:3000/';
   const initialValues = Object.assign({}, initialFormData);
   const data = reactive(initialFormData);
   const validationErrors = reactive({});
   const serverError = ref(null);
   const isSubmitting = ref(false);
+  const serverResponse = ref({});
   Object.keys(initialFormData).forEach(key => {
     validationErrors[key] = '';
   });
@@ -47,7 +49,9 @@ export default function useCustomForm(
     isSubmitting.value = true;
 
     const abortController = new AbortController();
+
     currentAbortController = abortController;
+
 
     return fetch(baseUrl + submitEndpoint, {
       method: 'POST',
@@ -62,8 +66,8 @@ export default function useCustomForm(
         if (!response.ok) {
           throw new Error('Something went wrong, request failed!');
         }
-        toast({ title: 'Vous avez bien souscris à notre Newsletter !' });
         serverError.value = null;
+        serverResponse.value = response.json();
       })
       .catch(error => {
         toast({ title: 'Une erreur est survenue!', variant: 'destructive' });
@@ -96,6 +100,7 @@ export default function useCustomForm(
     ...toRefs(data),
     validationErrors,
     serverError,
+    serverResponse,
     isFormValid,
     isSubmitting,
     submitForm,

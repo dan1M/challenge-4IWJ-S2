@@ -1,5 +1,8 @@
 <script setup lang="ts">
 import useCustomForm from '../composables/useCustomForm';
+import { useUserStore } from '@/stores/user-store';
+import { storeToRefs } from 'pinia';
+import { effect } from 'vue';
 import { z } from 'zod';
 
 const formData = {
@@ -10,18 +13,28 @@ const validationSchema = z.object({
   email: z.string().email(),
   password: z.string().min(3),
 });
-const endpoint = '/api/auth/login';
+const endpoint = 'auth/login';
+
+const method = 'POST';
+
 const {
   email,
   password,
   validationErrors,
   serverError,
+  serverResponse,
   isSubmitting,
   isFormValid,
   submitForm,
   cancelRequest,
   resetForm,
-} = useCustomForm(formData, validationSchema, endpoint);
+} = useCustomForm(formData, validationSchema, endpoint, method);
+
+const { canAccessDashboard, isLoggedIn } = storeToRefs(useUserStore());
+
+effect(() => {
+  canAccessDashboard.value = serverResponse.value.canAccessDashboard;
+});
 </script>
 
 <template>
@@ -29,7 +42,7 @@ const {
     <h1 class="uppercase font-bold text-lg tracking-wider text-center">
       Connexion à votre compte
     </h1>
-    <form class="flex flex-col pt-8 space-y-6">
+    <form class="flex flex-col pt-8 space-y-6" @submit.prevent="submitForm">
       <div class="flex flex-col">
         <label
           for="email"
@@ -73,8 +86,8 @@ const {
       </div>
       <div class="self-center">
         <button
-          type="button"
-          @click="submitForm"
+          type="submit"
+          :disabled="!isFormValid"
           class="bg-black text-white px-16 py-3 hover:bg-white hover:border hover:border-black hover:text-black transition duration-300 uppercase tracking-wider font-bold"
         >
           Connexion

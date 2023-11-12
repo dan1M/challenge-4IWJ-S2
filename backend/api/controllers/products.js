@@ -1,3 +1,6 @@
+const fs = require('node:fs');
+const path = require('node:path');
+
 const { validationResult } = require('express-validator/check');
 const Product = require('../models/sql/product.js');
 const ProductMongo = require('../models/nosql/product.js');
@@ -17,8 +20,8 @@ exports.findAll = async (req, res, next) => {
     const searchText = req.query.searchText;
     if (searchText) {
       filter.$or = [
-        { title: { $regex: new RegExp(searchText, 'i') } }, 
-        { description: { $regex: new RegExp(searchText, 'i') } }, 
+        { title: { $regex: new RegExp(searchText, 'i') } },
+        { description: { $regex: new RegExp(searchText, 'i') } },
       ];
     }
 
@@ -51,7 +54,6 @@ exports.findAll = async (req, res, next) => {
           break;
       }
     });
-
 
     const products = await ProductMongo.find(filter);
     res.status(200).json(products);
@@ -95,10 +97,12 @@ exports.create = async (req, res, next) => {
     const description = req.body.description;
     const category = req.body.category;
 
+    const imageUrl = req.file.path;
     const variantsBody = req.body.variants;
 
     const product = await Product.create({
       title: title,
+      imageUrl: imageUrl,
       description: description,
       category_id: category,
     });
@@ -170,6 +174,8 @@ exports.delete = async (req, res, next) => {
       error.statusCode = 404;
       throw error;
     }
+    clearImage(product.imageUrl);
+
     await product.destroy();
     await ProductMongo.deleteOne({ title: product.title });
     res.sendStatus(204);
@@ -179,4 +185,9 @@ exports.delete = async (req, res, next) => {
     }
     next(err);
   }
+};
+
+const clearImage = filePath => {
+  filePath = path.join(__dirname, '..', filePath);
+  fs.unlink(filePath, err => console.log(err));
 };
