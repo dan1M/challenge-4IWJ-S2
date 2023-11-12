@@ -45,9 +45,13 @@ const fileFilter = (req, file, cb) => {
 };
 
 app.use(bodyParser.json()); // application/json
-app.use(cookieParser(process.env.JWT_SECRET));
+const corsOptions = {
+  origin: 'http://localhost:5173', // Remplacez par l'URL de votre frontend
+  credentials: true,
+};
+app.use(cors(corsOptions));
 
-app.use(cors());
+app.use(cookieParser(process.env.JWT_SECRET));
 
 app.use('/auth', authRoutes);
 app.use('/products', productsRoutes);
@@ -56,7 +60,6 @@ app.use('/colors', colorRoutes);
 app.use('/sizes', sizeRoutes);
 app.use('/stocks', stockRoutes);
 app.use('/orders', orderRoutes);
-
 
 app.use(
   multer({ storage: fileStorage, fileFilter: fileFilter }).single('image'),

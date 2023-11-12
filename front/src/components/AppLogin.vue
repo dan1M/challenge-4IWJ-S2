@@ -2,7 +2,7 @@
 import useCustomForm from '../composables/useCustomForm';
 import { useUserStore } from '@/stores/user-store';
 import { storeToRefs } from 'pinia';
-import { effect } from 'vue';
+import { watch } from 'vue';
 import { z } from 'zod';
 
 const formData = {
@@ -32,8 +32,10 @@ const {
 
 const { canAccessDashboard, isLoggedIn } = storeToRefs(useUserStore());
 
-effect(() => {
-  canAccessDashboard.value = serverResponse.value.canAccessDashboard;
+watch(serverResponse, newServerResponse => {
+  isLoggedIn.value = true;
+  canAccessDashboard.value = newServerResponse.canAccessDashboard;
+  console.log($cookies.get());
 });
 </script>
 

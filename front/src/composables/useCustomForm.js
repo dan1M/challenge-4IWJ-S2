@@ -52,36 +52,35 @@ export default function useCustomForm(
 
     currentAbortController = abortController;
 
-    return fetch(baseUrl + submitEndpoint, {
-      method: 'POST',
-      body: JSON.stringify(data),
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      signal: abortController.signal,
-      credentials: 'include',
-    })
-      .then(response => {
-        if (!response.ok) {
-          throw new Error('Something went wrong, request failed!');
-        }
-        serverError.value = null;
-        return response.json();
-      })
-      .then(result => {
-        serverResponse.value = result;
-      })
-      .catch(error => {
-        toast({ title: 'Une erreur est survenue!', variant: 'destructive' });
-        if (error.name === 'AbortError') {
-          throw new Error('Request canceled by user!');
-        } else {
-          serverError.value = 'An unexpected error occurred.';
-        }
-      })
-      .finally(() => {
-        isSubmitting.value = false;
+    try {
+      const response = await fetch(baseUrl + submitEndpoint, {
+        method: method,
+        body: JSON.stringify(data),
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        signal: abortController.signal,
+        credentials: 'include',
       });
+
+      if (!response.ok) {
+        throw new Error('Something went wrong, request failed!');
+      }
+
+      console.log(response.headers.getSetCookie());
+
+      serverError.value = null;
+
+      serverResponse.value = await response.json();
+
+      isSubmitting.value = false;
+    } catch (error) {
+      if (error.name === 'AbortError') {
+        throw new Error('Request canceled by user!');
+      } else {
+        serverError.value = 'An unexpected error occurred.';
+      }
+    }
   };
 
   const cancelRequest = () => {

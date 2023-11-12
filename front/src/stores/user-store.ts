@@ -1,5 +1,5 @@
 import { defineStore } from 'pinia';
-import { ref } from 'vue';
+import { ref, computed } from 'vue';
 
 export const LANGUAGES = [
   { name: 'Français (fr)', code: 'fr' },
