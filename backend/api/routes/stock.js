@@ -21,10 +21,21 @@ router.post(
     body('quantity').isFloat({ gt: 0 }),
     body('product')
       .trim()
-      .custom(async value => {
+      .custom(async (value,{req}) => {
         const existingProduct = await Product.findByPk(value);
         if (!existingProduct) {
           throw new Error('Could not find product.');
+        }
+        const existingStock = await Stock.findOne({
+          where: {
+            product_id: value,
+            size_id: req.body.size,
+            color_id: req.body.color,
+          },
+        });
+        
+        if (existingStock) {
+          throw new Error('Un stock avec ces valeurs existe déjà.');
         }
       }),
     body('size')
@@ -47,7 +58,7 @@ router.post(
   stockController.create,
 );
 
-router.put(
+router.patch(
   '/:stockId',
   [
     body('quantity').isFloat({ gt: 0 }),

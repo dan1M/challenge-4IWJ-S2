@@ -1,10 +1,59 @@
 const { validationResult } = require('express-validator/check');
 const Product = require('../models/sql/product.js');
 const ProductMongo = require('../models/nosql/product.js');
+const Stock = require('../models/sql/stock.js');
+const Category = require('../models/sql/category');
+const Size = require('../models/sql/size.js');
+const Color = require('../models/sql/color.js');
+const {
+  updateOrCreateMongoProduct,
+} = require('../util/updateOrCreateMongoProduct');
 
 exports.findAll = async (req, res, next) => {
   try {
-    const products = await ProductMongo.find({});
+    const filter = {};
+    const queryParameters = Object.keys(req.query);
+
+    const searchText = req.query.searchText;
+    if (searchText) {
+      filter.$or = [
+        { title: { $regex: new RegExp(searchText, 'i') } }, 
+        { description: { $regex: new RegExp(searchText, 'i') } }, 
+      ];
+    }
+
+    queryParameters.forEach(param => {
+      switch (param) {
+        case 'title':
+          filter.title = { $regex: new RegExp(req.query.title, 'i') };
+          break;
+        case 'category':
+          filter['category.name'] = req.query.category;
+          break;
+        case 'brand':
+          filter.brand = req.query.brand;
+          break;
+        case 'priceMin':
+          filter['variants.price'] = filter['variants.price'] || {};
+          filter['variants.price'].$gte = parseFloat(req.query.priceMin);
+          break;
+        case 'priceMax':
+          filter['variants.price'] = filter['variants.price'] || {};
+          filter['variants.price'].$lte = parseFloat(req.query.priceMax);
+          break;
+        case 'onSale':
+          filter.onSale = true;
+          break;
+        case 'inStock':
+          filter['variants.quantity'] = { $gt: 0 };
+          break;
+        default:
+          break;
+      }
+    });
+
+
+    const products = await ProductMongo.find(filter);
     res.status(200).json(products);
   } catch (err) {
     if (!err.statusCode) {
@@ -44,23 +93,33 @@ exports.create = async (req, res, next) => {
 
     const title = req.body.title;
     const description = req.body.description;
-    const price = req.body.price;
-    const stock = req.body.stock;
+    const category = req.body.category;
+
+    const variantsBody = req.body.variants;
 
     const product = await Product.create({
       title: title,
-      price: price,
       description: description,
-      stock: stock,
+      category_id: category,
     });
 
-    const productMongo = await ProductMongo.create({
-      title: title,
-      description: description,
-      price: price,
-    });
+    //create variants for a product
+    for (const variant of variantsBody) {
+      for (const color of variant.colors) {
+        const stock = await Stock.create({
+          quantity: color.quantity,
+          product_id: product.id,
+          size_id: variant.size,
+          color_id: color.color,
+          price: color.price,
+        });
+      }
+    }
 
-    res.status(201).json(productMongo);
+    // insert product and variants in mongo
+    await updateOrCreateMongoProduct(product.id);
+
+    res.sendStatus(201);
   } catch (err) {
     if (!err.statusCode) {
       err.statusCode = 500;
@@ -80,31 +139,20 @@ exports.update = async (req, res, next) => {
       throw error;
     }
 
-    const title = req.body.title;
-    const description = req.body.description;
-    const price = req.body.price;
-    const stock = req.body.stock;
+    const [nbUpdated, products] = await Product.update(req.body, {
+      where: {
+        id: productId,
+      },
+      returning: true,
+    });
 
-    const product = await Product.findByPk(productId);
-    if (!product) {
-      const error = new Error('Could not find product.');
-      error.statusCode = 404;
-      throw error;
+    if (products[0]) {
+      await updateOrCreateMongoProduct(productId);
+
+      res.status(200).json(products[0]);
+    } else {
+      res.sendStatus(404);
     }
-    await product.update({
-      title: title,
-      price: price,
-      description: description,
-      stock: stock,
-    });
-
-    const productMongo = await ProductMongo.updateOne({
-      title: title,
-      description: description,
-      price: price,
-    });
-
-    res.status(200).json(productMongo);
   } catch (err) {
     if (!err.statusCode) {
       err.statusCode = 500;

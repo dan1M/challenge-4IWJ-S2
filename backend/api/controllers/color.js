@@ -30,6 +30,7 @@ exports.create = async (req, res, next) => {
     });
 
     await ColorMongo.create({
+      _id: color.id,
       name: name,
     });
 
@@ -93,20 +94,23 @@ exports.update = async (req, res, next) => {
     error.statusCode = 422;
     throw error;
   }
-  const name = req.body.name;
 
   try {
-    const color = await Color.findByPk(colorId);
-    if (!color) {
-      const error = new Error('Could not find color.');
-      error.statusCode = 404;
-      throw error;
+    
+    const [nbUpdated, colors] = await Color.update(req.body, {
+      where: {
+        id: colorId,
+      },
+      returning: true,
+    });
+
+    const colorMongo = await ColorMongo.updateOne(req.body);
+    if (colors[0]) {
+      res.status(200).json(colors[0]);
+    } else {
+      res.sendStatus(404);
     }
 
-    await color.update({ name: name });
-    const colorMongo = await ColorMongo.updateOne({ name: name });
-
-    res.status(200).json(colorMongo);
   } catch (err) {
     if (!err.statusCode) {
       err.statusCode = 500;

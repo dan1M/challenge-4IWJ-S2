@@ -32,7 +32,7 @@ router.post(
   categoryController.create,
 );
 
-router.put('/:categoryId', isAdmin, categoryController.update);
+router.patch('/:categoryId', isAdmin, categoryController.update);
 
 router.get('/:categoryId', categoryController.findOne);
 

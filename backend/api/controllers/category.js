@@ -1,12 +1,13 @@
 const { validationResult } = require('express-validator/check');
 const Category = require('../models/sql/category');
 const CategoryMongo = require('../models/nosql/category');
+const { Types } = require('mongoose');
 
 const e = require('express');
 
 exports.findAll = async (req, res, next) => {
   try {
-    const categories = await CategoryMongo.find();
+    const categories = await CategoryMongo.find({});
     res.status(200).json(categories);
   } catch (err) {
     if (!err.statusCode) {
@@ -31,10 +32,11 @@ exports.create = async (req, res, next) => {
     });
 
     const categoryMongo = await CategoryMongo.create({
+      _id: category.id,
       name: name,
     });
 
-    res.status(201).json(categoryMongo);
+    res.sendStatus(201);
   } catch (err) {
     if (!err.statusCode) {
       err.statusCode = 500;
@@ -92,17 +94,19 @@ exports.update = async (req, res, next) => {
       error.statusCode = 422;
       throw error;
     }
-    const category = await Category.findByPk(categoryId);
-    if (!category) {
-      const error = new Error('Could not find category.');
-      error.statusCode = 404;
-      throw error;
-    }
-    const name = req.body.name;
-    await category.update({ name: name });
-    const categoryMongo = await CategoryMongo.updateOne({ name: name });
+    const [nbUpdated, categories] = await Category.update(req.body, {
+      where: {
+        id: categoryId,
+      },
+      returning: true,
+    });
+    const categoryMongo = await CategoryMongo.updateOne(req.body);
 
-    res.status(200).json(categoryMongo);
+    if (categories[0]) {
+      res.status(200).json(categories[0]);
+    } else {
+      res.sendStatus(404);
+    }
   } catch (err) {
     if (!err.statusCode) {
       err.statusCode = 500;
