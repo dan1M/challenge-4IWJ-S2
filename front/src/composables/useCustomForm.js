@@ -52,7 +52,6 @@ export default function useCustomForm(
 
     currentAbortController = abortController;
 
-
     return fetch(baseUrl + submitEndpoint, {
       method: 'POST',
       body: JSON.stringify(data),
@@ -67,7 +66,10 @@ export default function useCustomForm(
           throw new Error('Something went wrong, request failed!');
         }
         serverError.value = null;
-        serverResponse.value = response.json();
+        return response.json();
+      })
+      .then(result => {
+        serverResponse.value = result;
       })
       .catch(error => {
         toast({ title: 'Une erreur est survenue!', variant: 'destructive' });
