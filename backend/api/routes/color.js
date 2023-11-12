@@ -28,7 +28,7 @@ router.post(
   colorController.create,
 );
 
-router.put(
+router.patch(
   '/:colorId',
   [body('name').trim().isLength({ min: 5 })],
 

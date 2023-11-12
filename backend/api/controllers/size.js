@@ -30,6 +30,7 @@ exports.create = async (req, res, next) => {
     });
 
     await SizeMongo.create({
+      _id: size.id,
       name: name,
     });
 
@@ -93,20 +94,23 @@ exports.update = async (req, res, next) => {
     error.statusCode = 422;
     throw error;
   }
-  const name = req.body.name;
 
   try {
-    const size = await Size.findByPk(sizeId);
-    if (!size) {
-      const error = new Error('Could not find size.');
-      error.statusCode = 404;
-      throw error;
+
+    const [nbUpdated, sizes] = await Size.update(req.body, {
+      where: {
+        id: sizeId,
+      },
+      returning: true,
+    });
+    const sizeMongo = await SizeMongo.updateOne(req.body);
+
+    if (sizes[0]) {
+      res.status(200).json(sizes[0]);
+    } else {
+      res.sendStatus(404);
     }
 
-    await size.update({ name: name });
-    const sizeMongo = await SizeMongo.updateOne({ name: name });
-
-    res.status(200).json(sizeMongo);
   } catch (err) {
     if (!err.statusCode) {
       err.statusCode = 500;
