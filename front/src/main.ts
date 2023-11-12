@@ -15,6 +15,8 @@ import NotFound from './pages/NotFound.vue';
 import HomePage from './pages/Home.vue';
 import ProductsPage from './pages/Products.vue';
 import CartPage from './pages/Cart.vue';
+import AuthPage from './pages/Auth.vue';
+
 
 
 const routes: RouteRecordRaw[] = [
