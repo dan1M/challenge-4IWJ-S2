@@ -3,7 +3,6 @@ import useCustomForm from '../composables/useCustomForm';
 import { useUserStore } from '@/stores/user-store';
 import { storeToRefs } from 'pinia';
 import { effect } from 'vue';
-
 import { z } from 'zod';
 
 const formData = {
@@ -31,7 +30,7 @@ const {
   resetForm,
 } = useCustomForm(formData, validationSchema, endpoint, method);
 
-const { canAccessDashboard } = storeToRefs(useUserStore());
+const { canAccessDashboard, isLoggedIn } = storeToRefs(useUserStore());
 
 effect(() => {
   canAccessDashboard.value = serverResponse.value.canAccessDashboard;
