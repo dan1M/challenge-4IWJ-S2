@@ -10,10 +10,10 @@ import { RouteRecordRaw, createRouter, createWebHistory } from 'vue-router';
 import DefaultLayout from './layouts/DefaultLayout.vue';
 import DashboardLayout from './layouts/DashboardLayout.vue';
 
-import HomePage from './pages/Home.vue';
-import AboutPage from './pages/About.vue';
-import ProductsPage from './pages/Products.vue';
 import NotFound from './pages/NotFound.vue';
+import HomePage from './pages/Home.vue';
+import ProductsPage from './pages/Products.vue';
+import CartPage from './pages/Cart.vue';
 
 const routes: RouteRecordRaw[] = [
   {
@@ -22,8 +22,8 @@ const routes: RouteRecordRaw[] = [
     name: 'default-layout',
     children: [
       { path: '/', name: 'home', component: HomePage },
-      { path: '/about', name: 'about', component: AboutPage },
       { path: '/products', name: 'products', component: ProductsPage },
+      { path: '/cart', name: 'cart', component: CartPage },
     ],
   },
   {

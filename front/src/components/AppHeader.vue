@@ -21,13 +21,16 @@ import {
 } from '@/components/ui/dropdown-menu';
 import { Badge } from '@/components/ui/badge';
 import { useUserStore } from '@/stores/user-store';
+import { useCartStore } from '@/stores/cart-store';
 import { storeToRefs } from 'pinia';
 
 const navLinks = [
   { name: 'Chaussures Femme', routeName: 'products' },
   { name: 'Chaussures en promo', routeName: 'products' },
-  { name: 'Nouveautés ✨', routeName: '' },
+  { name: 'Nouveautés ✨', routeName: 'products' },
 ];
+
+const { cartProducts } = storeToRefs(useCartStore());
 const { canAccessDashboard } = storeToRefs(useUserStore());
 
 const userInfo = ref({
@@ -97,10 +100,17 @@ onMounted(() => {
             Se connecter
           </router-link>
           <router-link
-            to="#"
-            class="text-gray-800 flex flex-col justify-center items-center hover:bg-gray-50 focus:ring-4 focus:ring-gray-300 font-medium rounded-lg text-xs px-4 lg:px-5 py-2 lg:py-2.5 focus:outline-none"
+            :to="{ name: 'cart' }"
+            class="relative text-gray-800 flex flex-col justify-center items-center hover:bg-gray-50 focus:ring-4 focus:ring-gray-300 font-medium rounded-lg text-xs px-4 lg:px-5 py-2 lg:py-2.5 focus:outline-none"
           >
             <ShoppingCart :size="36" />
+
+            <Badge
+              class="absolute right-0 top-0"
+              v-if="cartProducts.length > 0"
+            >
+              {{ cartProducts.length }}
+            </Badge>
             <span>Panier</span>
           </router-link>
           <button

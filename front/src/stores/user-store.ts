@@ -8,9 +8,7 @@ export const LANGUAGES = [
 
 export const useUserStore = defineStore('user', () => {
   const canAccessDashboard = ref(false);
-  const actualLanguage = ref(
-    LANGUAGES[LANGUAGES.findIndex(l => l.code === 'fr')],
-  );
+  const actualLanguage = ref(LANGUAGES[0]);
 
   const updateLanguage = (language: string) => {
     actualLanguage.value =
