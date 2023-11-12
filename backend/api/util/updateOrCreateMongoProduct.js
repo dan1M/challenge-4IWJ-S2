@@ -17,6 +17,7 @@ async function updateOrCreateMongoProduct(productId) {
         const size = await Size.findByPk(productVariant.size_id);
         const color = await Color.findByPk(productVariant.color_id);
         variants.push({
+          id: productVariant.id,
           quantity: productVariant.quantity,
           price: productVariant.price,
           size: {
