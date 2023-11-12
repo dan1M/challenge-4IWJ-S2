@@ -9,12 +9,42 @@ import { Button } from '@/components/ui/button';
 import { Facebook, Instagram, Twitter } from 'lucide-vue-next';
 import { useUserStore, LANGUAGES } from '@/stores/user-store';
 import { storeToRefs } from 'pinia';
+import useCustomForm from '@/composables/useCustomForm';
+import { z } from 'zod';
 
 const { updateLanguage } = useUserStore();
 const { actualLanguage } = storeToRefs(useUserStore());
+
+const { email, submitForm } = useCustomForm(
+  { email: '' },
+  z.object({ email: z.string().email({ message: 'Email invalide' }) }),
+  '/newsletter',
+);
 </script>
 
 <template>
+  <div
+    class="z-50 flex justify-between w-full p-4 border-b border-gray-200 bg-gray-50"
+  >
+    <div class="flex items-center flex-shrink-0 w-full mx-auto sm:w-auto">
+      <form class="flex flex-col items-center w-full md:flex-row">
+        <label
+          for="email"
+          class="flex-shrink-0 mb-2 me-auto text-sm font-medium text-gray-500 md:mb-0 md:me-4 md:m-0"
+          >Abonnez-vous à notre Newsletter !</label
+        >
+        <input
+          type="email"
+          id="email"
+          v-model="email"
+          placeholder="Entrez votre email"
+          class="bg-white border border-gray-300 text-gray-900 md:w-64 mb-2 md:mb-0 md:me-4 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5"
+          required
+        />
+        <Button type="button" @click="submitForm">S'abonner</Button>
+      </form>
+    </div>
+  </div>
   <footer class="p-4 bg-white sm:p-6">
     <div class="mx-auto">
       <div class="md:flex md:justify-between">
