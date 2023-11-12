@@ -63,6 +63,8 @@ export default function useCustomForm(
         throw new Error('Something went wrong, request failed!');
       }
 
+      serverError.value = null;
+
       serverResponse.value = await response.json();
 
       isSubmitting.value = false;
@@ -70,7 +72,7 @@ export default function useCustomForm(
       if (error.name === 'AbortError') {
         throw new Error('Request canceled by user!');
       } else {
-        throw new Error('An unexpected error occurred.');
+        serverError.value = 'An unexpected error occurred.';
       }
     }
   };

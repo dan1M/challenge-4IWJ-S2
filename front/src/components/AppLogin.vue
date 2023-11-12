@@ -2,6 +2,7 @@
 import useCustomForm from '../composables/useCustomForm';
 import { useUserStore } from '@/stores/user-store';
 import { storeToRefs } from 'pinia';
+import { effect } from 'vue';
 
 import { z } from 'zod';
 
@@ -32,9 +33,9 @@ const {
 
 const { canAccessDashboard } = storeToRefs(useUserStore());
 
-console.log(serverResponse);
-
-canAccessDashboard.value = serverResponse.value.canAccessDashboard;
+effect(() => {
+  canAccessDashboard.value = serverResponse.value.canAccessDashboard;
+});
 </script>
 
 <template>
