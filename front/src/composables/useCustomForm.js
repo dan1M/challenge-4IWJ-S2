@@ -6,13 +6,15 @@ export default function useCustomForm(
   initialFormData,
   validationSchema,
   submitEndpoint = '',
+  method,
 ) {
-  const baseUrl = 'http://localhost:3000';
+  const baseUrl = 'http://localhost:3000/';
   const initialValues = Object.assign({}, initialFormData);
   const data = reactive(initialFormData);
   const validationErrors = reactive({});
   const serverError = ref(null);
   const isSubmitting = ref(false);
+  const serverResponse = ref({});
   Object.keys(initialFormData).forEach(key => {
     validationErrors[key] = '';
   });
@@ -44,32 +46,33 @@ export default function useCustomForm(
     isSubmitting.value = true;
 
     const abortController = new AbortController();
+
     currentAbortController = abortController;
 
-    return fetch(baseUrl + submitEndpoint, {
-      method: 'POST',
-      body: JSON.stringify(data),
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      signal: abortController.signal,
-    })
-      .then(response => {
-        if (!response.ok) {
-          throw new Error('Something went wrong, request failed!');
-        }
-        serverError.value = null;
-      })
-      .catch(error => {
-        if (error.name === 'AbortError') {
-          throw new Error('Request canceled by user!');
-        } else {
-          serverError.value = 'An unexpected error occurred.';
-        }
-      })
-      .finally(() => {
-        isSubmitting.value = false;
+    try {
+      const response = await fetch(baseUrl + submitEndpoint, {
+        method: method,
+        body: JSON.stringify(data),
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        signal: abortController.signal,
       });
+
+      if (!response.ok) {
+        throw new Error('Something went wrong, request failed!');
+      }
+
+      serverResponse.value = await response.json();
+
+      isSubmitting.value = false;
+    } catch (error) {
+      if (error.name === 'AbortError') {
+        throw new Error('Request canceled by user!');
+      } else {
+        throw new Error('An unexpected error occurred.');
+      }
+    }
   };
 
   const cancelRequest = () => {
@@ -90,6 +93,7 @@ export default function useCustomForm(
     ...toRefs(data),
     validationErrors,
     serverError,
+    serverResponse,
     isFormValid,
     isSubmitting,
     submitForm,

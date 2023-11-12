@@ -1,15 +1,16 @@
 <script setup>
 import { ref, computed } from 'vue';
 import { z } from 'zod';
+import useCustomForm from '../composables/useCustomForm';
 
-const firstname = ref('');
-const lastname = ref('');
-const email = ref('');
-const password = ref('');
-const passwordConfirmation = ref('');
-const newsletter = ref(false);
+// const firstname = ref('');
+// const lastname = ref('');
+// const email = ref('');
+// const password = ref('');
+// const passwordConfirmation = ref('');
+// const newsletter = ref(false);
 
-const initialFormData = {
+const formData = {
   firstname: '',
   lastname: '',
   email: '',
@@ -60,6 +61,27 @@ const validationSchema = z.object({
     }),
   newsletter: z.boolean(),
 });
+
+const endpoint = 'auth/signup';
+
+const method = 'PUT';
+
+const {
+  firstname,
+  lastname,
+  email,
+  password,
+  passwordConfirmation,
+  newsletter,
+  validationErrors,
+  serverError,
+  isSubmitting,
+  isFormValid,
+  submitForm,
+  cancelRequest,
+  resetForm,
+} = useCustomForm(formData, validationSchema, endpoint, method);
+
 const passwordConfirmationError = computed(() => {
   if (password.value !== passwordConfirmation.value) {
     return 'Les mots de passe ne correspondent pas';
@@ -67,22 +89,6 @@ const passwordConfirmationError = computed(() => {
 
   return '';
 });
-const canSubmit = computed(() => {
-  const parsedEmail = emailSchema.safeParse(email.value);
-  const parsedPassword = passwordSchema.safeParse(password.value);
-
-  return (
-    parsedEmail.success &&
-    parsedPassword.success &&
-    password.value === passwordConfirmation.value
-  );
-});
-
-const handleSumbit = () => {
-  if (canSubmit.value) {
-    console.log('Success');
-  }
-};
 </script>
 
 <template>
@@ -90,7 +96,7 @@ const handleSumbit = () => {
     <h1 class="uppercase font-bold text-lg tracking-wider text-center">
       Inscription
     </h1>
-    <form class="flex flex-col pt-8 space-y-6">
+    <form class="flex flex-col pt-8 space-y-6" @submit.prevent="submitForm">
       <div class="flex flex-col">
         <label
           for="email"
@@ -109,8 +115,8 @@ const handleSumbit = () => {
         <small class="text-zinc-500">
           Un email de confirmation vous sera envoyé à cette adresse
         </small>
-        <small class="error" v-if="emailError">
-          {{ emailError }}
+        <small class="error" v-if="validationErrors.email">
+          {{ validationErrors.email }}
         </small>
       </div>
       <div class="flex flex-col">
@@ -157,8 +163,8 @@ const handleSumbit = () => {
           required
           class="border p-2"
         />
-        <small class="error" v-if="passwordError">
-          {{ passwordError }}
+        <small class="error" v-if="validationErrors.password">
+          {{ validationErrors.password }}
         </small>
       </div>
       <div class="flex flex-col">
@@ -208,9 +214,8 @@ const handleSumbit = () => {
       </div>
       <div class="self-center">
         <button
-          type="button"
-          @click="handleSumbit"
-          :disabled="!canSubmit"
+          type="submit"
+          :disabled="!isFormValid"
           class="bg-black text-white px-16 py-3 hover:bg-white hover:border hover:border-black hover:text-black transition duration-300 uppercase tracking-wider font-bold"
         >
           Nous rejoindre

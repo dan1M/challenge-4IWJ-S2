@@ -22,6 +22,8 @@ const routes: RouteRecordRaw[] = [
       { path: '/', name: 'home', component: HomePage },
       { path: '/about', name: 'about', component: AboutPage },
       { path: '/products', name: 'products', component: ProductsPage },
+      { path: '/auth', name: 'auth', component: AuthPage },
+
     ],
   },
   {

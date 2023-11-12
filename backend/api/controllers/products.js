@@ -1,3 +1,6 @@
+const fs = require('node:fs');
+const path = require('node:path');
+
 const { validationResult } = require('express-validator/check');
 const Product = require('../models/sql/product.js');
 const ProductMongo = require('../models/nosql/product.js');
@@ -45,11 +48,13 @@ exports.create = async (req, res, next) => {
     const title = req.body.title;
     const description = req.body.description;
     const price = req.body.price;
+    const imageUrl = req.file.path;
     const stock = req.body.stock;
 
     const product = await Product.create({
       title: title,
       price: price,
+      imageUrl: imageUrl,
       description: description,
       stock: stock,
     });
@@ -58,6 +63,7 @@ exports.create = async (req, res, next) => {
       title: title,
       description: description,
       price: price,
+      imageUrl: imageUrl,
     });
 
     res.status(201).json(productMongo);
@@ -122,6 +128,8 @@ exports.delete = async (req, res, next) => {
       error.statusCode = 404;
       throw error;
     }
+    clearImage(product.imageUrl);
+
     await product.destroy();
     await ProductMongo.deleteOne({ title: product.title });
     res.sendStatus(204);
@@ -131,4 +139,9 @@ exports.delete = async (req, res, next) => {
     }
     next(err);
   }
+};
+
+const clearImage = filePath => {
+  filePath = path.join(__dirname, '..', filePath);
+  fs.unlink(filePath, err => console.log(err));
 };

@@ -7,6 +7,7 @@ export const LANGUAGES = [
 ];
 
 export const useUserStore = defineStore('user', () => {
+  const isLoggedIn = ref(false);
   const canAccessDashboard = ref(false);
   const actualLanguage = ref(
     LANGUAGES[LANGUAGES.findIndex(l => l.code === 'fr')],
@@ -18,6 +19,7 @@ export const useUserStore = defineStore('user', () => {
   };
 
   return {
+    isLoggedIn,
     canAccessDashboard,
     actualLanguage,
     updateLanguage,
