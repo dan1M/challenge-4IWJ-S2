@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { onMounted, ref } from 'vue';
+import { onMounted, ref, computed, watch } from 'vue';
 import Logo from './BrandLogo.vue';
 import {
   LogOut,
@@ -30,25 +30,34 @@ const navLinks = [
   { name: 'Nouveautés ✨', routeName: 'products' },
 ];
 
-const { isLoggedIn } = storeToRefs(useUserStore());
+const { canAccessDashboard, isLoggedIn } = storeToRefs(useUserStore());
 
 const { cartProducts } = storeToRefs(useCartStore());
-const { canAccessDashboard } = storeToRefs(useUserStore());
 
-const userInfo = ref({
-  firstname: 'Nom',
-  lastname: 'Prénom',
+const userInfo = ref({});
+
+const getUserInfo = async () => {
+  try {
+    const response = await fetch('http://localhost:3000/auth/me', {
+      credentials: 'include',
+    });
+    if (!response.ok) {
+      throw new Error('Something went wrong, request failed!');
+    }
+    isLoggedIn.value = true;
+    userInfo.value = await response.json();
+  } catch (err) {
+    console.log(err);
+  }
+};
+
+onMounted(() => {
+  if (localStorage.getItem('isLoggedIn')) {
+    getUserInfo();
+  }
 });
 
-const getUserInfo = () => {
-  fetch('http://localhost:3000/auth/me', { credentials: 'include' })
-    .then(res => res.json())
-    .then(data => {
-      console.log(data);
-      // TODO : set user info from data
-    });
-};
-onMounted(() => {
+watch(isLoggedIn, () => {
   getUserInfo();
 });
 </script>
@@ -68,8 +77,7 @@ onMounted(() => {
             </DropdownMenuTrigger>
             <DropdownMenuContent>
               <DropdownMenuLabel>
-                {{ userInfo.firstname }}{{ ' ' }}
-                {{ userInfo.lastname }}
+                {{ userInfo.name }}
               </DropdownMenuLabel>
               <DropdownMenuSeparator />
               <DropdownMenuItem v-if="canAccessDashboard">

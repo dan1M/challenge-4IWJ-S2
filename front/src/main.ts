@@ -68,4 +68,5 @@ app.use(router);
 app.use(pinia);
 app.use(VueCookies);
 
+
 app.mount('#app');

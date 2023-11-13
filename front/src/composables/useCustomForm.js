@@ -67,8 +67,6 @@ export default function useCustomForm(
         throw new Error('Something went wrong, request failed!');
       }
 
-      console.log(response.headers.getSetCookie());
-
       serverError.value = null;
 
       serverResponse.value = await response.json();
