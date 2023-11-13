@@ -1,14 +1,7 @@
-<script setup>
-import { ref, computed } from 'vue';
+<script setup lang="ts">
+import { computed } from 'vue';
 import { z } from 'zod';
 import useCustomForm from '../composables/useCustomForm';
-
-// const firstname = ref('');
-// const lastname = ref('');
-// const email = ref('');
-// const password = ref('');
-// const passwordConfirmation = ref('');
-// const newsletter = ref(false);
 
 const formData = {
   firstname: '',
@@ -80,7 +73,12 @@ const {
   submitForm,
   cancelRequest,
   resetForm,
-} = useCustomForm(formData, validationSchema, endpoint, method);
+} = useCustomForm({
+  initialFormData: formData,
+  validationSchema,
+  submitEndpoint: endpoint,
+  method,
+});
 
 const passwordConfirmationError = computed(() => {
   if (password.value !== passwordConfirmation.value) {

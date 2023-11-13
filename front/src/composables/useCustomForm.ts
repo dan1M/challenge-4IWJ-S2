@@ -3,23 +3,30 @@ import { z } from 'zod';
 import _ from 'lodash';
 import { useToast } from '@/components/ui/toast';
 
-export default function useCustomForm(
+interface CustomFormArgs {
+  initialFormData: Record<string, unknown>;
+  validationSchema: z.ZodObject<any>;
+  submitEndpoint?: string;
+  method?: 'GET' | 'POST' | 'PUT' | 'PATCH' | 'DELETE';
+}
+
+export default function useCustomForm({
   initialFormData,
   validationSchema,
   submitEndpoint = '',
-  method,
-) {
-  const baseUrl = 'http://localhost:3000/';
+  method = 'POST',
+}: CustomFormArgs) {
+  const baseUrl = import.meta.env.VITE_BACKEND_URL || 'http://localhost:3000';
   const initialValues = Object.assign({}, initialFormData);
   const data = reactive(initialFormData);
-  const validationErrors = reactive({});
-  const serverError = ref(null);
+  const validationErrors = reactive<Record<string, string>>({});
+  const serverError = ref<string | null>(null);
   const isSubmitting = ref(false);
-  const serverResponse = ref({});
+  const serverResponse = ref<{ canAccessDashboard?: boolean }>({});
   Object.keys(initialFormData).forEach(key => {
     validationErrors[key] = '';
   });
-  let currentAbortController = null;
+  let currentAbortController: AbortController | null = null;
 
   const { toast } = useToast();
 
@@ -53,7 +60,7 @@ export default function useCustomForm(
     currentAbortController = abortController;
 
     return fetch(baseUrl + submitEndpoint, {
-      method: 'POST',
+      method: method,
       body: JSON.stringify(data),
       headers: {
         'Content-Type': 'application/json',

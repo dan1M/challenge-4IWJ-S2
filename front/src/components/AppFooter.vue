@@ -15,11 +15,13 @@ import { z } from 'zod';
 const { updateLanguage } = useUserStore();
 const { actualLanguage } = storeToRefs(useUserStore());
 
-const { email, submitForm } = useCustomForm(
-  { email: '' },
-  z.object({ email: z.string().email({ message: 'Email invalide' }) }),
-  '/newsletter',
-);
+const { email, submitForm } = useCustomForm({
+  initialFormData: { email: '' },
+  validationSchema: z.object({
+    email: z.string().email({ message: 'Email invalide' }),
+  }),
+  submitEndpoint: '/newsletter',
+});
 </script>
 
 <template>

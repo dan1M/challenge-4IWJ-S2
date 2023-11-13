@@ -13,7 +13,7 @@ const validationSchema = z.object({
   email: z.string().email(),
   password: z.string().min(3),
 });
-const endpoint = 'auth/login';
+const endpoint = '/auth/login';
 
 const method = 'POST';
 
@@ -28,14 +28,21 @@ const {
   submitForm,
   cancelRequest,
   resetForm,
-} = useCustomForm(formData, validationSchema, endpoint, method);
+} = useCustomForm({
+  initialFormData: formData,
+  validationSchema,
+  submitEndpoint: endpoint,
+  method,
+});
 
 const { canAccessDashboard, isLoggedIn } = storeToRefs(useUserStore());
 
 watch(serverResponse, newServerResponse => {
   isLoggedIn.value = true;
   localStorage.setItem('isLoggedIn', JSON.stringify(isLoggedIn.value));
-  canAccessDashboard.value = newServerResponse.canAccessDashboard;
+  if (newServerResponse.canAccessDashboard) {
+    canAccessDashboard.value = newServerResponse.canAccessDashboard;
+  }
 });
 </script>
 
