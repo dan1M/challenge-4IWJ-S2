@@ -34,8 +34,8 @@ const { canAccessDashboard, isLoggedIn } = storeToRefs(useUserStore());
 
 watch(serverResponse, newServerResponse => {
   isLoggedIn.value = true;
+  localStorage.setItem('isLoggedIn', JSON.stringify(isLoggedIn.value));
   canAccessDashboard.value = newServerResponse.canAccessDashboard;
-  console.log($cookies.get());
 });
 </script>
 
