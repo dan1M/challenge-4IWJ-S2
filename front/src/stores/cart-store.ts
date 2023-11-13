@@ -1,5 +1,5 @@
 import { defineStore } from 'pinia';
-import { ref } from 'vue';
+import { computed, ref } from 'vue';
 
 interface CartProduct {
   stockId: number;
@@ -15,14 +15,51 @@ export const CART_STEPS = [
   { name: 'Paiement', order: 4 },
 ];
 
+const isDataTypeCartProduct = (data: any): data is CartProduct => {
+  try {
+    const parsedData = JSON.parse(data);
+    return (
+      Array.isArray(parsedData) &&
+      parsedData.every(
+        item =>
+          typeof item.stockId === 'number' &&
+          typeof item.name === 'string' &&
+          typeof item.price === 'number' &&
+          typeof item.quantity === 'number',
+      )
+    );
+  } catch (e) {
+    return false;
+  }
+};
+
 export const useCartStore = defineStore('cart', () => {
-  const cartProducts = ref<CartProduct[]>([]);
-  const cartTotal = ref(0);
+  const cartProducts =
+    localStorage.getItem('cart') !== null
+      ? ref<CartProduct[]>(
+          isDataTypeCartProduct(localStorage.getItem('cart'))
+            ? JSON.parse(localStorage.getItem('cart')!)
+            : [],
+        )
+      : ref<CartProduct[]>([]);
+  const cartTotal = computed(() =>
+    cartProducts.value.reduce(
+      (total: number, product: CartProduct) =>
+        total + product.price * product.quantity,
+      0,
+    ),
+  );
+  const cartTotalItems = computed(() =>
+    cartProducts.value.reduce(
+      (total: number, product: CartProduct) => total + product.quantity,
+      0,
+    ),
+  );
   const currentCartStep = ref(CART_STEPS[0]);
 
   const addProductToCart = (product: CartProduct) => {
     const existingProduct = cartProducts.value.find(
-      p => p.stockId === product.stockId,
+      (p: CartProduct) => p.stockId === product.stockId,
     );
 
     // Add product to cart, if product already exists in cart, increase quantity
@@ -32,18 +69,12 @@ export const useCartStore = defineStore('cart', () => {
       cartProducts.value.push(product);
     }
 
-    cartTotal.value = cartProducts.value.reduce(
-      (total, product) => total + product.price * product.quantity,
-      0,
-    );
-
     localStorage.setItem('cart', JSON.stringify(cartProducts.value));
-    localStorage.setItem('cartTotal', JSON.stringify(cartTotal.value));
   };
 
   const removeProductFromCart = (product: CartProduct) => {
     const existingProduct = cartProducts.value.find(
-      p => p.stockId === product.stockId,
+      (p: CartProduct) => p.stockId === product.stockId,
     );
 
     // Remove product from cart, if product already exists in cart, decrease quantity, if quantity is 0, remove product from cart
@@ -52,23 +83,17 @@ export const useCartStore = defineStore('cart', () => {
 
       if (existingProduct.quantity <= 0) {
         cartProducts.value = cartProducts.value.filter(
-          p => p.stockId !== product.stockId,
+          (p: CartProduct) => p.stockId !== product.stockId,
         );
       }
     }
-
-    cartTotal.value = cartProducts.value.reduce(
-      (total, product) => total + product.price * product.quantity,
-      0,
-    );
-
     localStorage.setItem('cart', JSON.stringify(cartProducts.value));
-    localStorage.setItem('cartTotal', JSON.stringify(cartTotal.value));
   };
 
   return {
     cartProducts,
     cartTotal,
+    cartTotalItems,
     addProductToCart,
     removeProductFromCart,
     currentCartStep,

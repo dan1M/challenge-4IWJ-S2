@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { onMounted, ref, computed, watch } from 'vue';
+import { onMounted, watch } from 'vue';
 import Logo from './BrandLogo.vue';
 import {
   LogOut,
@@ -34,7 +34,7 @@ const { canAccessDashboard, isLoggedIn, user } = storeToRefs(useUserStore());
 
 const { getUserInfo, logout } = useUserStore();
 
-const { cartProducts } = storeToRefs(useCartStore());
+const { cartProducts, cartTotalItems, cartTotal } = storeToRefs(useCartStore());
 
 onMounted(() => {
   if (isLoggedIn.value) {
@@ -53,7 +53,6 @@ watch(isLoggedIn, () => {
       <div class="flex flex-wrap justify-between items-center mx-auto">
         <Logo />
         <div class="flex items-center lg:order-2">
-          <!-- Check user is set (connected) -->
           <DropdownMenu v-if="isLoggedIn">
             <DropdownMenuTrigger as-child>
               <Avatar class="border mr-4" as="button">
@@ -101,11 +100,8 @@ watch(isLoggedIn, () => {
           >
             <ShoppingCart :size="36" />
 
-            <Badge
-              class="absolute right-0 top-0"
-              v-if="cartProducts.length > 0"
-            >
-              {{ cartProducts.length }}
+            <Badge class="absolute right-0 top-0" v-if="cartTotalItems > 0">
+              {{ cartTotalItems }}
             </Badge>
             <span>Panier</span>
           </router-link>

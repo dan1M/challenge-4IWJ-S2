@@ -3,6 +3,10 @@ import { Carousel, Navigation, Slide, Pagination } from 'vue3-carousel';
 import { onMounted, ref } from 'vue';
 import { Button } from '@/components/ui/button';
 
+import { useCartStore } from '@/stores/cart-store';
+
+const { addProductToCart, removeProductFromCart } = useCartStore();
+
 const pictures = ref([{ src: '/vite.svg', alt: 'Image 1' }]);
 
 const getProducts = () => {
@@ -23,6 +27,18 @@ onMounted(() => {
 </script>
 
 <template>
+  <Button
+    @click="
+      addProductToCart({
+        stockId: 1,
+        name: 'Oe la chaussure',
+        price: 100,
+        quantity: 1,
+      })
+    "
+  >
+    Ajouter produit
+  </Button>
   <Carousel :autoplay="5000" :wrap-around="true">
     <Slide v-for="item in pictures" :key="item.alt">
       <div class="carousel__item">

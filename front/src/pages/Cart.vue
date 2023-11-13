@@ -1,6 +1,7 @@
 <script setup lang="ts">
-import { useCartStore } from '@/stores/cart-store';
+import { useCartStore, CART_STEPS } from '@/stores/cart-store';
 import { storeToRefs } from 'pinia';
+import { onMounted } from 'vue';
 
 const { cartProducts, cartTotal } = storeToRefs(useCartStore());
 const { addProductToCart, removeProductFromCart } = useCartStore();
@@ -11,6 +12,8 @@ const { addProductToCart, removeProductFromCart } = useCartStore();
     <p class="text-center" v-if="cartTotal === 0">
       Vous n'avez aucun produit dans votre panier !
     </p>
+
+    <div v-for="product in cartProducts" :key="product.stockId"></div>
   </main>
 </template>
 
