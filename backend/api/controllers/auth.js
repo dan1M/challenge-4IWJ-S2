@@ -165,6 +165,15 @@ exports.login = async (req, res, next) => {
   }
 };
 
+exports.logout = async (req, res, next) => {
+  const token = req.signedCookies[process.env.JWT_NAME];
+  const user = jwt.verify(token, process.env.JWT_SECRET);
+  if (user) {
+    res.clearCookie(process.env.JWT_NAME);
+    res.sendStatus(204);
+  }
+};
+
 exports.verify = async (req, res, next) => {
   try {
     const token = await Token.findOne({
