@@ -18,7 +18,6 @@ import CartPage from './pages/Cart.vue';
 import AuthPage from './pages/Auth.vue';
 
 
-
 const routes: RouteRecordRaw[] = [
   {
     path: '/',
@@ -28,7 +27,16 @@ const routes: RouteRecordRaw[] = [
       { path: '/', name: 'home', component: HomePage },
       { path: '/products', name: 'products', component: ProductsPage },
       { path: '/cart', name: 'cart', component: CartPage },
-      { path: '/auth', name: 'auth', component: AuthPage }
+      {
+        path: '/auth', name: 'auth', beforeEnter: async (to, from, next) => {
+          const userStore = useUserStore();
+          if (userStore.isLoggedIn) {
+            next({ name: 'home', replace: true });
+          } else {
+            next();
+          }
+        }, component: AuthPage
+      }
     ],
   },
   {

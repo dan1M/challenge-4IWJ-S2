@@ -30,29 +30,14 @@ const navLinks = [
   { name: 'Nouveautés ✨', routeName: 'products' },
 ];
 
-const { canAccessDashboard, isLoggedIn } = storeToRefs(useUserStore());
+const { canAccessDashboard, isLoggedIn, user } = storeToRefs(useUserStore());
+
+const { getUserInfo, logout } = useUserStore();
 
 const { cartProducts } = storeToRefs(useCartStore());
 
-const userInfo = ref({});
-
-const getUserInfo = async () => {
-  try {
-    const response = await fetch('http://localhost:3000/auth/me', {
-      credentials: 'include',
-    });
-    if (!response.ok) {
-      throw new Error('Something went wrong, request failed!');
-    }
-    isLoggedIn.value = true;
-    userInfo.value = await response.json();
-  } catch (err) {
-    console.log(err);
-  }
-};
-
 onMounted(() => {
-  if (localStorage.getItem('isLoggedIn')) {
+  if (isLoggedIn.value) {
     getUserInfo();
   }
 });
@@ -77,7 +62,7 @@ watch(isLoggedIn, () => {
             </DropdownMenuTrigger>
             <DropdownMenuContent>
               <DropdownMenuLabel>
-                {{ userInfo.name }}
+                {{ user.name }}
               </DropdownMenuLabel>
               <DropdownMenuSeparator />
               <DropdownMenuItem v-if="canAccessDashboard">
@@ -99,7 +84,7 @@ watch(isLoggedIn, () => {
               </DropdownMenuItem>
               <DropdownMenuItem>
                 <LogOut class="mr-2 h-4 w-4 text-red-500" />
-                <span class="text-red-500">Se déconnecter</span>
+                <span class="text-red-500" @click="logout">Se déconnecter</span>
               </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
