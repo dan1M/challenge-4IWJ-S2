@@ -8,9 +8,9 @@ import { useCartStore } from '@/stores/cart-store';
 
 const { addProductToCart, removeProductFromCart } = useCartStore();
 
-const mainCarouselPictures = ref([{ src: '/vite.svg', alt: 'Image 1' }]);
-const promoProducts = ref([]);
-const newProducts = ref([]);
+const mainCarouselPictures = ref([{ src: '/vite.svg' }]);
+const promoProducts = ref([{ id: 0, src: '/vite.svg', title: 'Ch1' }]);
+const newProducts = ref([{ id: 0, src: '/vite.svg', title: 'Ch1' }]);
 
 const getProducts = () => {
   fetch('https://fakestoreapi.com/products?limit=5')
@@ -19,7 +19,6 @@ const getProducts = () => {
       // console.log(data);
       const images = data.map((item: any) => ({
         src: item.image,
-        alt: item.title,
       }));
       // mainCarouselPictures.value = images;
     });
@@ -43,9 +42,9 @@ onMounted(() => {
     Ajouter produit
   </Button>
   <Carousel :autoplay="5000" :wrap-around="true">
-    <Slide v-for="item in mainCarouselPictures" :key="item.alt">
+    <Slide v-for="item in mainCarouselPictures" :key="item.src">
       <div class="carousel__item">
-        <img :src="item.src" :alt="item.alt" />
+        <img :src="item.src" :alt="item.src" />
       </div>
     </Slide>
 
@@ -62,7 +61,7 @@ onMounted(() => {
       <Slide v-for="item in promoProducts" :key="item.id">
         <!-- Remplacer par component Card -->
         <div class="w-40 h-30">
-          <img :src="item.src" :alt="item.alt" />
+          <img :src="item.src" :alt="item.src" />
         </div>
       </Slide>
 
@@ -77,7 +76,7 @@ onMounted(() => {
       <Slide v-for="item in newProducts" :key="item.id">
         <!-- Remplacer par component Card -->
         <div class="w-40 h-30">
-          <img :src="item.src" :alt="item.alt" />
+          <img :src="item.src" :alt="item.title" />
         </div>
       </Slide>
 

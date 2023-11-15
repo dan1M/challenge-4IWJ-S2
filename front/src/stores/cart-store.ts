@@ -7,6 +7,13 @@ interface CartProduct {
   price: number;
   quantity: number;
 }
+interface Cart {
+  cartProducts: CartProduct[];
+  currentCartStep: number;
+  cartTimeout: string;
+}
+
+const CART_TIMEOUT = 15 * 60 * 1000; // 15 minutes
 
 export const CART_STEPS = [
   { name: 'Votre Panier', order: 1 },
@@ -15,18 +22,20 @@ export const CART_STEPS = [
   { name: 'Paiement', order: 4 },
 ];
 
-const isDataTypeCartProduct = (data: any): data is CartProduct => {
+const isDataTypeCartProduct = (data: any): data is Cart => {
   try {
     const parsedData = JSON.parse(data);
     return (
-      Array.isArray(parsedData) &&
-      parsedData.every(
-        item =>
-          typeof item.stockId === 'number' &&
-          typeof item.name === 'string' &&
-          typeof item.price === 'number' &&
-          typeof item.quantity === 'number',
-      )
+      Array.isArray(parsedData.cartProducts) &&
+      parsedData.cartProducts.every(
+        (product: CartProduct) =>
+          typeof product.stockId === 'number' &&
+          typeof product.name === 'string' &&
+          typeof product.price === 'number' &&
+          typeof product.quantity === 'number',
+      ) &&
+      typeof parsedData.currentCartStep === 'number' &&
+      typeof parsedData.cartTimeout === 'string'
     );
   } catch (e) {
     return false;
@@ -34,31 +43,30 @@ const isDataTypeCartProduct = (data: any): data is CartProduct => {
 };
 
 export const useCartStore = defineStore('cart', () => {
-  const cartProducts =
+  const cart =
     localStorage.getItem('cart') !== null
-      ? ref<CartProduct[]>(
+      ? ref<Cart>(
           isDataTypeCartProduct(localStorage.getItem('cart'))
             ? JSON.parse(localStorage.getItem('cart')!)
-            : [],
+            : { cartProducts: [], currentCartStep: 1, cartTimeout: '' },
         )
-      : ref<CartProduct[]>([]);
+      : ref<Cart>({ cartProducts: [], currentCartStep: 1, cartTimeout: '' });
   const cartTotal = computed(() =>
-    cartProducts.value.reduce(
+    cart.value.cartProducts.reduce(
       (total: number, product: CartProduct) =>
         total + product.price * product.quantity,
       0,
     ),
   );
   const cartTotalItems = computed(() =>
-    cartProducts.value.reduce(
+    cart.value.cartProducts.reduce(
       (total: number, product: CartProduct) => total + product.quantity,
       0,
     ),
   );
-  const currentCartStep = ref(CART_STEPS[0]);
 
   const addProductToCart = (product: CartProduct) => {
-    const existingProduct = cartProducts.value.find(
+    const existingProduct = cart.value.cartProducts.find(
       (p: CartProduct) => p.stockId === product.stockId,
     );
 
@@ -66,14 +74,19 @@ export const useCartStore = defineStore('cart', () => {
     if (existingProduct) {
       existingProduct.quantity += product.quantity;
     } else {
-      cartProducts.value.push(product);
+      cart.value.cartProducts.push(product);
     }
 
-    localStorage.setItem('cart', JSON.stringify(cartProducts.value));
+    // Set cart status to expire in 15 minutes
+    const date = new Date();
+    date.setTime(date.getTime() + CART_TIMEOUT);
+    cart.value.cartTimeout = date.toISOString();
+
+    localStorage.setItem('cart', JSON.stringify(cart.value));
   };
 
   const removeProductFromCart = (product: CartProduct) => {
-    const existingProduct = cartProducts.value.find(
+    const existingProduct = cart.value.cartProducts.find(
       (p: CartProduct) => p.stockId === product.stockId,
     );
 
@@ -82,20 +95,19 @@ export const useCartStore = defineStore('cart', () => {
       existingProduct.quantity -= product.quantity;
 
       if (existingProduct.quantity <= 0) {
-        cartProducts.value = cartProducts.value.filter(
+        cart.value.cartProducts = cart.value.cartProducts.filter(
           (p: CartProduct) => p.stockId !== product.stockId,
         );
       }
     }
-    localStorage.setItem('cart', JSON.stringify(cartProducts.value));
+    localStorage.setItem('cart', JSON.stringify(cart.value));
   };
 
   return {
-    cartProducts,
+    cart,
     cartTotal,
     cartTotalItems,
     addProductToCart,
     removeProductFromCart,
-    currentCartStep,
   };
 });

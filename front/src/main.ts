@@ -6,7 +6,7 @@ import App from './App.vue';
 import { createPinia } from 'pinia';
 import { useUserStore } from './stores/user-store';
 import { RouteRecordRaw, createRouter, createWebHistory } from 'vue-router';
-import VueCookies from 'vue-cookies'
+import VueCookies from 'vue-cookies';
 
 import DefaultLayout from './layouts/DefaultLayout.vue';
 import DashboardLayout from './layouts/DashboardLayout.vue';
@@ -16,7 +16,6 @@ import HomePage from './pages/Home.vue';
 import ProductsPage from './pages/Products.vue';
 import CartPage from './pages/Cart.vue';
 import AuthPage from './pages/Auth.vue';
-
 
 const routes: RouteRecordRaw[] = [
   {
@@ -28,15 +27,18 @@ const routes: RouteRecordRaw[] = [
       { path: '/products', name: 'products', component: ProductsPage },
       { path: '/cart', name: 'cart', component: CartPage },
       {
-        path: '/auth', name: 'auth', beforeEnter: async (to, from, next) => {
+        path: '/auth',
+        name: 'auth',
+        beforeEnter: async (to, from, next) => {
           const userStore = useUserStore();
           if (userStore.isLoggedIn) {
             next({ name: 'home', replace: true });
           } else {
             next();
           }
-        }, component: AuthPage
-      }
+        },
+        component: AuthPage,
+      },
     ],
   },
   {
@@ -75,6 +77,5 @@ const pinia = createPinia();
 app.use(router);
 app.use(pinia);
 app.use(VueCookies);
-
 
 app.mount('#app');
