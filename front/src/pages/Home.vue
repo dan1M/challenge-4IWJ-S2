@@ -1,4 +1,5 @@
 <script setup lang="ts">
+// @ts-ignore
 import { Carousel, Navigation, Slide, Pagination } from 'vue3-carousel';
 import { onMounted, ref } from 'vue';
 import { Button } from '@/components/ui/button';
@@ -7,7 +8,9 @@ import { useCartStore } from '@/stores/cart-store';
 
 const { addProductToCart, removeProductFromCart } = useCartStore();
 
-const pictures = ref([{ src: '/vite.svg', alt: 'Image 1' }]);
+const mainCarouselPictures = ref([{ src: '/vite.svg', alt: 'Image 1' }]);
+const promoProducts = ref([]);
+const newProducts = ref([]);
 
 const getProducts = () => {
   fetch('https://fakestoreapi.com/products?limit=5')
@@ -18,7 +21,7 @@ const getProducts = () => {
         src: item.image,
         alt: item.title,
       }));
-      // pictures.value = images;
+      // mainCarouselPictures.value = images;
     });
 };
 onMounted(() => {
@@ -40,7 +43,7 @@ onMounted(() => {
     Ajouter produit
   </Button>
   <Carousel :autoplay="5000" :wrap-around="true">
-    <Slide v-for="item in pictures" :key="item.alt">
+    <Slide v-for="item in mainCarouselPictures" :key="item.alt">
       <div class="carousel__item">
         <img :src="item.src" :alt="item.alt" />
       </div>
@@ -56,7 +59,7 @@ onMounted(() => {
   <section class="home-section">
     <h1>Les offres du moment</h1>
     <Carousel :items-to-show="2.5" class="mt-8">
-      <Slide v-for="item in pictures" :key="item.alt">
+      <Slide v-for="item in promoProducts" :key="item.id">
         <!-- Remplacer par component Card -->
         <div class="w-40 h-30">
           <img :src="item.src" :alt="item.alt" />
@@ -71,7 +74,7 @@ onMounted(() => {
   <section class="home-section">
     <h1>Les Nouveautés du mois</h1>
     <Carousel :items-to-show="2.5" class="mt-8">
-      <Slide v-for="item in pictures" :key="item.alt">
+      <Slide v-for="item in newProducts" :key="item.id">
         <!-- Remplacer par component Card -->
         <div class="w-40 h-30">
           <img :src="item.src" :alt="item.alt" />
