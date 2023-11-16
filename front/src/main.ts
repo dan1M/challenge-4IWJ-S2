@@ -16,6 +16,11 @@ import HomePage from './pages/Home.vue';
 import ProductsPage from './pages/Products.vue';
 import CartPage from './pages/Cart.vue';
 import AuthPage from './pages/Auth.vue';
+import ProfilePage from './pages/Profile.vue';
+import AppCredentials from './components/AppCredentials.vue';
+import AppUpdatePassword from './components/AppUpdatePassword.vue';
+
+
 
 
 const routes: RouteRecordRaw[] = [
@@ -36,7 +41,28 @@ const routes: RouteRecordRaw[] = [
             next();
           }
         }, component: AuthPage
-      }
+      },
+      {
+        path: '/profile', name: 'profile', beforeEnter: async (to, from, next) => {
+          const userStore = useUserStore();
+          console.log('USER STORE', userStore.isLoggedIn);
+          if (!userStore.isLoggedIn) {
+            next({ name: 'home', replace: true });
+          } else {
+            next();
+          }
+        },
+        component: ProfilePage, children: [
+          {
+            path: 'credentials',
+            component: AppCredentials
+          },
+          {
+            path: 'update-password',
+            component: AppUpdatePassword
+          }
+        ]
+      },
     ],
   },
   {
@@ -71,7 +97,6 @@ export const router = createRouter({
 
 const app = createApp(App);
 const pinia = createPinia();
-
 app.use(router);
 app.use(pinia);
 app.use(VueCookies);

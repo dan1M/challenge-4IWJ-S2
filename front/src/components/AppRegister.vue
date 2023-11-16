@@ -55,7 +55,7 @@ const validationSchema = z.object({
   newsletter: z.boolean(),
 });
 
-const endpoint = 'auth/signup';
+const endpoint = '/auth/signup';
 
 const method = 'PUT';
 
