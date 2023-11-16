@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { onMounted, computed, watch, effect, ref } from 'vue';
+import { onMounted, computed, watch } from 'vue';
 import { z } from 'zod';
 import useCustomForm from '../composables/useCustomForm';
 import { useUserStore } from '@/stores/user-store';
@@ -8,14 +8,14 @@ import { storeToRefs } from 'pinia';
 import { useToast } from '@/components/ui/toast';
 
 const { toast } = useToast();
-const { getUser } = useUserStore();
+const { getUser, getUserInfo } = useUserStore();
 const { user } = storeToRefs(useUserStore());
 
-effect(() => {
-  console.log(user);
-});
-
-let formData = {};
+const formData = {
+  firstname: user.value.firstname,
+  lastname: user.value.lastname,
+  email: user.value.email,
+};
 
 const validationSchema = z.object({
   firstname: z.string(),
@@ -25,7 +25,7 @@ const validationSchema = z.object({
   }),
 });
 
-const endpoint = `/users/${user.id}`;
+const endpoint = `/users/${user.value.id}`;
 
 const method = 'PATCH';
 
@@ -52,6 +52,7 @@ watch(serverResponse, () => {
     variant: 'default',
   });
   getUser();
+  getUserInfo();
 });
 
 const passwordConfirmationError = computed(() => {
@@ -61,17 +62,6 @@ const passwordConfirmationError = computed(() => {
 
   return '';
 });
-onMounted(() => {
-  getUser();
-});
-watch(user, () => {
-  formData = {
-    firstname: user.value.firstname,
-    lastname: user.value.lastname,
-    email: user.value.email,
-  };
-});
-console.log(formData, 'FOOORM DATA');
 </script>
 
 <template>

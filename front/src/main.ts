@@ -29,26 +29,38 @@ const routes: RouteRecordRaw[] = [
     component: DefaultLayout,
     name: 'default-layout',
     children: [
-      { path: '/', name: 'home', component: HomePage },
+      {
+        path: '/', name: 'home', beforeEnter: async (to, from, next) => {
+          const userStore = useUserStore();
+          await userStore.getUserInfo();
+          next();
+        }, component: HomePage
+      },
       { path: '/products', name: 'products', component: ProductsPage },
       { path: '/cart', name: 'cart', component: CartPage },
       {
         path: '/auth', name: 'auth', beforeEnter: async (to, from, next) => {
           const userStore = useUserStore();
-          if (userStore.isLoggedIn) {
-            next({ name: 'home', replace: true });
-          } else {
+          await userStore.getUserInfo();
+          if (!userStore.isLoggedIn) {
             next();
+          }
+          else {
+            next({ name: 'home', replace: true });
           }
         }, component: AuthPage
       },
       {
         path: '/profile', name: 'profile', beforeEnter: async (to, from, next) => {
           const userStore = useUserStore();
-          console.log('USER STORE', userStore.isLoggedIn);
+          await userStore.getUserInfo();
           if (!userStore.isLoggedIn) {
             next({ name: 'home', replace: true });
           } else {
+            await userStore.getUser();
+            if (!userStore.isLoggedIn) {
+              next({ name: 'home', replace: true });
+            }
             next();
           }
         },
@@ -59,6 +71,7 @@ const routes: RouteRecordRaw[] = [
           },
           {
             path: 'update-password',
+            name: 'update-password',
             component: AppUpdatePassword
           }
         ]

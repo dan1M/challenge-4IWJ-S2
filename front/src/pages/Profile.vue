@@ -1,8 +1,8 @@
 <script setup lang="ts">
-import { onMounted } from 'vue';
 import { useUserStore } from '@/stores/user-store';
-</script>
 
+const { logout } = useUserStore();
+</script>
 <template>
   <section class="flex justify-center items-center h-[800px]">
     <div class="flex justify-around">
@@ -14,12 +14,14 @@ import { useUserStore } from '@/stores/user-store';
             >
           </li>
           <li class="list-item-profile">
-            <router-link to="/profile/update-password"
+            <router-link :to="{ name: 'update-password' }"
               >Changer le mot de passe</router-link
             >
           </li>
           <li class="list-item-profile">Mes commandes</li>
-          <li class="list-item-profile">Déconnexion</li>
+          <li class="list-item-profile cursor-pointer" @click="logout">
+            Déconnexion
+          </li>
         </ul>
       </div>
       <div class="">

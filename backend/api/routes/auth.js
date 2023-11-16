@@ -45,10 +45,6 @@ router.post('/logout', authController.logout);
 
 router.get('/verify/:token', authController.verify);
 
-router.get('/me', isAuth, authController.getUserInfo);
-
-router.patch('/:id', authController.update);
-
 router.delete('/:id', isAdmin, authController.delete);
 
 router.post('/reset-password', authController.resetPassword);

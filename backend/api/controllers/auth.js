@@ -204,49 +204,6 @@ exports.verify = async (req, res, next) => {
   }
 };
 
-exports.update = async (req, res, next) => {
-  try {
-    const nbUser = await User.update(req.body, {
-      where: {
-        id: req.params.id,
-      },
-    });
-    if (nbUser[0] === 0) {
-      const error = new Error('Could not find user.');
-      error.statusCode = 404;
-      throw error;
-    }
-    const user = await User.findByPk(req.params.id);
-
-    if (!user) {
-      const error = new Error('Could not find user.');
-      error.statusCode = 404;
-      throw error;
-    }
-
-    const token = jwt.sign(
-      {
-        name: `${user.firstname} ${user.lastname}`,
-        roles: user.roles,
-        id: user.id.toString(),
-      },
-      process.env.JWT_SECRET,
-      { expiresIn: '30d' },
-    );
-    res.cookie(process.env.JWT_NAME, token, {
-      // secure: true,
-      signed: true,
-      httpOnly: true,
-    });
-    res.sendStatus(204);
-  } catch (err) {
-    if (!err.statusCode) {
-      err.statusCode = 500;
-    }
-    next(err);
-  }
-};
-
 exports.delete = async (req, res, next) => {
   try {
     const user = await User.findByPk(req.params.id);
@@ -257,17 +214,6 @@ exports.delete = async (req, res, next) => {
     }
     await user.destroy();
     res.sendStatus(204);
-  } catch (err) {
-    if (!err.statusCode) {
-      err.statusCode = 500;
-    }
-    next(err);
-  }
-};
-
-exports.getUserInfo = async (req, res, next) => {
-  try {
-    res.status(200).json(req.user);
   } catch (err) {
     if (!err.statusCode) {
       err.statusCode = 500;

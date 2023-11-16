@@ -72,7 +72,6 @@ export default function useCustomForm({
         if (!response.ok) {
           throw new Error('Something went wrong, request failed!');
         }
-        console.log(response);
 
         serverError.value = null;
         serverResponse.value = true;

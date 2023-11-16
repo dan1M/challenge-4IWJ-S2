@@ -29,8 +29,6 @@ export const useUserStore = defineStore('user', () => {
       }
       isLoggedIn.value = true;
       user.value = await response.json();
-      console.log('GET UUUUSER', user.value);
-
     } catch (err) {
       isLoggedIn.value = false;
       console.log(err);
@@ -43,11 +41,11 @@ export const useUserStore = defineStore('user', () => {
       });
       if (!response.ok) {
         throw new Error('Something went wrong, request failed!');
+
       }
       isLoggedIn.value = true;
 
       userInfo.value = await response.json();
-      console.log(userInfo, 'VALUES');
 
     } catch (err) {
       isLoggedIn.value = false;
