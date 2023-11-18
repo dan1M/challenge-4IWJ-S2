@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { onMounted, ref, computed, watch } from 'vue';
+import { ref, computed, watch } from 'vue';
 import Logo from './BrandLogo.vue';
 import {
   LogOut,
