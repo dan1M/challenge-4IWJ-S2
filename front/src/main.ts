@@ -7,6 +7,7 @@ import { createPinia } from 'pinia';
 import { useUserStore } from './stores/user-store';
 import { RouteRecordRaw, createRouter, createWebHistory } from 'vue-router';
 import VueCookies from 'vue-cookies';
+import VueNumberInput from '@chenfengyuan/vue-number-input';
 
 import DefaultLayout from './layouts/DefaultLayout.vue';
 import DashboardLayout from './layouts/DashboardLayout.vue';
@@ -77,5 +78,7 @@ const pinia = createPinia();
 app.use(router);
 app.use(pinia);
 app.use(VueCookies);
+
+app.component(VueNumberInput.name, VueNumberInput);
 
 app.mount('#app');

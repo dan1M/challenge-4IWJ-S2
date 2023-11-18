@@ -47,7 +47,7 @@ const { email, submitForm } = useCustomForm({
       </form>
     </div>
   </div>
-  <footer class="p-4 bg-white sm:p-6">
+  <footer class="p-4 bg-white sm:p-6 lg:px-16">
     <div class="mx-auto">
       <div class="md:flex md:justify-between">
         <div class="md:flex md:space-x-12 space-y-8 md:space-y-0">

@@ -31,12 +31,20 @@ onMounted(() => {
 <template>
   <Button
     @click="
-      addProductToCart({
-        stockId: 1,
-        name: 'Oe la chaussure',
-        price: 100,
-        quantity: 1,
-      })
+      () => {
+        addProductToCart({
+          stockId: 1,
+          name: 'Oe la chaussure',
+          price: 10.9,
+          quantity: 1,
+        });
+        addProductToCart({
+          stockId: 2,
+          name: 'Oe la DEUX',
+          price: 10.9,
+          quantity: 1,
+        });
+      }
     "
   >
     Ajouter produit
@@ -92,7 +100,7 @@ onMounted(() => {
   @apply h-96 flex justify-center items-center;
 }
 .home-section {
-  @apply py-14 px-4;
+  @apply py-14 px-4 lg:px-16;
 }
 h1 {
   @apply text-center text-3xl;

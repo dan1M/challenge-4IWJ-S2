@@ -34,7 +34,7 @@ const { canAccessDashboard, isLoggedIn, user } = storeToRefs(useUserStore());
 
 const { getUserInfo, logout } = useUserStore();
 
-const { cartProducts, cartTotalItems, cartTotal } = storeToRefs(useCartStore());
+const { cartTotalItems } = storeToRefs(useCartStore());
 
 onMounted(() => {
   if (isLoggedIn.value) {
@@ -49,7 +49,7 @@ watch(isLoggedIn, () => {
 
 <template>
   <header>
-    <nav class="bg-white border-gray-200 px-4 lg:px-6 py-2.5">
+    <nav class="bg-white border-gray-200 px-4 lg:px-16 py-2.5">
       <div class="flex flex-wrap justify-between items-center mx-auto">
         <Logo />
         <div class="flex items-center lg:order-2">
