@@ -2,25 +2,33 @@
 import useCustomForm from '../composables/useCustomForm';
 import { useUserStore } from '@/stores/user-store';
 import { storeToRefs } from 'pinia';
-import { watch } from 'vue';
+import { watch, computed } from 'vue';
 import { z } from 'zod';
 import { router } from '@/main';
+import { useToast } from '@/components/ui/toast';
+
+const { toast } = useToast();
 
 const formData = {
-  email: '',
-  password: '',
+  oldPassword: '',
+  newPassword: '',
+  confirmPassword: '',
 };
-const validationSchema = z.object({
-  email: z.string().email(),
-  password: z.string().min(3),
-});
-const endpoint = '/auth/login';
 
-const method = 'POST';
+const validationSchema = z.object({
+  oldPassword: z.string().min(3),
+  newPassword: z.string().min(3),
+  confirmPassword: z.string().min(3),
+});
+
+const endpoint = '/users/password';
+
+const method = 'PATCH';
 
 const {
-  email,
-  password,
+  oldPassword,
+  newPassword,
+  confirmPassword,
   validationErrors,
   serverError,
   serverResponse,
@@ -36,11 +44,19 @@ const {
   method,
 });
 
-const { canAccessDashboard, isLoggedIn } = storeToRefs(useUserStore());
+const passwordConfirmationError = computed(() => {
+  if (newPassword.value !== confirmPassword.value) {
+    return 'Les mots de passe ne correspondent pas';
+  }
 
-watch(serverResponse, newServerResponse => {
-  isLoggedIn.value = true;
-  router.push('/');
+  return '';
+});
+
+watch(serverResponse, () => {
+  toast({
+    title: 'Votre mot de passe a été mis à jour.',
+    variant: 'default',
+  });
 });
 </script>
 
@@ -63,17 +79,16 @@ watch(serverResponse, newServerResponse => {
           Ancien mot de passe
         </label>
         <input
-          id="email"
-          type="email"
-          v-model="email"
+          id="old-password"
+          type="password"
+          v-model="oldPassword"
           required
           autofocus
           class="border p-2"
           size="30"
-          autocomplete="username"
         />
-        <small class="error" v-if="validationErrors.email && email">
-          {{ validationErrors.email }}
+        <small class="error" v-if="validationErrors.oldPassword && oldPassword">
+          {{ validationErrors.oldPassword }}
         </small>
       </div>
       <div class="flex flex-col">
@@ -84,51 +99,50 @@ watch(serverResponse, newServerResponse => {
           Nouveau mot de passe
         </label>
         <input
-          id="email"
-          type="email"
-          v-model="email"
+          id="confirm-password"
+          type="password"
+          v-model="newPassword"
           required
           autofocus
           class="border p-2"
           size="30"
-          autocomplete="username"
         />
-        <small class="error" v-if="validationErrors.email && email">
-          {{ validationErrors.email }}
+        <small class="error" v-if="validationErrors.newPassword && newPassword">
+          {{ validationErrors.newPassword }}
         </small>
       </div>
       <div class="flex flex-col">
         <label
-          for="password"
+          for="confirm-password"
           class="uppercase text-sm tracking-wider text-zinc-500 font-bold"
         >
           Confirmer
         </label>
         <input
-          id="password"
+          id="confirm-password"
           type="password"
-          v-model="password"
+          v-model="confirmPassword"
           required
           class="border p-2"
           size="30"
-          autocomplete="current-password"
         />
-        <small class="error" v-if="validationErrors.password && password">
-          {{ validationErrors.password }}
+        <small
+          class="error"
+          v-if="validationErrors.confirmPassword && confirmPassword"
+        >
+          {{ validationErrors.confirmPassword }}
+        </small>
+        <small class="error" v-if="passwordConfirmationError">
+          {{ passwordConfirmationError }}
         </small>
       </div>
-      <div class="self-center">
+      <div>
         <button
           type="submit"
           :disabled="!isFormValid"
           class="bg-black text-white px-16 py-3 hover:bg-white hover:border hover:border-black hover:text-black transition duration-300 uppercase tracking-wider font-bold"
         >
-          Connexion
-        </button>
-      </div>
-      <div class="self-center">
-        <button type="button" class="text-sm hover:underline">
-          Mot de passe perdu?
+          Mettre à jour
         </button>
       </div>
     </form>
