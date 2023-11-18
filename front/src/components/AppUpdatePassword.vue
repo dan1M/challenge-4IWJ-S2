@@ -1,10 +1,7 @@
 <script setup lang="ts">
 import useCustomForm from '../composables/useCustomForm';
-import { useUserStore } from '@/stores/user-store';
-import { storeToRefs } from 'pinia';
 import { watch, computed } from 'vue';
 import { z } from 'zod';
-import { router } from '@/main';
 import { useToast } from '@/components/ui/toast';
 
 const { toast } = useToast();
