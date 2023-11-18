@@ -11,6 +11,7 @@
     "format": "prettier . --write"
   },
   "dependencies": {
+    "@vuepic/vue-datepicker": "^7.2.2",
     "@vueuse/core": "^10.6.1",
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.0.0",

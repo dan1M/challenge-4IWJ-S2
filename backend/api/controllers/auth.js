@@ -19,6 +19,10 @@ exports.signup = async (req, res, next) => {
     const email = req.body.email;
     const firstname = req.body.firstname;
     const lastname = req.body.lastname;
+    const dob = req.body.dob;
+    const address = req.body.address;
+    const zipcode = req.body.zipcode;
+    const city = req.body.city;
     const password = req.body.password;
     const hashedPw = await bcrypt.hash(password, 12);
 
@@ -27,6 +31,10 @@ exports.signup = async (req, res, next) => {
       password: hashedPw,
       firstname: firstname,
       lastname: lastname,
+      dob: dob,
+      address: address,
+      zipcode: zipcode,
+      city: city,
     });
 
     const token = await Token.create({

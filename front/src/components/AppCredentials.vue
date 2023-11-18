@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { onMounted, computed, watch } from 'vue';
+import { onMounted, computed, watch, ref } from 'vue';
 import { z } from 'zod';
 import useCustomForm from '../composables/useCustomForm';
 import { useUserStore } from '@/stores/user-store';
@@ -15,6 +15,10 @@ const formData = {
   firstname: user.value.firstname,
   lastname: user.value.lastname,
   email: user.value.email,
+  dob: user.value.dob,
+  address: user.value.address,
+  zipcode: user.value.zipcode,
+  city: user.value.city,
 };
 
 const validationSchema = z.object({
@@ -23,6 +27,10 @@ const validationSchema = z.object({
   email: z.string().email({
     message: 'Email invalide',
   }),
+  dob: z.string(),
+  address: z.string(),
+  city: z.string(),
+  zipcode: z.string(),
 });
 
 const endpoint = `/users/${user.value.id}`;
@@ -33,6 +41,10 @@ const {
   firstname,
   lastname,
   email,
+  dob,
+  address,
+  city,
+  zipcode,
   serverResponse,
   validationErrors,
   serverError,
@@ -62,6 +74,28 @@ const passwordConfirmationError = computed(() => {
 
   return '';
 });
+
+let cities = ref([]);
+const getCity = async () => {
+  cities.value = [];
+  const url = `https://geo.api.gouv.fr/communes?codePostal=${zipcode.value}`;
+
+  try {
+    const response = await fetch(url, {
+      method: 'GET',
+    });
+    if (!response.ok) {
+      throw new Error('Something went wrong, request failed!');
+    }
+    const result = await response.json();
+    result.forEach(element => {
+      cities.value.push(element.nom);
+      formData.city = cities.value[0];
+    });
+  } catch (err) {
+    console.log(err);
+  }
+};
 </script>
 
 <template>
@@ -116,14 +150,45 @@ const passwordConfirmationError = computed(() => {
       </div>
       <div class="flex flex-col">
         <label
+          for="dob"
+          class="uppercase text-sm tracking-wider text-zinc-500 font-bold"
+        >
+          Date de naissance
+        </label>
+        <VueDatePicker v:model="dob"></VueDatePicker>
+      </div>
+      <div class="flex flex-col">
+        <label
           for="address"
           class="uppercase text-sm tracking-wider text-zinc-500 font-bold"
         >
           Adresse
         </label>
-        <input id="address" type="text" required class="border p-2" />
+        <input
+          id="address"
+          type="text"
+          v-model="address"
+          required
+          class="border p-2"
+        />
       </div>
       <div class="flex justify-between">
+        <div class="flex flex-col">
+          <label
+            for="zipcode"
+            class="uppercase text-sm tracking-wider text-zinc-500 font-bold"
+          >
+            Code postal
+          </label>
+          <input
+            id="zipcode"
+            type="text"
+            v-model="zipcode"
+            @blur="getCity"
+            required
+            class="border p-2"
+          />
+        </div>
         <div class="flex flex-col">
           <label
             for="city"
@@ -131,21 +196,21 @@ const passwordConfirmationError = computed(() => {
           >
             Ville
           </label>
-          <input id="city" type="text" required autofocus class="border p-2" />
+          <select
+            id="city"
+            v-model="city"
+            autofocus
+            required
+            class="border p-2 w-64"
+          >
+            <option v-for="city in cities" :value="city" :key="city">
+              {{ city }}
+            </option>
+          </select>
         </div>
         <small class="error" v-if="validationErrors.city">
           {{ validationErrors.city }}
         </small>
-
-        <div class="flex flex-col">
-          <label
-            for="postal-code"
-            class="uppercase text-sm tracking-wider text-zinc-500 font-bold"
-          >
-            Code postal
-          </label>
-          <input id="postal-code" type="text" required class="border p-2" />
-        </div>
       </div>
       <div class="flex flex-col">
         <label

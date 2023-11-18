@@ -4,6 +4,8 @@ import 'vue3-carousel/dist/carousel.css';
 import { createApp } from 'vue';
 import App from './App.vue';
 import { createPinia } from 'pinia';
+import VueDatePicker from '@vuepic/vue-datepicker';
+import '@vuepic/vue-datepicker/dist/main.css';
 import { useUserStore } from './stores/user-store';
 import { RouteRecordRaw, createRouter, createWebHistory } from 'vue-router';
 import VueCookies from 'vue-cookies'
@@ -109,6 +111,8 @@ export const router = createRouter({
 // });
 
 const app = createApp(App);
+app.component('VueDatePicker', VueDatePicker);
+
 const pinia = createPinia();
 app.use(router);
 app.use(pinia);
