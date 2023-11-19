@@ -15,6 +15,8 @@ const colorRoutes = require('./routes/color');
 const sizeRoutes = require('./routes/size');
 const stockRoutes = require('./routes/stock');
 const orderRoutes = require('./routes/order');
+const cartRoutes = require('./routes/cart');
+const cronDeleteExpiredCart = require('./crons/deleteExpiredCarts');
 
 const port = process.env.PORT;
 
@@ -62,6 +64,9 @@ app.use('/colors', colorRoutes);
 app.use('/sizes', sizeRoutes);
 app.use('/stocks', stockRoutes);
 app.use('/orders', orderRoutes);
+app.use('/cart', cartRoutes);
+
+cronDeleteExpiredCart();
 
 app.use(
   multer({ storage: fileStorage, fileFilter: fileFilter }).single('image'),
