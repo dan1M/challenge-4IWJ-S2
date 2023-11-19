@@ -14,6 +14,7 @@ import DashboardLayout from './layouts/DashboardLayout.vue';
 import NotFound from './pages/NotFound.vue';
 import HomePage from './pages/Home.vue';
 import ProductsPage from './pages/Products.vue';
+import DetailProductPage from './pages/DetailProduct.vue';
 import CartPage from './pages/Cart.vue';
 import AuthPage from './pages/Auth.vue';
 
@@ -26,6 +27,7 @@ const routes: RouteRecordRaw[] = [
     children: [
       { path: '/', name: 'home', component: HomePage },
       { path: '/products', name: 'products', component: ProductsPage },
+      { path: '/product/:id', name: 'detailProduct', component: DetailProductPage},
       { path: '/cart', name: 'cart', component: CartPage },
       {
         path: '/auth', name: 'auth', beforeEnter: async (to, from, next) => {

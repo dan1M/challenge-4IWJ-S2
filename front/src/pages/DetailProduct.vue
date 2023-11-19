@@ -1,14 +1,33 @@
 <script setup lang="ts">
 
 import { ref, onMounted } from "vue";
+import { useRoute } from 'vue-router';
 import { Button } from "@/components/ui/button";
 
+
     const baseUrl = import.meta.env.VITE_BACKEND_URL || 'http://localhost:3000';
-    const endpoint = '/products';
+
+    const route = useRoute()
+    console.log(route.params.id);
+    
+    const endpoint = '/products/' + route.params.id ;
     const method = 'GET';  
 
-    const products = ref([]);
-    const  noProductLabel = 'No product found'
+    async onBeforeRouteEnter(to, from, next) {
+        const productId = to.params.id;
+
+        const endpoint = '/products/' + productId;
+        const method = 'GET';  
+        const product = await fetch(baseUrl + endpoint, {
+            method: method,
+            headers: {
+            'Content-Type': 'application/json',
+            },
+        });
+        next(vm => {
+        vm.product = product;
+        });
+    }
 
     onMounted(async () => {
         try {
@@ -21,14 +40,16 @@ import { Button } from "@/components/ui/button";
 
             const json = await response.json();
 
-            products.value = json;
+            product.value = json;
             
         } catch (error) {
             console.error(error);
         } 
     });
+    
 
     
+
     
 </script>
 
@@ -37,16 +58,15 @@ import { Button } from "@/components/ui/button";
         <div className="container px-8 mx-auto xl:px-5">
           
           <div class="mt-10 grid gap-10 md:grid-cols-2 lg:gap-10 xl:grid-cols-3 ">
-            <div :class="{ 'group cursor-pointer': true }" v-for="post in products" :key="post.id">
-                <router-link :to="{ name: 'detailProduct', params: { id: post._id }}">
+            <div :class="{ 'group cursor-pointer': true }" >
                 <div :class="{ 'overflow-hidden rounded-md bg-gray-100 transition-all hover:scale-105 dark:bg-gray-800': true }">
                   
                     <img
-                        v-if="post.img"
-                        :src="post.img"
-                        :placeholder="post.img.blurDataURL ? 'blur' : ''"
-                        :blur-data-url="post.img.blurDataURL"
-                        :alt="post.img.alt || 'Thumbnail'"
+                        v-if="product.img"
+                        :src="product.img"
+                        :placeholder="product.img.blurDataURL ? 'blur' : ''"
+                        :blur-data-url="product.img.blurDataURL"
+                        :alt="product.img.alt || 'Thumbnail'"
                         class="object-cover transition-all"
                         fill
                         sizes="(max-width: 768px) 30vw, 33vw"
@@ -60,21 +80,17 @@ import { Button } from "@/components/ui/button";
                     <div class="flex-1">
                         <div class="mt-2 flex items-center space-x-2 text-gray-500 dark:text-gray-400">
                             <div>
-                                <div className="mt-3 flex items-center space-x-3 text-gray-500 dark:text-gray-400">
 
-                                    <div class="flex gap-3">{{ post.category[0].name }} </div>
-                                    <span className="text-xs text-gray-300 dark:text-gray-600">
-                                        &bull;
-                                      </span>
-                                      <span className="text-xl text-pink-500 ">{{post.variants[0].price}}€</span>
-                                </div>
+                                <div class="flex gap-3">{{ product.category[0].name }} </div>
+                                    
                                 <h2
                                     :class="[
-                                    'text-lg', 'font-semibold leading-snug tracking-tight',
+                                     'text-3xl' ,
+                                     'line-clamp-2 font-medium tracking-normal text-black',
                                     'mt-2 dark:text-white',
                                     ]"
                                 >
-                                   
+                                    <router-link :to="`/products`">
                                     <span
                                         class="bg-gradient-to-r from-pink-200 to-pink-100 bg-[length:0px_10px] bg-left-bottom
                                             bg-no-repeat
@@ -84,9 +100,9 @@ import { Button } from "@/components/ui/button";
                                             group-hover:bg-[length:100%_10px]
                                             dark:from-purple-800 dark:to-purple-900"
                                     >
-                                        {{ post.title }} 
+                                        {{ product.title }} 
                                     </span>
-                                  
+                                    </router-link>
                                 </h2>
                             </div>
                         </div>
@@ -97,17 +113,9 @@ import { Button } from "@/components/ui/button";
                       <Button>Ajouter au panier</Button>
                     </div>
                   </div>
-                </router-link>
               </div>
           </div>
-          <div class="mt-10 flex justify-center">
-            <router-link
-              to="/products"
-              class="relative inline-flex items-center gap-1 rounded-md border border-gray-300 bg-white px-3 py-2 pl-4 text-sm font-medium text-gray-500 hover:bg-gray-50 focus:z-20 disabled:pointer-events-none disabled:opacity-40 dark:border-gray-500 dark:bg-gray-800 dark:text-gray-300"
-            >
-              <span>Voir plus</span>
-            </router-link>
-          </div>
+          
         </div>
       </div>
    
