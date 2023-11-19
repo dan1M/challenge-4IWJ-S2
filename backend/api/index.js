@@ -8,6 +8,7 @@ const cookieParser = require('cookie-parser');
 const multer = require('multer');
 const mailer = require('./util/mailer');
 const authRoutes = require('./routes/auth');
+const userRoutes = require('./routes/user');
 const productsRoutes = require('./routes/products');
 const categoryRoutes = require('./routes/category');
 const colorRoutes = require('./routes/color');
@@ -54,6 +55,7 @@ app.use(cors(corsOptions));
 app.use(cookieParser(process.env.JWT_SECRET));
 
 app.use('/auth', authRoutes);
+app.use('/users', userRoutes);
 app.use('/products', productsRoutes);
 app.use('/categories', categoryRoutes);
 app.use('/colors', colorRoutes);

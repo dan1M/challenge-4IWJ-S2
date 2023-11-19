@@ -1,20 +1,24 @@
 <script setup lang="ts">
-import { router } from '@/main';
-import { computed, ref, watch } from 'vue';
+import { computed, watch, ref } from 'vue';
 import { z } from 'zod';
 import useCustomForm from '../composables/useCustomForm';
+import { useUserStore } from '@/stores/user-store';
+import { storeToRefs } from 'pinia';
+
+import { useToast } from '@/components/ui/toast';
+
+const { toast } = useToast();
+const { getUser, getUserInfo } = useUserStore();
+const { user } = storeToRefs(useUserStore());
 
 const formData = {
-  firstname: '',
-  lastname: '',
-  email: '',
-  dob: '',
-  address: '',
-  zipcode: '',
-  city: '',
-  password: '',
-  passwordConfirmation: '',
-  newsletter: false,
+  firstname: user.value.firstname,
+  lastname: user.value.lastname,
+  email: user.value.email,
+  dob: user.value.dob,
+  address: user.value.address,
+  zipcode: user.value.zipcode,
+  city: user.value.city,
 };
 
 const validationSchema = z.object({
@@ -23,46 +27,15 @@ const validationSchema = z.object({
   email: z.string().email({
     message: 'Email invalide',
   }),
-  password: z
-    .string()
-    .regex(/[a-z]/, {
-      message: 'Il manque une minuscule',
-    })
-    .regex(/[A-Z]/, {
-      message: 'Il manque une majuscule',
-    })
-    .regex(/\d/, {
-      message: 'Il manque un chiffre',
-    })
-    .regex(/[^a-zA-Z0-9]/, {
-      message: 'Il manque un caractère spécial',
-    })
-    .min(12, {
-      message: '12 caractères minimum',
-    }),
-  passwordConfirmation: z
-    .string()
-    .regex(/[a-z]/, {
-      message: 'Il manque une minuscule',
-    })
-    .regex(/[A-Z]/, {
-      message: 'Il manque une majuscule',
-    })
-    .regex(/\d/, {
-      message: 'Il manque un chiffre',
-    })
-    .regex(/[^a-zA-Z0-9]/, {
-      message: 'Il manque un caractère spécial',
-    })
-    .min(12, {
-      message: '12 caractères minimum',
-    }),
-  newsletter: z.boolean(),
+  dob: z.string(),
+  address: z.string(),
+  city: z.string(),
+  zipcode: z.string(),
 });
 
-const endpoint = '/auth/signup';
+const endpoint = `/users/${user.value.id}`;
 
-const method = 'PUT';
+const method = 'PATCH';
 
 const {
   firstname,
@@ -70,24 +43,28 @@ const {
   email,
   dob,
   address,
-  zipcode,
   city,
-  password,
-  passwordConfirmation,
-  newsletter,
+  zipcode,
   serverResponse,
   validationErrors,
   serverError,
   isSubmitting,
   isFormValid,
   submitForm,
-  cancelRequest,
-  resetForm,
 } = useCustomForm({
   initialFormData: formData,
   validationSchema,
   submitEndpoint: endpoint,
   method,
+});
+
+watch(serverResponse, () => {
+  toast({
+    title: 'Vos informations ont bien été enregistrées',
+    variant: 'default',
+  });
+  getUser();
+  getUserInfo();
 });
 
 const passwordConfirmationError = computed(() => {
@@ -119,40 +96,22 @@ const getCity = async () => {
     console.log(err);
   }
 };
-
-watch(serverResponse, () => {
-  router.push({ name: 'home' });
-});
 </script>
 
 <template>
-  <main class="m-auto border p-6 w-1/3">
+  <main class="m-auto border p-6">
     <h1 class="uppercase font-bold text-lg tracking-wider text-center">
-      Inscription
+      Mes informations
     </h1>
-    <form class="flex flex-col pt-8 space-y-6" @submit.prevent="submitForm">
-      <div class="flex flex-col">
-        <label
-          for="email"
-          class="uppercase text-sm tracking-wider text-zinc-500 font-bold"
-        >
-          Email
-        </label>
-        <input
-          id="email"
-          type="email"
-          v-model="email"
-          required
-          autofocus
-          class="border p-2"
-        />
-        <small class="text-zinc-500">
-          Un email de confirmation vous sera envoyé à cette adresse
-        </small>
-        <small class="error" v-if="validationErrors.email">
-          {{ validationErrors.email }}
-        </small>
-      </div>
+    <br />
+    <p class="text-xs">
+      N'hésitez pas à modifier vos coordonnées ci-dessous pour que votre compte
+      Womeny soit parfaitement à jour.
+    </p>
+    <form
+      class="flex flex-col pt-8 space-y-6 w-[600px]"
+      @submit.prevent="submitForm"
+    >
       <div class="flex justify-between">
         <div class="flex flex-col">
           <label
@@ -196,10 +155,7 @@ watch(serverResponse, () => {
         >
           Date de naissance
         </label>
-        <VueDatePicker
-          v-model="dob"
-          :enable-time-picker="false"
-        ></VueDatePicker>
+        <VueDatePicker v:model="dob"></VueDatePicker>
       </div>
       <div class="flex flex-col">
         <label
@@ -240,13 +196,7 @@ watch(serverResponse, () => {
           >
             Ville
           </label>
-          <select
-            id="city"
-            v-model="city"
-            autofocus
-            required
-            class="border p-2 w-64"
-          >
+          <select id="city" v-model="city" required class="border p-2 w-64">
             <option v-for="city in cities" :value="city" :key="city">
               {{ city }}
             </option>
@@ -258,74 +208,30 @@ watch(serverResponse, () => {
       </div>
       <div class="flex flex-col">
         <label
-          for="password"
+          for="email"
           class="uppercase text-sm tracking-wider text-zinc-500 font-bold"
         >
-          Mot de passe
+          Email
         </label>
         <input
-          id="password"
-          type="password"
-          v-model="password"
+          id="email"
+          type="email"
+          v-model="email"
           required
           class="border p-2"
         />
-        <small class="error" v-if="validationErrors.password">
-          {{ validationErrors.password }}
-        </small>
-      </div>
-      <div class="flex flex-col">
-        <label
-          for="password-confirmation"
-          class="uppercase text-sm tracking-wider text-zinc-500 font-bold"
-        >
-          Confirmation du mot de passe
-        </label>
-        <input
-          id="password-confirmation"
-          type="password"
-          v-model="passwordConfirmation"
-          required
-          class="border p-2"
-        />
-        <small class="error" v-if="passwordConfirmationError">
-          {{ passwordConfirmationError }}
+        <small class="error" v-if="validationErrors.email">
+          {{ validationErrors.email }}
         </small>
       </div>
 
-      <div class="flex">
-        <input
-          id="newsletter"
-          type="checkbox"
-          v-model="newsletter"
-          class="mr-2"
-        />
-        <label
-          for="newsletter"
-          class="text-sm text-zinc-500 font-semibold cursor-pointer"
-        >
-          S'inscrire à la newsletter
-        </label>
-      </div>
-      <div class="text-center">
-        <small>
-          En créant votre compte, vous acceptez nos
-          <a href="#" class="underline hover:opacity-50 py-3">
-            termes et conditions</a
-          >
-          et
-          <a href="#" class="underline hover:opacity-50 py-3">
-            politique&nbsp;de&nbsp;confidentialité
-          </a>
-        </small>
-      </div>
-      <div class="self-center">
+      <div>
         <button
           type="submit"
           :disabled="!isFormValid"
           class="bg-black text-white px-16 py-3 hover:bg-white hover:border hover:border-black hover:text-black transition duration-300 uppercase tracking-wider font-bold"
         >
-          Nous rejoindre
+          Modifier
         </button>
       </div>
     </form>

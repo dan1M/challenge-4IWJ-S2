@@ -19,6 +19,10 @@ exports.signup = async (req, res, next) => {
     const email = req.body.email;
     const firstname = req.body.firstname;
     const lastname = req.body.lastname;
+    const dob = req.body.dob;
+    const address = req.body.address;
+    const zipcode = req.body.zipcode;
+    const city = req.body.city;
     const password = req.body.password;
     const hashedPw = await bcrypt.hash(password, 12);
 
@@ -27,6 +31,10 @@ exports.signup = async (req, res, next) => {
       password: hashedPw,
       firstname: firstname,
       lastname: lastname,
+      dob: dob,
+      address: address,
+      zipcode: zipcode,
+      city: city,
     });
 
     const token = await Token.create({
@@ -204,49 +212,6 @@ exports.verify = async (req, res, next) => {
   }
 };
 
-exports.update = async (req, res, next) => {
-  try {
-    const nbUser = await User.update(req.body, {
-      where: {
-        id: req.params.id,
-      },
-    });
-    if (nbUser[0] === 0) {
-      const error = new Error('Could not find user.');
-      error.statusCode = 404;
-      throw error;
-    }
-    const user = await User.findByPk(req.params.id);
-
-    if (!user) {
-      const error = new Error('Could not find user.');
-      error.statusCode = 404;
-      throw error;
-    }
-
-    const token = jwt.sign(
-      {
-        name: `${user.firstname} ${user.lastname}`,
-        roles: user.roles,
-        id: user.id.toString(),
-      },
-      process.env.JWT_SECRET,
-      { expiresIn: '30d' },
-    );
-    res.cookie(process.env.JWT_NAME, token, {
-      // secure: true,
-      signed: true,
-      httpOnly: true,
-    });
-    res.sendStatus(204);
-  } catch (err) {
-    if (!err.statusCode) {
-      err.statusCode = 500;
-    }
-    next(err);
-  }
-};
-
 exports.delete = async (req, res, next) => {
   try {
     const user = await User.findByPk(req.params.id);
@@ -257,17 +222,6 @@ exports.delete = async (req, res, next) => {
     }
     await user.destroy();
     res.sendStatus(204);
-  } catch (err) {
-    if (!err.statusCode) {
-      err.statusCode = 500;
-    }
-    next(err);
-  }
-};
-
-exports.getUserInfo = async (req, res, next) => {
-  try {
-    res.status(200).json(req.user);
   } catch (err) {
     if (!err.statusCode) {
       err.statusCode = 500;

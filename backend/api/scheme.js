@@ -47,7 +47,6 @@ Order.belongsTo(User, {
 
 Order.hasMany(DetailsOrder, { foreignKey: 'order_id' });
 
-
 // detailsOrder relations
 DetailsOrder.belongsTo(Product, {
   foreignKey: 'product_id',
@@ -58,4 +57,4 @@ DetailsOrder.belongsTo(Order, {
   onDelete: 'CASCADE',
 });
 
-sequelize.sync();
+sequelize.sync({ force: true });

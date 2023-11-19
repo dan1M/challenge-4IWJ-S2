@@ -40,13 +40,6 @@ const { canAccessDashboard, isLoggedIn } = storeToRefs(useUserStore());
 
 watch(serverResponse, newServerResponse => {
   isLoggedIn.value = true;
-  localStorage.setItem('isLoggedIn', JSON.stringify(isLoggedIn.value));
-  canAccessDashboard.value = newServerResponse.canAccessDashboard;
-  localStorage.setItem(
-    'canAccessDashboard',
-    JSON.stringify(canAccessDashboard.value),
-  );
-
   router.push('/');
 });
 </script>

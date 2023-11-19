@@ -11,11 +11,11 @@ module.exports = (req, res, next) => {
     return res.sendStatus(401);
   }
 
-  const { name, roles } = user;
+  const { name, id } = user;
 
   const response = {
     name: name,
-    roles: roles,
+    id: id,
   };
 
   req.user = response;

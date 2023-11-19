@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { onMounted, watch } from 'vue';
+import { ref, computed, watch } from 'vue';
 import Logo from './BrandLogo.vue';
 import {
   LogOut,
@@ -30,21 +30,13 @@ const navLinks = [
   { name: 'Nouveautés ✨', routeName: 'products' },
 ];
 
-const { canAccessDashboard, isLoggedIn, user } = storeToRefs(useUserStore());
+const { canAccessDashboard, isLoggedIn, userInfo } = storeToRefs(
+  useUserStore(),
+);
 
-const { getUserInfo, logout } = useUserStore();
+const { logout } = useUserStore();
 
-const { cartTotalItems } = storeToRefs(useCartStore());
-
-onMounted(() => {
-  if (isLoggedIn.value) {
-    getUserInfo();
-  }
-});
-
-watch(isLoggedIn, () => {
-  getUserInfo();
-});
+const { cartProducts } = storeToRefs(useCartStore());
 </script>
 
 <template>
@@ -61,7 +53,7 @@ watch(isLoggedIn, () => {
             </DropdownMenuTrigger>
             <DropdownMenuContent>
               <DropdownMenuLabel>
-                {{ user.name }}
+                {{ userInfo.name }}
               </DropdownMenuLabel>
               <DropdownMenuSeparator />
               <DropdownMenuItem v-if="canAccessDashboard">
@@ -70,7 +62,9 @@ watch(isLoggedIn, () => {
               </DropdownMenuItem>
               <DropdownMenuItem>
                 <User class="mr-2 h-4 w-4" />
-                <span>Mon compte</span>
+                <router-link :to="{ name: 'profile' }">
+                  <span>Mon compte</span>
+                </router-link>
               </DropdownMenuItem>
               <DropdownMenuItem>
                 <Bell class="mr-2 h-4 w-4" />
