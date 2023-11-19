@@ -72,11 +72,9 @@ export default function useCustomForm({
         if (!response.ok) {
           throw new Error('Something went wrong, request failed!');
         }
+
         serverError.value = null;
-        return response.json();
-      })
-      .then(result => {
-        serverResponse.value = result;
+        serverResponse.value = true;
       })
       .catch(error => {
         toast({ title: 'Une erreur est survenue!', variant: 'destructive' });

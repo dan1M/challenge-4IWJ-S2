@@ -4,6 +4,8 @@ import 'vue3-carousel/dist/carousel.css';
 import { createApp } from 'vue';
 import App from './App.vue';
 import { createPinia } from 'pinia';
+import VueDatePicker from '@vuepic/vue-datepicker';
+import '@vuepic/vue-datepicker/dist/main.css';
 import { useUserStore } from './stores/user-store';
 import { RouteRecordRaw, createRouter, createWebHistory } from 'vue-router';
 import VueCookies from 'vue-cookies'
@@ -17,6 +19,11 @@ import ProductsPage from './pages/Products.vue';
 import DetailProductPage from './pages/DetailProduct.vue';
 import CartPage from './pages/Cart.vue';
 import AuthPage from './pages/Auth.vue';
+import ProfilePage from './pages/Profile.vue';
+import AppCredentials from './components/AppCredentials.vue';
+import AppUpdatePassword from './components/AppUpdatePassword.vue';
+
+
 
 
 const routes: RouteRecordRaw[] = [
@@ -25,20 +32,54 @@ const routes: RouteRecordRaw[] = [
     component: DefaultLayout,
     name: 'default-layout',
     children: [
-      { path: '/', name: 'home', component: HomePage },
+      {
+        path: '/', name: 'home', beforeEnter: async (to, from, next) => {
+          const userStore = useUserStore();
+          await userStore.getUserInfo();
+          next();
+        }, component: HomePage
+      },
       { path: '/products', name: 'products', component: ProductsPage },
       { path: '/product/:id', name: 'detailProduct', component: DetailProductPage},
       { path: '/cart', name: 'cart', component: CartPage },
       {
         path: '/auth', name: 'auth', beforeEnter: async (to, from, next) => {
           const userStore = useUserStore();
-          if (userStore.isLoggedIn) {
-            next({ name: 'home', replace: true });
-          } else {
+          await userStore.getUserInfo();
+          if (!userStore.isLoggedIn) {
             next();
           }
+          else {
+            next({ name: 'home', replace: true });
+          }
         }, component: AuthPage
-      }
+      },
+      {
+        path: '/profile', name: 'profile', beforeEnter: async (to, from, next) => {
+          const userStore = useUserStore();
+          await userStore.getUserInfo();
+          if (!userStore.isLoggedIn) {
+            next({ name: 'home', replace: true });
+          } else {
+            await userStore.getUser();
+            if (!userStore.isLoggedIn) {
+              next({ name: 'home', replace: true });
+            }
+            next();
+          }
+        },
+        component: ProfilePage, children: [
+          {
+            path: 'credentials',
+            component: AppCredentials
+          },
+          {
+            path: 'update-password',
+            name: 'update-password',
+            component: AppUpdatePassword
+          }
+        ]
+      },
     ],
   },
   {
@@ -72,8 +113,9 @@ export const router = createRouter({
 // });
 
 const app = createApp(App);
-const pinia = createPinia();
+app.component('VueDatePicker', VueDatePicker);
 
+const pinia = createPinia();
 app.use(router);
 app.use(pinia);
 app.use(VueCookies);
