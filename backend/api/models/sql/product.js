@@ -25,9 +25,9 @@ const Product = sequelize.define(
       price: {
         type: DataTypes.DOUBLE,
       },
-      imageUrl: {
-        type: DataTypes.TEXT,
-      },
+      // imageUrl: {
+      //   type: DataTypes.TEXT,
+      // },
       stock: {
         type: DataTypes.INTEGER,
         allowNull: true,

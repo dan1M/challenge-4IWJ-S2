@@ -1,7 +1,7 @@
 const fs = require('node:fs');
 const path = require('node:path');
-
 const { validationResult } = require('express-validator/check');
+const createAlert = require('../util/createAlert');
 const Product = require('../models/sql/product.js');
 const ProductMongo = require('../models/nosql/product.js');
 const Stock = require('../models/sql/stock.js');
@@ -97,15 +97,17 @@ exports.create = async (req, res, next) => {
     const description = req.body.description;
     const category = req.body.category;
 
-    const imageUrl = req.file.path;
+    // const imageUrl = req.file.path;
     const variantsBody = req.body.variants;
 
     const product = await Product.create({
       title: title,
-      imageUrl: imageUrl,
+      // imageUrl: imageUrl,
       description: description,
       category_id: category,
     });
+
+    createAlert(product.category_id);
 
     //create variants for a product
     for (const variant of variantsBody) {

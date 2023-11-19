@@ -17,10 +17,33 @@ const DetailsOrder = require('./models/sql/detailsOrder');
 const Size = require('./models/sql/size');
 const Color = require('./models/sql/color');
 const Stock = require('./models/sql/stock');
+const Alert = require('./models/sql/alert');
+const AlertType = require('./models/sql/alert-type');
 
 Token.belongsTo(User);
 
 Product.belongsTo(Category, {
+  foreignKey: 'category_id',
+  onDelete: 'CASCADE',
+});
+
+// Alert relations
+Alert.belongsTo(Product, {
+  foreignKey: 'product_id',
+  onDelete: 'CASCADE',
+});
+
+Alert.belongsTo(User, {
+  foreignKey: 'user_id',
+  onDelete: 'CASCADE',
+});
+
+Alert.belongsTo(AlertType, {
+  foreignKey: 'alert_type_id',
+  onDelete: 'CASCADE',
+});
+
+Alert.belongsTo(Category, {
   foreignKey: 'category_id',
   onDelete: 'CASCADE',
 });
