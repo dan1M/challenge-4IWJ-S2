@@ -13,7 +13,7 @@ import { Button } from "@/components/ui/button";
     const endpoint = '/products/' + route.params.id ;
     const method = 'GET';  
 
-    async onBeforeRouteEnter(to, from, next) {
+    /*async onBeforeRouteEnter(to, from, next) {
         const productId = to.params.id;
 
         const endpoint = '/products/' + productId;
@@ -27,7 +27,7 @@ import { Button } from "@/components/ui/button";
         next(vm => {
         vm.product = product;
         });
-    }
+    }*/
 
     onMounted(async () => {
         try {

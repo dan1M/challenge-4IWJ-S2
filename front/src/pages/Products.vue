@@ -37,16 +37,16 @@ import { Button } from "@/components/ui/button";
         <div className="container px-8 mx-auto xl:px-5">
           
           <div class="mt-10 grid gap-10 md:grid-cols-2 lg:gap-10 xl:grid-cols-3 ">
-            <div :class="{ 'group cursor-pointer': true }" v-for="post in products" :key="post.id">
-                <router-link :to="{ name: 'detailProduct', params: { id: post._id }}">
+            <div :class="{ 'group cursor-pointer': true }" v-for="product in products" :key="product.id">
+                <router-link :to="{ name: 'detailProduct', params: { id: product._id }}">
                 <div :class="{ 'overflow-hidden rounded-md bg-gray-100 transition-all hover:scale-105 dark:bg-gray-800': true }">
                   
                     <img
-                        v-if="post.img"
-                        :src="post.img"
-                        :placeholder="post.img.blurDataURL ? 'blur' : ''"
-                        :blur-data-url="post.img.blurDataURL"
-                        :alt="post.img.alt || 'Thumbnail'"
+                        v-if="product.img"
+                        :src="product.img"
+                        :placeholder="product.img.blurDataURL ? 'blur' : ''"
+                        :blur-data-url="product.img.blurDataURL"
+                        :alt="product.img.alt || 'Thumbnail'"
                         class="object-cover transition-all"
                         fill
                         sizes="(max-width: 768px) 30vw, 33vw"
@@ -62,11 +62,11 @@ import { Button } from "@/components/ui/button";
                             <div>
                                 <div className="mt-3 flex items-center space-x-3 text-gray-500 dark:text-gray-400">
 
-                                    <div class="flex gap-3">{{ post.category[0].name }} </div>
+                                    <div class="flex gap-3">{{ product.category[0].name }} </div>
                                     <span className="text-xs text-gray-300 dark:text-gray-600">
                                         &bull;
                                       </span>
-                                      <span className="text-xl text-pink-500 ">{{post.variants[0].price}}€</span>
+                                      <span className="text-xl text-pink-500 ">{{product.variants[0].price}}€</span>
                                 </div>
                                 <h2
                                     :class="[
@@ -84,7 +84,7 @@ import { Button } from "@/components/ui/button";
                                             group-hover:bg-[length:100%_10px]
                                             dark:from-purple-800 dark:to-purple-900"
                                     >
-                                        {{ post.title }} 
+                                        {{ product.title }} 
                                     </span>
                                   
                                 </h2>
