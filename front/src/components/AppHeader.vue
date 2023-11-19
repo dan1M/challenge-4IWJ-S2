@@ -36,7 +36,7 @@ const { canAccessDashboard, isLoggedIn, userInfo } = storeToRefs(
 
 const { logout } = useUserStore();
 
-const { cartProducts } = storeToRefs(useCartStore());
+const { cartTotalItems } = storeToRefs(useCartStore());
 </script>
 
 <template>
