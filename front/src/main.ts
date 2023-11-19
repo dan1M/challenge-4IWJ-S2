@@ -8,7 +8,8 @@ import VueDatePicker from '@vuepic/vue-datepicker';
 import '@vuepic/vue-datepicker/dist/main.css';
 import { useUserStore } from './stores/user-store';
 import { RouteRecordRaw, createRouter, createWebHistory } from 'vue-router';
-import VueCookies from 'vue-cookies'
+import VueCookies from 'vue-cookies';
+import VueNumberInput from '@chenfengyuan/vue-number-input';
 
 import DefaultLayout from './layouts/DefaultLayout.vue';
 import DashboardLayout from './layouts/DashboardLayout.vue';
@@ -23,9 +24,6 @@ import ProfilePage from './pages/Profile.vue';
 import AppCredentials from './components/AppCredentials.vue';
 import AppUpdatePassword from './components/AppUpdatePassword.vue';
 
-
-
-
 const routes: RouteRecordRaw[] = [
   {
     path: '/',
@@ -33,29 +31,36 @@ const routes: RouteRecordRaw[] = [
     name: 'default-layout',
     children: [
       {
-        path: '/', name: 'home', beforeEnter: async (to, from, next) => {
+        path: '/',
+        name: 'home',
+        beforeEnter: async (to, from, next) => {
           const userStore = useUserStore();
           await userStore.getUserInfo();
           next();
-        }, component: HomePage
+        },
+        component: HomePage,
       },
       { path: '/products', name: 'products', component: ProductsPage },
       { path: '/product/:id', name: 'detailProduct', component: DetailProductPage},
       { path: '/cart', name: 'cart', component: CartPage },
       {
-        path: '/auth', name: 'auth', beforeEnter: async (to, from, next) => {
+        path: '/auth',
+        name: 'auth',
+        beforeEnter: async (to, from, next) => {
           const userStore = useUserStore();
           await userStore.getUserInfo();
           if (!userStore.isLoggedIn) {
             next();
-          }
-          else {
+          } else {
             next({ name: 'home', replace: true });
           }
-        }, component: AuthPage
+        },
+        component: AuthPage,
       },
       {
-        path: '/profile', name: 'profile', beforeEnter: async (to, from, next) => {
+        path: '/profile',
+        name: 'profile',
+        beforeEnter: async (to, from, next) => {
           const userStore = useUserStore();
           await userStore.getUserInfo();
           if (!userStore.isLoggedIn) {
@@ -68,17 +73,18 @@ const routes: RouteRecordRaw[] = [
             next();
           }
         },
-        component: ProfilePage, children: [
+        component: ProfilePage,
+        children: [
           {
             path: 'credentials',
-            component: AppCredentials
+            component: AppCredentials,
           },
           {
             path: 'update-password',
             name: 'update-password',
-            component: AppUpdatePassword
-          }
-        ]
+            component: AppUpdatePassword,
+          },
+        ],
       },
     ],
   },
@@ -120,5 +126,6 @@ app.use(router);
 app.use(pinia);
 app.use(VueCookies);
 
+app.component(VueNumberInput.name, VueNumberInput);
 
 app.mount('#app');

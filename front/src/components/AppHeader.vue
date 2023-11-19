@@ -36,16 +36,15 @@ const { canAccessDashboard, isLoggedIn, userInfo } = storeToRefs(
 
 const { logout } = useUserStore();
 
-const { cartProducts } = storeToRefs(useCartStore());
+const { cartTotalItems } = storeToRefs(useCartStore());
 </script>
 
 <template>
   <header>
-    <nav class="bg-white border-gray-200 px-4 lg:px-6 py-2.5">
+    <nav class="bg-white border-gray-200 px-4 lg:px-16 py-2.5">
       <div class="flex flex-wrap justify-between items-center mx-auto">
         <Logo />
         <div class="flex items-center lg:order-2">
-          <!-- Check user is set (connected) -->
           <DropdownMenu v-if="isLoggedIn">
             <DropdownMenuTrigger as-child>
               <Avatar class="border mr-4" as="button">
@@ -95,11 +94,8 @@ const { cartProducts } = storeToRefs(useCartStore());
           >
             <ShoppingCart :size="36" />
 
-            <Badge
-              class="absolute right-0 top-0"
-              v-if="cartProducts.length > 0"
-            >
-              {{ cartProducts.length }}
+            <Badge class="absolute right-0 top-0" v-if="cartTotalItems > 0">
+              {{ cartTotalItems }}
             </Badge>
             <span>Panier</span>
           </router-link>

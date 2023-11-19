@@ -1,21 +1,162 @@
 <script setup lang="ts">
-import { useCartStore } from '@/stores/cart-store';
+import { useCartStore, CART_STEPS, CartProduct } from '@/stores/cart-store';
+import { useUserStore } from '@/stores/user-store';
 import { storeToRefs } from 'pinia';
+import { Button } from '@/components/ui/button';
+import { Check, Trash2 } from 'lucide-vue-next';
+import { priceDisplay } from '@/utils/price-display';
+import {
+  HoverCard,
+  HoverCardContent,
+  HoverCardTrigger,
+} from '@/components/ui/hover-card';
+import { Separator } from '@/components/ui/separator';
 
-const { cartProducts, cartTotal } = storeToRefs(useCartStore());
-const { addProductToCart, removeProductFromCart } = useCartStore();
+const { isLoggedIn } = storeToRefs(useUserStore());
+const { cart, cartTotal, currentCartStep } = storeToRefs(useCartStore());
+const {
+  addProductToCart,
+  removeProductFromCart,
+  removeCompleteProductFromCart,
+  nextCartStep,
+  previousCartStep,
+} = useCartStore();
+
+const updateQuantity = (value: number, product: CartProduct) => {
+  if (value > product.quantity) {
+    addProductToCart(product);
+  } else if (value < product.quantity) {
+    removeProductFromCart(product);
+  }
+};
 </script>
 
 <template>
   <main>
-    <p class="text-center" v-if="cartTotal === 0">
-      Vous n'avez aucun produit dans votre panier !
-    </p>
+    <div class="lg:flex w-full justify-center">
+      <div
+        v-for="step in CART_STEPS"
+        :key="step.name"
+        class="flex flex-col mb-6 lg:mb-0 lg:mr-12 items-center"
+        :class="{ 'step-done': step.order <= currentCartStep }"
+      >
+        <div class="w-5 h-5 rounded-full bg-gray-500">
+          <Check color="white" v-if="step.order < currentCartStep" />
+        </div>
+        <p class="uppercase text-gray-500 font-semibold">{{ step.name }}</p>
+      </div>
+    </div>
+    <div
+      v-if="parseInt(cartTotal) === 0"
+      class="flex flex-col items-center py-14"
+    >
+      <p class="text-center font-semibold mb-6">
+        Vous n'avez aucun produit dans votre panier !
+      </p>
+      <Button
+        as="a"
+        class="cursor-pointer"
+        @click="$router.push({ name: 'products' })"
+      >
+        Voir nos chaussures
+      </Button>
+    </div>
+    <div v-else class="flex py-14 space-x-12">
+      <div class="flex flex-col w-10/12">
+        <ul>
+          <li
+            v-for="(product, index) in cart"
+            :key="product.stockId"
+            class="flex border py-4 px-2"
+            :class="index === cart.length - 1 ? '' : 'mb-4'"
+          >
+            <img
+              src="/vite.svg"
+              :alt="product.name"
+              class="bg-gray-400 h-20 object-contain"
+            />
+            <div class="flex flex-1 flex-col justify-center ml-4">
+              <p>
+                {{ product.name }}
+              </p>
+              <small class="text-zinc-400">Taille:&nbsp;{{ 'TODO' }}</small>
+              <small class="text-zinc-400">Couleur:&nbsp;{{ 'TODO' }}</small>
+            </div>
+            <div class="flex items-center space-x-4">
+              <VueNumberInput
+                :min="1"
+                :max="30"
+                :model-value="product.quantity"
+                @update:model-value="
+                  (newValue: any) => updateQuantity(newValue, product)
+                "
+                size="small"
+                inline
+                controls
+                center
+                class="w-28"
+              />
+              <h3 class="text-lg font-semibold">
+                {{ priceDisplay(product.price * product.quantity) }}€
+              </h3>
+              <Button
+                variant="ghost"
+                @click="removeCompleteProductFromCart(product)"
+                class="hover:text-red-500"
+              >
+                <Trash2 />
+              </Button>
+            </div>
+          </li>
+        </ul>
+        <Button
+          class="self-end mt-4"
+          @click="isLoggedIn ? nextCartStep : $router.push({ name: 'auth' })"
+          >{{
+            isLoggedIn ? 'Continuer' : 'Se connecter pour continuer'
+          }}</Button
+        >
+      </div>
+      <div class="space-y-4 bg-gray-200 w-4/12 p-2 h-fit">
+        <h2 class="text-xl font-semibold">Résumé de la commande</h2>
+        <div class="flex justify-between">
+          <div class="flex">
+            <h3>Sous-total TTC</h3>
+            <HoverCard>
+              <HoverCardTrigger
+                class="flex justify-center items-center w-4 h-4 rounded-full border bg-black border-black text-xs font-bold text-white hover:cursor-pointer hover:bg-transparent hover:text-black ml-2"
+              >
+                ?
+              </HoverCardTrigger>
+              <HoverCardContent>
+                Le sous-total correspond au prix total de ta commande avant
+                l'application de réductions. Il n'inclut pas les frais
+                d'expédition.
+              </HoverCardContent>
+            </HoverCard>
+          </div>
+          <p class="font-semibold">{{ cartTotal }}€</p>
+        </div>
+        <Separator class="bg-zinc-400" />
+        <div class="flex justify-between">
+          <h2 class="text-xl font-bold">Total TTC</h2>
+          <p class="text-xl font-bold">{{ cartTotal }}€</p>
+        </div>
+      </div>
+    </div>
   </main>
 </template>
 
 <style lang="postcss" scoped>
 main {
-  @apply py-14 px-4;
+  @apply py-8 px-4 lg:px-16;
+}
+.step-done {
+  > div {
+    @apply bg-primary-500;
+  }
+  > p {
+    @apply text-primary-500;
+  }
 }
 </style>
