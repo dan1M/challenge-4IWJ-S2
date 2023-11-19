@@ -8,9 +8,32 @@ import { Button } from "@/components/ui/button";
     const method = 'GET';  
 
     const products = ref([]);
-    const  noProductLabel = 'No product found'
+
+    
+
+    const fetchData = async () => {
+        try {
+            const response = await fetch(baseUrl + endpoint, {
+                method: method,
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+            });
+
+            const json = await response.json();
+            products.value = json;
+        } catch (error) {
+            console.error(error);
+        } 
+    };
 
     onMounted(async () => {
+        await fetchData();
+    });
+
+    
+
+    /*onMounted(async () => {
         try {
             const response = await fetch(baseUrl + endpoint, {
                 method: method,
@@ -26,7 +49,7 @@ import { Button } from "@/components/ui/button";
         } catch (error) {
             console.error(error);
         } 
-    });
+    });*/
 
     
     

@@ -7,6 +7,8 @@ import { createPinia } from 'pinia';
 import VueDatePicker from '@vuepic/vue-datepicker';
 import '@vuepic/vue-datepicker/dist/main.css';
 import { useUserStore } from './stores/user-store';
+import { useProductStore } from './stores/product-store';
+
 import { RouteRecordRaw, createRouter, createWebHistory } from 'vue-router';
 import VueCookies from 'vue-cookies'
 
@@ -40,7 +42,12 @@ const routes: RouteRecordRaw[] = [
         }, component: HomePage
       },
       { path: '/products', name: 'products', component: ProductsPage },
-      { path: '/product/:id', name: 'detailProduct', component: DetailProductPage},
+      { path: '/product/:id', name: 'detailProduct', beforeEnter: async (to, from, next) => {
+        const productStore = useProductStore();
+        await productStore.getProduct(to.params.id);
+        
+        next();
+      }, component: DetailProductPage},
       { path: '/cart', name: 'cart', component: CartPage },
       {
         path: '/auth', name: 'auth', beforeEnter: async (to, from, next) => {

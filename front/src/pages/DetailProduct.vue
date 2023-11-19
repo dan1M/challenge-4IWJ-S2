@@ -1,54 +1,30 @@
 <script setup lang="ts">
 
-import { ref, onMounted } from "vue";
-import { useRoute } from 'vue-router';
+import { ref } from "vue";
 import { Button } from "@/components/ui/button";
+import { useProductStore } from '../stores/product-store';
 
+const { product } = useProductStore();
 
-    const baseUrl = import.meta.env.VITE_BACKEND_URL || 'http://localhost:3000';
+const selectedColor = ref('');
+const selectedSize = ref('');
 
-    const route = useRoute()
-    console.log(route.params.id);
+const selectColor = (color: string) => {
+    selectedColor.value = color;
+};
+
+const selectSize = (size: string) => {
+    selectedSize.value = size;
+    updateColorAvailability();
+    console.log(selectedSize.value);
     
-    const endpoint = '/products/' + route.params.id ;
-    const method = 'GET';  
+};
 
-    /*async onBeforeRouteEnter(to, from, next) {
-        const productId = to.params.id;
-
-        const endpoint = '/products/' + productId;
-        const method = 'GET';  
-        const product = await fetch(baseUrl + endpoint, {
-            method: method,
-            headers: {
-            'Content-Type': 'application/json',
-            },
-        });
-        next(vm => {
-        vm.product = product;
-        });
-    }*/
-
-    onMounted(async () => {
-        try {
-            const response = await fetch(baseUrl + endpoint, {
-                method: method,
-                headers: {
-                'Content-Type': 'application/json',
-                },
-            });
-
-            const json = await response.json();
-
-            product.value = json;
-            
-        } catch (error) {
-            console.error(error);
-        } 
-    });
-    
-
-    
+const updateColorAvailability = () => {
+      product.variants.forEach(variant => {
+        variant.colorDisabled = selectedSize.value && variant.size.id !== selectedSize.value;
+      });
+};
 
     
 </script>
@@ -56,67 +32,58 @@ import { Button } from "@/components/ui/button";
 <template>
     <div>
         <div className="container px-8 mx-auto xl:px-5">
-          
-          <div class="mt-10 grid gap-10 md:grid-cols-2 lg:gap-10 xl:grid-cols-3 ">
-            <div :class="{ 'group cursor-pointer': true }" >
-                <div :class="{ 'overflow-hidden rounded-md bg-gray-100 transition-all hover:scale-105 dark:bg-gray-800': true }">
-                  
-                    <img
-                        v-if="product.img"
-                        :src="product.img"
-                        :placeholder="product.img.blurDataURL ? 'blur' : ''"
-                        :blur-data-url="product.img.blurDataURL"
-                        :alt="product.img.alt || 'Thumbnail'"
-                        class="object-cover transition-all"
-                        fill
-                        sizes="(max-width: 768px) 30vw, 33vw"
-                    />
-                    <span v-else class="absolute left-1/2 top-1/2 h-16 w-16 -translate-x-1/2 -translate-y-1/2 text-gray-200">
-
-                    </span>
-                </div>
-            
-                <div class="flex items-center justify-between">
-                    <div class="flex-1">
-                        <div class="mt-2 flex items-center space-x-2 text-gray-500 dark:text-gray-400">
-                            <div>
-
-                                <div class="flex gap-3">{{ product.category[0].name }} </div>
-                                    
-                                <h2
-                                    :class="[
-                                     'text-3xl' ,
-                                     'line-clamp-2 font-medium tracking-normal text-black',
-                                    'mt-2 dark:text-white',
-                                    ]"
-                                >
-                                    <router-link :to="`/products`">
-                                    <span
-                                        class="bg-gradient-to-r from-pink-200 to-pink-100 bg-[length:0px_10px] bg-left-bottom
-                                            bg-no-repeat
-                                            transition-[background-size]
-                                            duration-500
-                                            hover:bg-[length:100%_3px]
-                                            group-hover:bg-[length:100%_10px]
-                                            dark:from-purple-800 dark:to-purple-900"
-                                    >
-                                        {{ product.title }} 
-                                    </span>
-                                    </router-link>
-                                </h2>
+            <div class="py-8">
+                <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+                  <div class="flex flex-col md:flex-row -mx-4">
+                    <div class="md:flex-1 px-4">
+                        <div class="h-[460px] rounded-md bg-gray-300 dark:bg-gray-700 mb-4">
+                            <img class="w-full h-full object-cover" :src="product.img" alt="Product Image">
+                        </div>
+                    </div>
+                    <div class="md:flex-1 px-4 flex flex-col justify-between">
+                        <div>
+                            <h2 class="text-2xl font-bold text-gray-800 dark:text-white mb-2">{{ product.title }}</h2>
+                            <p class="text-gray-600 dark:text-gray-300 text-sm mb-4">{{ product.description }}</p>
+                            
+                            <div class="mb-4">
+                                <span class="font-bold text-gray-700 dark:text-gray-300">Sélectionner votre pointure:</span>
+                                <div class="flex items-center mt-2">
+                                    <button v-for="variant in product.variants" :key="variant.size.id" class="bg-gray-300 dark:bg-gray-700 text-gray-700 dark:text-white py-2 px-4 rounded-full font-bold mr-2 hover:bg-gray-400 dark:hover:bg-gray-600" @click="selectSize(variant.size.id)"  >{{ variant.size.name }}</button>
+                                </div>
+                            </div>
+                            <div class="mb-4">
+                                <span class="font-bold text-gray-700 dark:text-gray-300">Sélectionner une couleur:</span>
+                                <div class="flex items-center mt-2">
+                                    <button v-for="variant in product.variants" :key="variant.color.id" class="w-6 h-6 rounded-full mr-2" :style="{ 'background-color': variant.color.name.toLowerCase() }" @click="selectColor(variant.color.id)"  ></button>
+                                </div>
+                            </div>
+                            <!--div class="flex mb-4">
+                                <div class="mr-4">
+                                    <span class="font-bold text-gray-700 dark:text-gray-300">Price:</span>
+                                    <span class="text-gray-600 dark:text-gray-300">{{ selectedVariant ? '$' + selectedVariant.price : '' }}</span>
+                                </div>
+                                <div>
+                                    <span class="font-bold text-gray-700 dark:text-gray-300">Availability:</span>
+                                    <span class="text-gray-600 dark:text-gray-300" v-if="selectedVariant && selectedVariant.quantity > 0">In Stock</span>
+                                    <span class="text-red-600 dark:text-red-400" v-else>Out of Stock</span>
+                                </div>
+                            </div-->
+                        </div>
+                        <div class="mb-6 mt-6">
+                            <div class="flex -mx-2">
+                                <div class="w-1/2 px-2">
+                                    <Button>Ajouter au panier</Button>
+                                </div>
                             </div>
                         </div>
-                      
+                    </div>
+                      <!-- ... Autres éléments du produit ... -->
+                    
                     </div>
                   
-                    <div>
-                      <Button>Ajouter au panier</Button>
-                    </div>
-                  </div>
-              </div>
-          </div>
-          
+                </div>
+            </div>
         </div>
-      </div>
+    </div>
    
 </template>
