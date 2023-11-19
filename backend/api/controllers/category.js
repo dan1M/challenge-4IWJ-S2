@@ -1,9 +1,6 @@
 const { validationResult } = require('express-validator/check');
 const Category = require('../models/sql/category');
 const CategoryMongo = require('../models/nosql/category');
-const { Types } = require('mongoose');
-
-const e = require('express');
 
 exports.findAll = async (req, res, next) => {
   try {

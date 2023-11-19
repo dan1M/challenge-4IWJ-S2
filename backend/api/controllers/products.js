@@ -1,7 +1,6 @@
 const fs = require('node:fs');
 const path = require('node:path');
 const { validationResult } = require('express-validator/check');
-const createAlert = require('../util/createAlert');
 const Product = require('../models/sql/product.js');
 const ProductMongo = require('../models/nosql/product.js');
 const Stock = require('../models/sql/stock.js');
@@ -107,8 +106,6 @@ exports.create = async (req, res, next) => {
       category_id: category,
     });
 
-    createAlert(product.category_id);
-
     //create variants for a product
     for (const variant of variantsBody) {
       for (const color of variant.colors) {
@@ -123,7 +120,7 @@ exports.create = async (req, res, next) => {
     }
 
     // insert product and variants in mongo
-    await updateOrCreateMongoProduct(product.id);
+    // await updateOrCreateMongoProduct(product.id);
 
     res.sendStatus(201);
   } catch (err) {
