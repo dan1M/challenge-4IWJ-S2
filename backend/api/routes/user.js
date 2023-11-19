@@ -12,6 +12,44 @@ const router = express.Router();
 
 router.get('/me', isAuth, userController.getUserInfo);
 
+router.patch(
+  '/password',
+  isAuth,
+  [
+    body('oldPassword')
+      .trim()
+      .isLength({ min: 12 })
+      .withMessage('Le mot de passe doit comporter au moins 12 caractères')
+      .matches(
+        /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]+$/,
+      )
+      .withMessage(
+        'Le mot de passe doit contenir des symboles, des chiffres, des lettres minuscules et des lettres majuscules',
+      ),
+    body('newPassword')
+      .trim()
+      .isLength({ min: 12 })
+      .withMessage('Le mot de passe doit comporter au moins 12 caractères')
+      .matches(
+        /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]+$/,
+      )
+      .withMessage(
+        'Le mot de passe doit contenir des symboles, des chiffres, des lettres minuscules et des lettres majuscules',
+      ),
+    body('confirmPassword')
+      .trim()
+      .isLength({ min: 12 })
+      .withMessage('Le mot de passe doit comporter au moins 12 caractères')
+      .matches(
+        /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]+$/,
+      )
+      .withMessage(
+        'Le mot de passe doit contenir des symboles, des chiffres, des lettres minuscules et des lettres majuscules',
+      ),
+  ],
+  userController.updatePassword,
+);
+
 router.get('/:userId', userController.getUser);
 
 router.patch('/:id', isAuth, userController.update);

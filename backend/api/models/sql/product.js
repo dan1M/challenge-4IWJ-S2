@@ -35,6 +35,7 @@ const Product = sequelize.define(
       },
     },
   },
+
   {
     hooks: {
       beforeValidate: (product, options) => {

@@ -1,5 +1,6 @@
 const User = require('../models/sql/user');
 const jwt = require('jsonwebtoken');
+const bcrypt = require('bcryptjs');
 
 exports.getUserInfo = async (req, res, next) => {
   try {
@@ -69,6 +70,48 @@ exports.update = async (req, res, next) => {
       httpOnly: true,
       overwrite: true,
     });
+
+    res.sendStatus(204);
+  } catch (err) {
+    if (!err.statusCode) {
+      err.statusCode = 500;
+    }
+    next(err);
+  }
+};
+
+exports.updatePassword = async (req, res, next) => {
+  const oldPassword = req.body.oldPassword;
+  const newPassword = req.body.newPassword;
+  const confirmPassword = req.body.confirmPassword;
+  try {
+    console.log(req.user.id, 'IDDDDDD');
+    const user = await User.findByPk(req.user.id);
+
+    if (!user) {
+      const error = new Error('Could not find user.');
+      error.statusCode = 404;
+      throw error;
+    }
+
+    const isEqual = await bcrypt.compare(oldPassword, user.password);
+    if (!isEqual) {
+      const error = new Error('Wrong old password.');
+      error.statusCode = 422;
+      throw error;
+    }
+
+    if (newPassword !== confirmPassword) {
+      const error = new Error('Password does not match.');
+      error.statusCode = 422;
+      throw error;
+    }
+
+    const hashedPw = await bcrypt.hash(newPassword, 12);
+
+    user.password = hashedPw;
+
+    user.save();
 
     res.sendStatus(204);
   } catch (err) {

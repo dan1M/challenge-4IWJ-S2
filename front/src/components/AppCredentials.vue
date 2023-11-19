@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { onMounted, computed, watch, ref } from 'vue';
+import { computed, watch, ref } from 'vue';
 import { z } from 'zod';
 import useCustomForm from '../composables/useCustomForm';
 import { useUserStore } from '@/stores/user-store';
@@ -196,13 +196,7 @@ const getCity = async () => {
           >
             Ville
           </label>
-          <select
-            id="city"
-            v-model="city"
-            autofocus
-            required
-            class="border p-2 w-64"
-          >
+          <select id="city" v-model="city" required class="border p-2 w-64">
             <option v-for="city in cities" :value="city" :key="city">
               {{ city }}
             </option>
