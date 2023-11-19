@@ -15,6 +15,8 @@ const colorRoutes = require('./routes/color');
 const sizeRoutes = require('./routes/size');
 const stockRoutes = require('./routes/stock');
 const orderRoutes = require('./routes/order');
+const alertTypeRoutes = require('./routes/alert-type');
+const alertsRoutes = require('./routes/alerts');
 
 const port = process.env.PORT;
 
@@ -62,6 +64,8 @@ app.use('/colors', colorRoutes);
 app.use('/sizes', sizeRoutes);
 app.use('/stocks', stockRoutes);
 app.use('/orders', orderRoutes);
+app.use('/alert-type', alertTypeRoutes);
+app.use('/alerts', alertsRoutes);
 
 app.use(
   multer({ storage: fileStorage, fileFilter: fileFilter }).single('image'),
