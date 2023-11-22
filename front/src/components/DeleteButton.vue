@@ -28,12 +28,16 @@
       <AlertDialogHeader>
         <AlertDialogTitle>Êtes-vous sûr de vouloir supprimer?</AlertDialogTitle>
         <AlertDialogDescription>
-            <span v-if="errorOnDelete" class="error-message">{{ displayError }}</span>
+          <span v-if="errorOnDelete" class="error-message">{{
+            displayError
+          }}</span>
         </AlertDialogDescription>
       </AlertDialogHeader>
       <AlertDialogFooter>
         <AlertDialogCancel>Annuler</AlertDialogCancel>
-        <Button @click="deleteConfirmed" class="inline-flex items-center justify-center rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 border border-input bg-background hover:bg-accent hover:text-accent-foreground h-10 px-4 py-2 mt-2 sm:mt-0"
+        <Button
+          @click="deleteConfirmed"
+          class="inline-flex items-center justify-center rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 border border-input bg-background hover:bg-accent hover:text-accent-foreground h-10 px-4 py-2 mt-2 sm:mt-0"
           >Supprimer</Button
         >
       </AlertDialogFooter>
@@ -57,48 +61,46 @@ import {
   AlertDialogTrigger,
 } from '@/components/ui/alert-dialog';
 
-    const { tableDelete, idToDelete } = defineProps(['tableDelete', 'idToDelete']);
+const { tableDelete, idToDelete } = defineProps(['tableDelete', 'idToDelete']);
 
-    const loading = ref(false);
-    const displayError = ref('');
-    const showModal = ref(false);
-    const errorOnDelete = ref(false);
+const loading = ref(false);
+const displayError = ref('');
+const showModal = ref(false);
+const errorOnDelete = ref(false);
 
-    const openModal = () => {
-        showModal.value = true;
-        errorOnDelete.value = false;
-    };
+const openModal = () => {
+  showModal.value = true;
+  errorOnDelete.value = false;
+};
 
-    async function deleteConfirmed() {
-        loading.value = true;
-        displayError.value = '';
-        try {
-            const response = await fetch(
-            `http://localhost:3000/${tableDelete}/${idToDelete}`,
-            {
-                method: 'DELETE',
-                headers: {
-                'Content-Type': 'application/json',
-                },
-            },
-            );
-            if (response.ok) {
-                showModal.value = false;
-                // Gestion des actions si succès
-            } else {
+async function deleteConfirmed() {
+  loading.value = true;
+  displayError.value = '';
+  try {
+    const response = await fetch(
+      `http://localhost:3000/${tableDelete}/${idToDelete}`,
+      {
+        method: 'DELETE',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      },
+    );
+    if (response.ok) {
+      showModal.value = false;
+      // Gestion des actions si succès
+    } else {
+      const responseData = await response.json();
+      displayError.value = `Error : ${responseData.message || ''}`;
 
-                const responseData = await response.json();
-                displayError.value = `Error : ${responseData.message || ''}`;
-
-                errorOnDelete.value = true;
-            }
-            loading.value = false;
-        } catch (error) {
-            loading.value = false;
-            displayError.value = 'Error: error'
-
-        }
+      errorOnDelete.value = true;
     }
+    loading.value = false;
+  } catch (error) {
+    loading.value = false;
+    displayError.value = 'Error: error';
+  }
+}
 </script>
 
 <style scoped>
@@ -120,6 +122,6 @@ import {
 }
 
 .error-message {
-    color: red; /* Ou toute autre propriété de style que vous souhaitez appliquer */
-  }
+  color: red; /* Ou toute autre propriété de style que vous souhaitez appliquer */
+}
 </style>

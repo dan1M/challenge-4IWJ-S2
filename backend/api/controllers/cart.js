@@ -74,7 +74,7 @@ exports.update = async (req, res, next) => {
       throw error;
     }
     const stock_id = req.body.stock_id;
-    const action = req.body.quantity;
+    const action = req.body.action;
     const cart_step = req.body.cart_step;
 
     const cart = await Cart.findOne({ user_id: req.user.id });
@@ -84,32 +84,12 @@ exports.update = async (req, res, next) => {
       throw error;
     }
 
-    if (stock_id) {
-      const stock = await Stock.findByPk(stock_id);
-      if (!stock) {
-        const error = new Error('Could not find stock.');
-        error.statusCode = 404;
-        throw error;
-      }
-      if (stock.quantity <= 0) {
-        const error = new Error('Stock is empty.');
-        error.statusCode = 404;
-        throw error;
-      }
-      const productIndex = cart.products.findIndex(
-        product => product.stock_id.toString() === stock_id.toString(),
-      );
-      if (productIndex >= 0) {
-        cart.products[productIndex].quantity++;
-      } else {
-        cart.products.push({
-          stock_id: stock_id,
-          quantity: 1,
-        });
-      }
-      stock.quantity--;
-      await stock.save();
+    if (stock_id && !action) {
+      const error = new Error('Action is required.');
+      error.statusCode = 422;
+      throw error;
     }
+
     if (action && stock_id) {
       const stock = await Stock.findByPk(stock_id);
       if (!stock) {
@@ -133,21 +113,24 @@ exports.update = async (req, res, next) => {
         case 'remove':
           cart.products[productIndex].quantity--;
           stock.quantity++;
+
+          // Remove product from cart if quantity is 0
+          if (cart.products[productIndex].quantity <= 0) {
+            cart.products.splice(productIndex, 1);
+          }
           break;
         case 'clear':
+          stock.quantity += cart.products[productIndex].quantity;
           cart.products.splice(productIndex, 1);
-          stock.quantity++;
           break;
       }
       await stock.save();
-
-      if (cart.products[productIndex].quantity <= 0) {
-        cart.products.splice(productIndex, 1);
-      }
     }
+
     if (cart_step) {
       cart.cart_step = cart_step;
     }
+
     await cart.save();
     res.status(200).json(cart);
   } catch (err) {

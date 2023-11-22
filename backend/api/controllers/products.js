@@ -1,5 +1,5 @@
 const fs = require('node:fs');
-const path = require('node:path');
+// const path = require('node:path');
 
 const { validationResult } = require('express-validator/check');
 const Product = require('../models/sql/product.js');
@@ -97,12 +97,12 @@ exports.create = async (req, res, next) => {
     const description = req.body.description;
     const category = req.body.category;
 
-    const imageUrl = req.file.path;
+    // const imageUrl = req.file.path;
     const variantsBody = req.body.variants;
 
     const product = await Product.create({
       title: title,
-      imageUrl: imageUrl,
+      // imageUrl: imageUrl,
       description: description,
       category_id: category,
     });

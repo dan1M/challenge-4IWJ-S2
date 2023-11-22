@@ -25,6 +25,6 @@ const cartSchema = new Schema(
     },
   },
   { timestamps: true },
-).index({}, { partialFilterExpression: { products: { $eq: [] } } }); // remove empty products array
+);
 
 module.exports = mongoose.model('Cart', cartSchema);
