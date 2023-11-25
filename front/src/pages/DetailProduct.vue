@@ -3,6 +3,7 @@
 import { ref } from "vue";
 import { Button } from "@/components/ui/button";
 import { useProductStore } from '../stores/product-store';
+import { RadioGroup, RadioGroupLabel, RadioGroupOption } from '@headlessui/vue';
 
 const { product } = useProductStore();
 
@@ -11,27 +12,46 @@ const selectedSize = ref('');
 
 const selectColor = (color: string) => {
     selectedColor.value = color;
+    updateSizeAvailability();
+    
 };
 
 const selectSize = (size: string) => {
     selectedSize.value = size;
-    updateColorAvailability();
-    console.log(selectedSize.value);
     
 };
 
-const updateColorAvailability = () => {
-      product.variants.forEach(variant => {
-        variant.colorDisabled = selectedSize.value && variant.size.id !== selectedSize.value;
-      });
-};
+const updateSizeAvailability = ()  =>{
+      
+    product.variants.forEach(variant => {
+        variant.disabled = variant.color.id !== selectedColor.value || variant.quantity === 0 ;
+    });
+      
+}
+
+const addToCart = () => {
+    console.log('add to cart color: ', selectedColor.value,' Size: ', selectedSize.value );
+    const selectedVariant = product.variants.find((variant) => {
+      return variant.color.id === selectedColor.value && variant.size.id === selectedSize.value;
+    });
+    if (selectedVariant) {
+      const variantId = selectedVariant.id;
+
+      console.log("Ajouter au panier :", variantId);
+    }
+
+}
+
+
+
+
 
     
 </script>
 
 <template>
     <div>
-        <div className="container px-8 mx-auto xl:px-5">
+        <div className="container px-8 mx-auto xl:px-5" >
             <div class="py-8">
                 <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
                   <div class="flex flex-col md:flex-row -mx-4">
@@ -44,35 +64,64 @@ const updateColorAvailability = () => {
                         <div>
                             <h2 class="text-2xl font-bold text-gray-800 dark:text-white mb-2">{{ product.title }}</h2>
                             <p class="text-gray-600 dark:text-gray-300 text-sm mb-4">{{ product.description }}</p>
+                            <div class="mb-4">
+                                <span className="text-xl text-pink-500 ">{{product.variants[0].price}}€</span>
+                            </div>
+
+                            <div class="mb-4">
+                                <span class="font-bold text-gray-700 dark:text-gray-300">Sélectionner une couleur:</span>
+                                <RadioGroup v-model="selectedColor" class="mt-4">
+                                    <span class="flex items-center space-x-3">
+                                        <RadioGroupOption
+                                            as="template"
+                                            v-for="variant in product.variants"
+                                            :key="variant.color.id"
+                                            :value="variant.color.id"
+                                            v-slot="{ active, checked }"
+                                            >
+                                            <div 
+                                                :class="[active && checked ? 'ring ring-pink-500' : '', !active && checked ? 'ring-2 ring-pink-500' : '', 'relative -m-0.5 flex cursor-pointer items-center justify-center rounded-full p-0.5 focus:outline-none']"
+                                                @click="selectColor(variant.color.id)"
+                                            >
+                                                <RadioGroupLabel as="span" class="sr-only">{{ variant.color.name }}</RadioGroupLabel>
+                                                <span
+                                                aria-hidden="true"
+                                                :style="{ backgroundColor: variant.color.name }"
+                                                class="h-8 w-8 rounded-full border border-black border-opacity-10"
+                                                />
+                                            </div>
+                                        </RadioGroupOption>
+                                    </span>
+                                </RadioGroup>
+                            </div>
                             
                             <div class="mb-4">
                                 <span class="font-bold text-gray-700 dark:text-gray-300">Sélectionner votre pointure:</span>
-                                <div class="flex items-center mt-2">
-                                    <button v-for="variant in product.variants" :key="variant.size.id" class="bg-gray-300 dark:bg-gray-700 text-gray-700 dark:text-white py-2 px-4 rounded-full font-bold mr-2 hover:bg-gray-400 dark:hover:bg-gray-600" @click="selectSize(variant.size.id)"  >{{ variant.size.name }}</button>
-                                </div>
+                                <RadioGroup v-model="selectedSize" class="mt-4">
+                                    <div class="grid grid-cols-4 gap-4">
+                                      <RadioGroupOption as="template" v-for="variant in product.variants" :key="variant.size.id" :value="variant.size.id" :disabled="variant.disabled " v-slot="{ active, checked }">
+                                        <div 
+                                            :class="[!variant.disabled? 'cursor-pointer bg-white text-gray-900 shadow-sm' : 'cursor-not-allowed bg-gray-50 text-gray-200', active ? 'ring-2 ring-pink-500' : '', 'group relative flex items-center justify-center rounded-md border py-3 px-4 text-sm font-medium uppercase hover:bg-gray-50 focus:outline-none sm:flex-1']"
+                                            @click="selectSize(variant.size.id)"
+                                            >
+                                          <RadioGroupLabel as="span">{{ variant.size.name }}</RadioGroupLabel>
+                                          <span :class="['border-2', variant.disabled  ? 'line-through text-gray-400' : active && checked ? 'border-pink-500' : 'border-transparent', 'pointer-events-none absolute -inset-px rounded-md']" aria-hidden="true" />
+                                        </div>
+                                      </RadioGroupOption>
+                                    </div>
+                                </RadioGroup>
                             </div>
-                            <div class="mb-4">
-                                <span class="font-bold text-gray-700 dark:text-gray-300">Sélectionner une couleur:</span>
-                                <div class="flex items-center mt-2">
-                                    <button v-for="variant in product.variants" :key="variant.color.id" class="w-6 h-6 rounded-full mr-2" :style="{ 'background-color': variant.color.name.toLowerCase() }" @click="selectColor(variant.color.id)"  ></button>
-                                </div>
-                            </div>
-                            <!--div class="flex mb-4">
-                                <div class="mr-4">
-                                    <span class="font-bold text-gray-700 dark:text-gray-300">Price:</span>
-                                    <span class="text-gray-600 dark:text-gray-300">{{ selectedVariant ? '$' + selectedVariant.price : '' }}</span>
-                                </div>
-                                <div>
-                                    <span class="font-bold text-gray-700 dark:text-gray-300">Availability:</span>
-                                    <span class="text-gray-600 dark:text-gray-300" v-if="selectedVariant && selectedVariant.quantity > 0">In Stock</span>
-                                    <span class="text-red-600 dark:text-red-400" v-else>Out of Stock</span>
-                                </div>
-                            </div-->
+                            
                         </div>
                         <div class="mb-6 mt-6">
                             <div class="flex -mx-2">
                                 <div class="w-1/2 px-2">
-                                    <Button>Ajouter au panier</Button>
+                                    <Button 
+                                        @click="addToCart"
+                                        :disabled="!selectedColor || !selectedSize"
+                                    >
+                                        Ajouter au panier
+                                    </Button>
                                 </div>
                             </div>
                         </div>
