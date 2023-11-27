@@ -24,9 +24,9 @@ const {
 
 const updateQuantity = (value: number, product: CartProduct) => {
   if (value > product.quantity) {
-    addProductToCart(product);
+    addProductToCart(product.stock_id);
   } else if (value < product.quantity) {
-    removeProductFromCart(product);
+    removeProductFromCart(product.stock_id);
   }
 };
 </script>
@@ -35,15 +35,18 @@ const updateQuantity = (value: number, product: CartProduct) => {
   <main>
     <div class="lg:flex w-full justify-center">
       <div
-        v-for="step in CART_STEPS"
+        v-for="(step, index) in CART_STEPS"
         :key="step.name"
         class="flex flex-col mb-6 lg:mb-0 lg:mr-12 items-center"
-        :class="{ 'step-done': step.order <= currentCartStep }"
+        :class="{
+          'step-done': step.order <= currentCartStep,
+          'lg:mr-0': index === CART_STEPS.length - 1,
+        }"
       >
-        <div class="w-5 h-5 rounded-full bg-gray-500">
+        <div class="w-5 h-5 rounded-full bg-black">
           <Check color="white" v-if="step.order < currentCartStep" />
         </div>
-        <p class="uppercase text-gray-500 font-semibold">{{ step.name }}</p>
+        <p class="uppercase text-black font-semibold">{{ step.name }}</p>
       </div>
     </div>
     <div
@@ -66,12 +69,12 @@ const updateQuantity = (value: number, product: CartProduct) => {
         <ul>
           <li
             v-for="(product, index) in cart"
-            :key="product.stockId"
+            :key="product.stock_id"
             class="flex border py-4 px-2"
             :class="index === cart.length - 1 ? '' : 'mb-4'"
           >
             <img
-              src="/vite.svg"
+              :src="product.img"
               :alt="product.name"
               class="bg-gray-400 h-20 object-contain"
             />
@@ -79,8 +82,12 @@ const updateQuantity = (value: number, product: CartProduct) => {
               <p>
                 {{ product.name }}
               </p>
-              <small class="text-zinc-400">Taille:&nbsp;{{ 'TODO' }}</small>
-              <small class="text-zinc-400">Couleur:&nbsp;{{ 'TODO' }}</small>
+              <small class="text-zinc-400"
+                >Taille:&nbsp;{{ product.size }}</small
+              >
+              <small class="text-zinc-400"
+                >Couleur:&nbsp;{{ product.color }}</small
+              >
             </div>
             <div class="flex items-center space-x-4">
               <VueNumberInput
@@ -101,7 +108,7 @@ const updateQuantity = (value: number, product: CartProduct) => {
               </h3>
               <Button
                 variant="ghost"
-                @click="removeCompleteProductFromCart(product)"
+                @click="removeCompleteProductFromCart(product.stock_id)"
                 class="hover:text-red-500"
               >
                 <Trash2 />
@@ -111,7 +118,7 @@ const updateQuantity = (value: number, product: CartProduct) => {
         </ul>
         <Button
           class="self-end mt-4"
-          @click="isLoggedIn ? nextCartStep : $router.push({ name: 'auth' })"
+          @click="isLoggedIn ? nextCartStep() : $router.push({ name: 'auth' })"
           >{{
             isLoggedIn ? 'Continuer' : 'Se connecter pour continuer'
           }}</Button

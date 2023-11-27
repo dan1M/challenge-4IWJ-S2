@@ -7,6 +7,7 @@ import { createPinia } from 'pinia';
 import VueDatePicker from '@vuepic/vue-datepicker';
 import '@vuepic/vue-datepicker/dist/main.css';
 import { useUserStore } from './stores/user-store';
+import { useCartStore } from './stores/cart-store';
 import { RouteRecordRaw, createRouter, createWebHistory } from 'vue-router';
 import VueCookies from 'vue-cookies';
 import VueNumberInput from '@chenfengyuan/vue-number-input';
@@ -29,27 +30,33 @@ const routes: RouteRecordRaw[] = [
     path: '/',
     component: DefaultLayout,
     name: 'default-layout',
+    beforeEnter: async (to, from, next) => {
+      const { getUserInfo } = useUserStore();
+      await getUserInfo();
+
+      const { getCart } = useCartStore();
+      await getCart();
+      next();
+    },
     children: [
       {
         path: '/',
         name: 'home',
-        beforeEnter: async (to, from, next) => {
-          const userStore = useUserStore();
-          await userStore.getUserInfo();
-          next();
-        },
         component: HomePage,
       },
       { path: '/products', name: 'products', component: ProductsPage },
-      { path: '/product/:id', name: 'detailProduct', component: DetailProductPage},
+      {
+        path: '/product/:id',
+        name: 'detailProduct',
+        component: DetailProductPage,
+      },
       { path: '/cart', name: 'cart', component: CartPage },
       {
         path: '/auth',
         name: 'auth',
         beforeEnter: async (to, from, next) => {
-          const userStore = useUserStore();
-          await userStore.getUserInfo();
-          if (!userStore.isLoggedIn) {
+          const { isLoggedIn } = useUserStore();
+          if (!isLoggedIn) {
             next();
           } else {
             next({ name: 'home', replace: true });
@@ -61,13 +68,13 @@ const routes: RouteRecordRaw[] = [
         path: '/profile',
         name: 'profile',
         beforeEnter: async (to, from, next) => {
-          const userStore = useUserStore();
-          await userStore.getUserInfo();
-          if (!userStore.isLoggedIn) {
+          const { isLoggedIn, getUser } = useUserStore();
+
+          if (!isLoggedIn) {
             next({ name: 'home', replace: true });
           } else {
-            await userStore.getUser();
-            if (!userStore.isLoggedIn) {
+            await getUser();
+            if (!isLoggedIn) {
               next({ name: 'home', replace: true });
             }
             next();
@@ -93,9 +100,9 @@ const routes: RouteRecordRaw[] = [
     component: DashboardLayout,
     name: 'dashboard-layout',
     beforeEnter: async (to, from, next) => {
-      const userStore = useUserStore();
+      const { canAccessDashboard } = useUserStore();
 
-      if (!userStore.canAccessDashboard) {
+      if (!canAccessDashboard) {
         next({ name: 'home', replace: true });
       } else {
         next();

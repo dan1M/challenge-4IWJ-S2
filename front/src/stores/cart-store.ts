@@ -3,14 +3,14 @@ import { defineStore } from 'pinia';
 import { computed, ref } from 'vue';
 
 export interface CartProduct {
-  stockId: number;
+  stock_id: string;
+  quantity: number;
   name: string;
   price: number;
-  quantity: number;
+  color: string;
+  size: string;
+  img?: string;
 }
-
-// used in API
-const CART_TIMEOUT = 15 * 60 * 1000; // 15 minutes
 
 export const CART_STEPS = [
   { name: 'Votre Panier', order: 1 },
@@ -18,36 +18,9 @@ export const CART_STEPS = [
   { name: 'Paiement', order: 3 },
 ];
 
-const isDataTypeCartProduct = (data: any): data is CartProduct => {
-  try {
-    const parsedData = JSON.parse(data);
-    return (
-      Array.isArray(parsedData) &&
-      parsedData.every(
-        (product: CartProduct) =>
-          typeof product.stockId === 'number' &&
-          typeof product.name === 'string' &&
-          typeof product.price === 'number' &&
-          typeof product.quantity === 'number',
-      )
-    );
-  } catch (e) {
-    return false;
-  }
-};
-
 export const useCartStore = defineStore('cart', () => {
-  const cart =
-    localStorage.getItem('womeny-cart') !== null
-      ? ref<CartProduct[]>(
-          isDataTypeCartProduct(localStorage.getItem('womeny-cart'))
-            ? JSON.parse(localStorage.getItem('womeny-cart')!)
-            : [],
-        )
-      : ref<CartProduct[]>([]);
-
+  const cart = ref<CartProduct[]>([]);
   const currentCartStep = ref(1);
-  const cartTimeout = ref('');
 
   const cartTotal = computed(() =>
     priceDisplay(
@@ -59,90 +32,168 @@ export const useCartStore = defineStore('cart', () => {
     ),
   );
 
-  const cartTotalItems = computed(() =>
-    cart.value.reduce(
-      (total: number, product: CartProduct) => total + product.quantity,
-      0,
-    ),
-  );
-
-  const addProductToCart = (product: CartProduct) => {
-    // TODO: update to use API
-    const existingProduct = cart.value.find(
-      (p: CartProduct) => p.stockId === product.stockId,
-    );
-
-    // Add product to cart, if product already exists in cart, increase quantity
-    if (existingProduct) {
-      existingProduct.quantity += 1;
-    } else {
-      cart.value.push(product);
-    }
-
-    // Set cart status to expire in 15 minutes
-    const date = new Date();
-    date.setTime(date.getTime() + CART_TIMEOUT);
-    // update cart timeout in DB using API
-
-    localStorage.setItem('womeny-cart', JSON.stringify(cart.value));
+  const getCart = async () => {
+    return fetch(import.meta.env.VITE_BACKEND_URL + '/cart', {
+      credentials: 'include',
+    })
+      .then(response => {
+        if (!response.ok) {
+          cart.value = [];
+          throw new Error('No cart found or not logged in!');
+        }
+        return response.json();
+      })
+      .then(data => {
+        cart.value = data.products;
+        currentCartStep.value = data.cart_step;
+      })
+      .catch(err => {
+        console.log(err);
+      });
   };
 
-  const removeProductFromCart = (product: CartProduct) => {
-    // TODO: update to use API
-    const existingProduct = cart.value.find(
-      (p: CartProduct) => p.stockId === product.stockId,
-    );
+  const addProductToCart = (stockId: string) => {
+    const hasCart = cart.value.length > 0;
 
-    // Remove product from cart, if product already exists in cart, decrease quantity, if quantity is 0, remove product from cart
-    if (existingProduct) {
-      existingProduct.quantity -= 1;
-
-      if (existingProduct.quantity <= 0) {
-        cart.value = cart.value.filter(
-          (p: CartProduct) => p.stockId !== product.stockId,
-        );
-      }
-    }
-    localStorage.setItem('womeny-cart', JSON.stringify(cart.value));
+    fetch(import.meta.env.VITE_BACKEND_URL + '/cart', {
+      method: hasCart ? 'PATCH' : 'POST', // If cart exists, update cart, else create cart
+      credentials: 'include',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        stock_id: stockId,
+        action: hasCart ? 'add' : undefined,
+      }),
+    })
+      .then(response => {
+        if (!response.ok) {
+          throw new Error(
+            "Something went wrong, couldn't add product to cart!",
+          );
+        }
+        return response.json();
+      })
+      .then(data => {
+        cart.value = data.products;
+      })
+      .catch(err => {
+        console.log(err);
+      });
   };
 
-  const removeCompleteProductFromCart = (product: CartProduct) => {
-    // TODO: update to use API
-    cart.value = cart.value.filter(
-      (p: CartProduct) => p.stockId !== product.stockId,
-    );
-    localStorage.setItem('womeny-cart', JSON.stringify(cart.value));
+  const removeProductFromCart = (stockId: string) => {
+    fetch(import.meta.env.VITE_BACKEND_URL + '/cart', {
+      method: 'PATCH',
+      credentials: 'include',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        stock_id: stockId,
+        action: 'remove',
+      }),
+    })
+      .then(response => {
+        if (!response.ok) {
+          throw new Error(
+            "Something went wrong, couldn't remove product to cart!",
+          );
+        }
+        return response.json();
+      })
+      .then(data => {
+        cart.value = data.products;
+      })
+      .catch(err => {
+        console.log(err);
+      });
+  };
+
+  const removeCompleteProductFromCart = (stockId: string) => {
+    fetch(import.meta.env.VITE_BACKEND_URL + '/cart', {
+      method: 'PATCH',
+      credentials: 'include',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        stock_id: stockId,
+        action: 'clear',
+      }),
+    })
+      .then(response => {
+        if (!response.ok) {
+          throw new Error(
+            "Something went wrong, couldn't remove product to cart!",
+          );
+        }
+        return response.json();
+      })
+      .then(data => {
+        cart.value = data.products;
+      })
+      .catch(err => {
+        console.log(err);
+      });
   };
 
   const nextCartStep = () => {
-    // TODO: update cart status in DB using API before
-    currentCartStep.value += 1;
+    fetch(import.meta.env.VITE_BACKEND_URL + '/cart', {
+      method: 'PATCH',
+      credentials: 'include',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        cart_step: currentCartStep.value + 1,
+      }),
+    })
+      .then(response => {
+        if (!response.ok) {
+          throw new Error("Something went wrong, couldn't cart step!");
+        }
+        return response.json();
+      })
+      .then(data => {
+        currentCartStep.value = data.cart_step;
+      })
+      .catch(err => {
+        console.log(err);
+      });
   };
 
   const previousCartStep = () => {
-    // TODO: update cart status in DB using API before
-    currentCartStep.value -= 1;
-  };
-
-  const getCart = () => {
-    // Fetch all cart items and cart information
-  };
-  const addCartItem = () => {
-    // Add product to cart (API)
-  };
-  const updateCart = () => {
-    // Update cart (API)
-  };
-  const deleteCartItem = () => {
-    // Delete product from cart (API)
+    fetch(import.meta.env.VITE_BACKEND_URL + '/cart', {
+      method: 'PATCH',
+      credentials: 'include',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        cart_step:
+          currentCartStep.value - 1 > 0 ? currentCartStep.value - 1 : 1,
+      }),
+    })
+      .then(response => {
+        if (!response.ok) {
+          throw new Error("Something went wrong, couldn't cart step!");
+        }
+        return response.json();
+      })
+      .then(data => {
+        currentCartStep.value = data.cart_step;
+      })
+      .catch(err => {
+        console.log(err);
+      });
   };
 
   return {
     cart,
     currentCartStep,
-    cartTimeout,
     cartTotal,
-    cartTotalItems,
+    getCart,
     addProductToCart,
     removeProductFromCart,
     removeCompleteProductFromCart,
