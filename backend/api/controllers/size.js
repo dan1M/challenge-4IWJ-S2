@@ -96,7 +96,6 @@ exports.update = async (req, res, next) => {
   }
 
   try {
-
     const [nbUpdated, sizes] = await Size.update(req.body, {
       where: {
         id: sizeId,
@@ -110,7 +109,6 @@ exports.update = async (req, res, next) => {
     } else {
       res.sendStatus(404);
     }
-
   } catch (err) {
     if (!err.statusCode) {
       err.statusCode = 500;

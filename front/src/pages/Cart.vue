@@ -37,11 +37,11 @@ const updateQuantity = (value: number, product: CartProduct) => {
       <div
         v-for="(step, index) in CART_STEPS"
         :key="step.name"
-        class="flex flex-col mb-6 lg:mb-0 lg:mr-12 items-center"
         :class="{
           'step-done': step.order <= currentCartStep,
-          'lg:mr-0': index === CART_STEPS.length - 1,
+          'lg:mr-12': index < CART_STEPS.length - 1,
         }"
+        class="flex flex-col mb-6 lg:mb-0 items-center"
       >
         <div class="w-5 h-5 rounded-full bg-black">
           <Check color="white" v-if="step.order < currentCartStep" />
@@ -66,7 +66,7 @@ const updateQuantity = (value: number, product: CartProduct) => {
     </div>
     <div v-else class="flex py-14 space-x-12">
       <div class="flex flex-col w-10/12">
-        <ul>
+        <ul v-if="currentCartStep === 1">
           <li
             v-for="(product, index) in cart"
             :key="product.stock_id"
@@ -116,16 +116,43 @@ const updateQuantity = (value: number, product: CartProduct) => {
             </div>
           </li>
         </ul>
+        <div v-if="currentCartStep === 2">
+          <h1>Choisir le mode de livraison</h1>
+          <div>
+            <label for="delivery-home"></label>
+            <input type="radio" name="delivery" id="delivery-home" />
+          </div>
+          <div>
+            <label for="delivery-relay"></label>
+            <input type="radio" name="delivery" id="delivery-relay" />
+          </div>
+        </div>
         <Button
           class="self-end mt-4"
+          :class="{ hidden: currentCartStep > 2 }"
           @click="isLoggedIn ? nextCartStep() : $router.push({ name: 'auth' })"
-          >{{
-            isLoggedIn ? 'Continuer' : 'Se connecter pour continuer'
-          }}</Button
         >
+          {{ isLoggedIn ? 'Continuer' : 'Se connecter pour continuer' }}
+        </Button>
       </div>
+
       <div class="space-y-4 bg-gray-200 w-4/12 p-2 h-fit">
         <h2 class="text-xl font-semibold">Résumé de la commande</h2>
+        <Separator class="bg-zinc-300" />
+
+        <ul>
+          <li
+            v-for="(product, index) in cart"
+            :key="product.stock_id"
+            class="flex justify-between text-sm"
+          >
+            <p>{{ product.quantity }}&nbsp;x&nbsp;{{ product.name }}</p>
+            <p class="font-semibold">
+              {{ priceDisplay(product.price * product.quantity) }}€
+            </p>
+          </li>
+        </ul>
+        <Separator class="bg-zinc-300" />
         <div class="flex justify-between">
           <div class="flex">
             <h3>Sous-total TTC</h3>
@@ -144,7 +171,11 @@ const updateQuantity = (value: number, product: CartProduct) => {
           </div>
           <p class="font-semibold">{{ cartTotal }}€</p>
         </div>
-        <Separator class="bg-zinc-400" />
+        <div class="flex justify-between text-sm">
+          <p>Livraison en <b>France</b></p>
+          <b class="uppercase">GRATUIT</b>
+        </div>
+        <Separator class="bg-zinc-300" />
         <div class="flex justify-between">
           <h2 class="text-xl font-bold">Total TTC</h2>
           <p class="text-xl font-bold">{{ cartTotal }}€</p>
@@ -157,6 +188,10 @@ const updateQuantity = (value: number, product: CartProduct) => {
 <style lang="postcss" scoped>
 main {
   @apply py-8 px-4 lg:px-16;
+}
+
+h1 {
+  @apply text-2xl font-bold mb-4 text-center;
 }
 .step-done {
   > div {
