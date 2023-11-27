@@ -17,6 +17,25 @@ const cartSchema = new Schema(
           type: Schema.Types.Number,
           required: true,
         },
+        price: {
+          type: Schema.Types.Number,
+          required: true,
+        },
+        name: {
+          type: Schema.Types.String,
+          required: true,
+        },
+        img: {
+          type: Schema.Types.String,
+        },
+        color: {
+          type: Schema.Types.String,
+          required: true,
+        },
+        size: {
+          type: Schema.Types.String,
+          required: true,
+        },
       },
     ],
     cart_step: {

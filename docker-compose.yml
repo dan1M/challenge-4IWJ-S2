@@ -37,6 +37,7 @@ services:
     working_dir: /app
     command: sh -c "npm install && npm run dev -- --host"
     tty: true
+    restart: on-failure
 
   adminer:
     image: adminer

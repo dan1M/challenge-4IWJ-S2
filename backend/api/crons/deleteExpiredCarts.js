@@ -10,7 +10,12 @@ async function deleteExpiredCarts() {
     // Récupération des paniers expirés ou vides
     const paniersExpires = await Cart.find({
       $or: [
-        { createdAt: { $lt: currentTimestamp - expirationTime } },
+        {
+          $and: [
+            { createdAt: { $lt: currentTimestamp - expirationTime } },
+            { cart_step: { $lt: 3 } },
+          ],
+        },
         { products: { $size: 0 } },
       ],
     });

@@ -1,6 +1,9 @@
 const { validationResult } = require('express-validator/check');
 const Cart = require('../models/nosql/cart');
 const Stock = require('../models/sql/stock');
+const Product = require('../models/sql/product');
+const Color = require('../models/sql/color');
+const Size = require('../models/sql/size');
 
 exports.findOne = async (req, res, next) => {
   try {
@@ -28,6 +31,13 @@ exports.create = async (req, res, next) => {
       error.data = errors.array();
       throw error;
     }
+    const existingCart = await Cart.findOne({ user_id: req.user.id });
+    if (existingCart) {
+      const error = new Error('Cart already exists!');
+      error.statusCode = 422;
+      throw error;
+    }
+
     const stock_id = req.body.stock_id;
 
     const stock = await Stock.findByPk(stock_id);
@@ -41,6 +51,9 @@ exports.create = async (req, res, next) => {
       error.statusCode = 404;
       throw error;
     }
+    const product = await Product.findByPk(stock.product_id);
+    const color = await Color.findByPk(stock.color_id);
+    const size = await Size.findByPk(stock.size_id);
 
     const cart = await Cart.create({
       user_id: req.user.id,
@@ -48,6 +61,11 @@ exports.create = async (req, res, next) => {
         {
           stock_id: stock_id,
           quantity: 1,
+          price: stock.price,
+          img: product.img,
+          name: product.title,
+          color: color.name,
+          size: size.name,
         },
       ],
     });
@@ -107,7 +125,23 @@ exports.update = async (req, res, next) => {
       );
       switch (action) {
         case 'add':
-          cart.products[productIndex].quantity++;
+          if (productIndex === -1) {
+            const product = await Product.findByPk(stock.product_id);
+            const color = await Color.findByPk(stock.color_id);
+            const size = await Size.findByPk(stock.size_id);
+
+            cart.products.push({
+              stock_id: stock_id,
+              quantity: 1,
+              price: stock.price,
+              img: product.img,
+              name: product.title,
+              color: color.name,
+              size: size.name,
+            });
+          } else {
+            cart.products[productIndex].quantity++;
+          }
           stock.quantity--;
           break;
         case 'remove':
