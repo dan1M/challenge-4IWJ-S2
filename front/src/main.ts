@@ -50,7 +50,24 @@ const routes: RouteRecordRaw[] = [
         name: 'detailProduct',
         component: DetailProductPage,
       },
-      { path: '/cart', name: 'cart', component: CartPage },
+      {
+        path: '/cart',
+        name: 'cart',
+        component: CartPage,
+        beforeEnter: async (to, from, next) => {
+          const { isLoggedIn, getUser } = useUserStore();
+
+          if (!isLoggedIn) {
+            next({ name: 'home', replace: true });
+          } else {
+            await getUser();
+            if (!isLoggedIn) {
+              next({ name: 'home', replace: true });
+            }
+            next();
+          }
+        },
+      },
       {
         path: '/auth',
         name: 'auth',

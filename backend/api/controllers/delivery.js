@@ -1,4 +1,6 @@
 const { validationResult } = require('express-validator/check');
+const User = require('../models/sql/user');
+const Cart = require('../models/nosql/cart');
 
 exports.shippingMethods = async (req, res, next) => {
   try {
@@ -18,6 +20,70 @@ exports.shippingMethods = async (req, res, next) => {
     }).then(res => res.json());
 
     res.status(200).json(data[0].methods[0]);
+  } catch (err) {
+    if (!err.statusCode) {
+      err.statusCode = 500;
+      next(err);
+    }
+  }
+};
+
+exports.createPackage = async (req, res, next) => {
+  const HS_CODE = '64039118';
+  const WEIGHT = '1';
+
+  try {
+    const endpoint = '/parcels';
+
+    const user = await User.findByPk(req.user.id);
+    const cart = await Cart.findOne({
+      $and: [{ user_id: req.user.id }, { cart_step: { $eq: 4 } }],
+    });
+    if (!user || !cart) {
+      const error = new Error('User or Cart not found.');
+      error.statusCode = 404;
+      throw error;
+    }
+
+    let body = {
+      name: user.firstname + ' ' + user.lastname,
+      address: user.address,
+      city: user.city,
+      postal_code: user.zipcode,
+      country: 'France',
+      shipment: {
+        id: cart.shipment_id,
+      },
+      parcel_items: [],
+    };
+    for (const cartProduct of cart.products) {
+      body.parcel_items.push({
+        hs_code: HS_CODE,
+        weight: WEIGHT,
+        description: cartProduct.name,
+        quantity: cartProduct.quantity,
+        value: cartProduct.price,
+        origin_country: 'FR',
+      });
+    }
+
+    // const data = await fetch(process.env.SENDCLOUD_API_URL + endpoint, {
+    //   method: 'POST',
+    //   headers: {
+    //     Authorization:
+    //       'Basic ' +
+    //       Buffer.from(
+    //         process.env.SENDCLOUD_PUBLIC_KEY +
+    //           ':' +
+    //           process.env.SENDCLOUD_PRIVATE_KEY,
+    //       ).toString('base64'),
+    //     'Content-Type': 'application/json',
+    //   },
+    //   body: JSON.stringify(body),
+    // }).then(response => response.json());
+    const data = [];
+
+    res.status(201).json(data);
   } catch (err) {
     if (!err.statusCode) {
       err.statusCode = 500;

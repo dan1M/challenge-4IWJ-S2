@@ -42,6 +42,10 @@ const cartSchema = new Schema(
       type: Schema.Types.Number,
       default: 1,
     },
+    shipment_id: {
+      type: Schema.Types.Number,
+      default: 8,
+    },
   },
   { timestamps: true },
 );

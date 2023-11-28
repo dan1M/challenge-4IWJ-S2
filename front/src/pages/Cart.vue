@@ -11,9 +11,13 @@ import {
   HoverCardTrigger,
 } from '@/components/ui/hover-card';
 import { Separator } from '@/components/ui/separator';
+import { ArrowLeft } from 'lucide-vue-next';
+import { ref, watch } from 'vue';
 
-const { isLoggedIn } = storeToRefs(useUserStore());
+const { isLoggedIn, user, userInfo } = storeToRefs(useUserStore());
 const { cart, cartTotal, currentCartStep } = storeToRefs(useCartStore());
+
+const { getUser } = useUserStore();
 const {
   addProductToCart,
   removeProductFromCart,
@@ -29,6 +33,9 @@ const updateQuantity = (value: number, product: CartProduct) => {
     removeProductFromCart(product.stock_id);
   }
 };
+
+const delivery = ref<'home' | 'relay'>('home');
+watch(userInfo, () => getUser());
 </script>
 
 <template>
@@ -118,22 +125,115 @@ const updateQuantity = (value: number, product: CartProduct) => {
         </ul>
         <div v-if="currentCartStep === 2">
           <h1>Choisir le mode de livraison</h1>
-          <div>
-            <label for="delivery-home"></label>
-            <input type="radio" name="delivery" id="delivery-home" />
+          <div
+            class="flex items-center space-x-4 border px-2 mb-2"
+            :class="{ 'border-2 border-primary-500': delivery === 'home' }"
+          >
+            <input
+              type="radio"
+              v-model="delivery"
+              id="delivery-home"
+              value="home"
+              class="text-primary-500 focus:ring-0 focus:ring-offset-0"
+            />
+            <label for="delivery-home" class="flex w-full py-4 cursor-pointer">
+              Livraison à domicile
+            </label>
           </div>
-          <div>
-            <label for="delivery-relay"></label>
-            <input type="radio" name="delivery" id="delivery-relay" />
+          <div v-if="delivery === 'home'" class="flex flex-col mb-6">
+            <small>
+              Veuillez vous assurer que votre adresse est correcte:
+            </small>
+            <div class="flex flex-col w-1/2 my-3">
+              <label
+                for="address"
+                class="uppercase text-sm tracking-wider text-zinc-500 font-bold"
+              >
+                Adresse
+              </label>
+              <input
+                id="address"
+                type="text"
+                :value="user.address"
+                required
+                class="border p-2"
+              />
+            </div>
+            <div class="flex space-x-3 w-1/2">
+              <div class="flex flex-col w-3/4">
+                <label
+                  for="city"
+                  class="uppercase text-sm tracking-wider text-zinc-500 font-bold"
+                >
+                  Ville
+                </label>
+                <input
+                  id="city"
+                  type="text"
+                  :value="user.city"
+                  required
+                  class="border p-2"
+                />
+              </div>
+              <div class="flex flex-col w-1/4">
+                <label
+                  for="zipcode"
+                  class="uppercase text-sm tracking-wider text-zinc-500 font-bold"
+                >
+                  Code postal
+                </label>
+                <input
+                  id="zipcode"
+                  type="text"
+                  :value="user.zipcode"
+                  required
+                  class="border p-2"
+                />
+              </div>
+            </div>
           </div>
+          <div
+            class="flex items-center space-x-4 border px-2"
+            :class="{ 'border-2 border-primary-500': delivery === 'relay' }"
+          >
+            <input
+              type="radio"
+              v-model="delivery"
+              id="delivery-relay"
+              value="relay"
+              class="text-primary-500 focus:ring-0 focus:ring-offset-0"
+            />
+            <label for="delivery-relay" class="flex w-full py-4 cursor-pointer">
+              Livraison en point-relais
+            </label>
+          </div>
+          <div v-if="delivery === 'relay'"></div>
         </div>
-        <Button
-          class="self-end mt-4"
-          :class="{ hidden: currentCartStep > 2 }"
-          @click="isLoggedIn ? nextCartStep() : $router.push({ name: 'auth' })"
-        >
-          {{ isLoggedIn ? 'Continuer' : 'Se connecter pour continuer' }}
-        </Button>
+        <div class="flex self-end mt-4 space-x-4">
+          <Button
+            class="flex items-center space-x-2"
+            :class="{ hidden: currentCartStep === 1 }"
+            @click="previousCartStep()"
+            variant="outline"
+          >
+            <ArrowLeft :size="18" />
+            <p>
+              {{
+                currentCartStep - 2 >= 0 &&
+                currentCartStep - 2 <= 2 &&
+                CART_STEPS[currentCartStep - 2].name
+              }}
+            </p>
+          </Button>
+          <Button
+            :class="{ hidden: currentCartStep > 2 }"
+            @click="
+              isLoggedIn ? nextCartStep() : $router.push({ name: 'auth' })
+            "
+          >
+            {{ isLoggedIn ? 'Continuer' : 'Se connecter pour continuer' }}
+          </Button>
+        </div>
       </div>
 
       <div class="space-y-4 bg-gray-200 w-4/12 p-2 h-fit">

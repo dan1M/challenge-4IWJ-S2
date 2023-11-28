@@ -32,7 +32,7 @@ onMounted(() => {
   <Button
     @click="
       () => {
-        addProductToCart('2f3f0e6c-6a0a-489d-9c67-1ab9fc02e748');
+        addProductToCart('0dcd2217-a6fb-4f09-8aa3-32909f8b5e0a');
       }
     "
   >
