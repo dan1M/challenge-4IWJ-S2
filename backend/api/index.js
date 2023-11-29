@@ -18,6 +18,8 @@ const orderRoutes = require('./routes/order');
 const cartRoutes = require('./routes/cart');
 const deliveryRoutes = require('./routes/delivery');
 const cronDeleteExpiredCart = require('./crons/deleteExpiredCarts');
+const alertTypeRoutes = require('./routes/alert-type');
+const alertsRoutes = require('./routes/alerts');
 
 const port = process.env.PORT;
 
@@ -69,6 +71,8 @@ app.use('/cart', cartRoutes);
 app.use('/delivery', deliveryRoutes);
 
 cronDeleteExpiredCart();
+app.use('/alert-type', alertTypeRoutes);
+app.use('/alerts', alertsRoutes);
 
 app.use(
   multer({ storage: fileStorage, fileFilter: fileFilter }).single('image'),
