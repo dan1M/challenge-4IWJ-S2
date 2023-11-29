@@ -124,7 +124,7 @@ watch(userInfo, () => getUser());
           </li>
         </ul>
         <div v-if="currentCartStep === 2">
-          <h1>Choisir le mode de livraison</h1>
+          <h1>Confirmez les informations de livraison</h1>
           <div
             class="flex items-center space-x-4 border px-2 mb-2"
             :class="{ 'border-2 border-primary-500': delivery === 'home' }"
@@ -193,6 +193,7 @@ watch(userInfo, () => getUser());
             </div>
           </div>
           <div
+            v-if="false"
             class="flex items-center space-x-4 border px-2"
             :class="{ 'border-2 border-primary-500': delivery === 'relay' }"
           >

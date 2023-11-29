@@ -5,7 +5,7 @@ const Cart = require('../models/nosql/cart');
 exports.shippingMethods = async (req, res, next) => {
   try {
     const endpoint =
-      '/shipping-products?from_country=FR&to_country=FR&carrier=sendcloud';
+      '/shipping-products?from_country=FR&to_country=FR&weight=1&weight_unit=kilogram';
     const data = await fetch(process.env.SENDCLOUD_API_URL + endpoint, {
       headers: {
         Authorization:
@@ -17,9 +17,20 @@ exports.shippingMethods = async (req, res, next) => {
           ).toString('base64'),
         'Content-Type': 'application/json',
       },
-    }).then(res => res.json());
+    })
+      .then(res => res.json())
+      .then(data => {
+        let shippingMethods = [];
+        // get methods from each item in data
+        data.forEach(item => {
+          item.methods.forEach(method => {
+            shippingMethods.push(method);
+          });
+        });
+        return shippingMethods;
+      });
 
-    res.status(200).json(data[0].methods[0]);
+    res.status(200).json(data);
   } catch (err) {
     if (!err.statusCode) {
       err.statusCode = 500;
