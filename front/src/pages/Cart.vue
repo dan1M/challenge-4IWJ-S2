@@ -12,7 +12,7 @@ import {
 } from '@/components/ui/hover-card';
 import { Separator } from '@/components/ui/separator';
 import { ArrowLeft } from 'lucide-vue-next';
-import { ref, watch } from 'vue';
+import { onMounted, ref, watch } from 'vue';
 
 const { isLoggedIn, user, userInfo } = storeToRefs(useUserStore());
 const { cart, cartTotal, currentCartStep } = storeToRefs(useCartStore());
@@ -26,6 +26,13 @@ const {
   previousCartStep,
 } = useCartStore();
 
+const delivery = ref<'home' | 'relay'>('home');
+
+// @ts-ignore
+const stripe = Stripe(
+  import.meta.env.VITE_PUBLIC_STRIPE_PUBLISHABLE_KEY as string,
+);
+
 const updateQuantity = (value: number, product: CartProduct) => {
   if (value > product.quantity) {
     addProductToCart(product.stock_id);
@@ -34,8 +41,29 @@ const updateQuantity = (value: number, product: CartProduct) => {
   }
 };
 
-const delivery = ref<'home' | 'relay'>('home');
+const initStripeEmbed = async () => {
+  const response = await fetch(
+    import.meta.env.VITE_BACKEND_URL + '/payment/create-checkout-session',
+    {
+      method: 'POST',
+      credentials: 'include',
+    },
+  );
+
+  const { clientSecret } = await response.json();
+
+  const checkout = await stripe.initEmbeddedCheckout({
+    clientSecret,
+  });
+
+  // Mount Checkout
+  checkout.mount('#cart-checkout');
+};
+
 watch(userInfo, () => getUser());
+onMounted(() => {
+  initStripeEmbed();
+});
 </script>
 
 <template>
@@ -209,6 +237,10 @@ watch(userInfo, () => getUser());
             </label>
           </div>
           <div v-if="delivery === 'relay'"></div>
+        </div>
+        <div v-if="currentCartStep === 3">
+          <h1>Confirmez les informations de paiements</h1>
+          <div id="cart-checkout"></div>
         </div>
         <div class="flex self-end mt-4 space-x-4">
           <Button

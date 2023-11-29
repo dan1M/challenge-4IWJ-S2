@@ -34,8 +34,9 @@ exports.shippingMethods = async (req, res, next) => {
   } catch (err) {
     if (!err.statusCode) {
       err.statusCode = 500;
-      next(err);
     }
+
+    next(err);
   }
 };
 
@@ -78,27 +79,27 @@ exports.createPackage = async (req, res, next) => {
       });
     }
 
-    // const data = await fetch(process.env.SENDCLOUD_API_URL + endpoint, {
-    //   method: 'POST',
-    //   headers: {
-    //     Authorization:
-    //       'Basic ' +
-    //       Buffer.from(
-    //         process.env.SENDCLOUD_PUBLIC_KEY +
-    //           ':' +
-    //           process.env.SENDCLOUD_PRIVATE_KEY,
-    //       ).toString('base64'),
-    //     'Content-Type': 'application/json',
-    //   },
-    //   body: JSON.stringify(body),
-    // }).then(response => response.json());
-    const data = [];
+    const data = await fetch(process.env.SENDCLOUD_API_URL + endpoint, {
+      method: 'POST',
+      headers: {
+        Authorization:
+          'Basic ' +
+          Buffer.from(
+            process.env.SENDCLOUD_PUBLIC_KEY +
+              ':' +
+              process.env.SENDCLOUD_PRIVATE_KEY,
+          ).toString('base64'),
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(body),
+    }).then(response => response.json());
 
     res.status(201).json(data);
   } catch (err) {
+    console.log('err:', err);
     if (!err.statusCode) {
       err.statusCode = 500;
-      next(err);
     }
+    next(err);
   }
 };
