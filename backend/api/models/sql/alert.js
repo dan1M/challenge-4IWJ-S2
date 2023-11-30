@@ -18,6 +18,11 @@ const Alert = sequelize.define(
       type: DataTypes.UUID,
       allowNull: true,
     },
+    status: {
+      type: DataTypes.BOOLEAN,
+      allowNull: true,
+      defaultValue: false,
+    },
   },
   {
     hooks: {

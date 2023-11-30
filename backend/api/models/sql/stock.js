@@ -1,6 +1,9 @@
 const { DataTypes } = require('sequelize');
 const { v4: uuidv4 } = require('uuid');
-const { alertProductStock } = require('../../util/createAlert');
+const {
+  alertPriceChange,
+  alertProductStock,
+} = require('../../util/createAlert');
 
 const sequelize = require('./db-sql');
 
@@ -42,7 +45,18 @@ const Stock = sequelize.define(
         console.log('Before Create Hook');
         stock.id = uuidv4();
         console.log('Generated ID:', stock.id);
-        alertProductStock(stock.product_id);
+      },
+      beforeUpdate: async (stock, options) => {
+        console.log('Before Create Hook');
+        stock.id = uuidv4();
+        console.log('Generated ID:', stock.id);
+        const oldStock = await Stock.findByPk(stock.id);
+        if (oldStock.price !== stock.price) {
+          alertPriceChange(stock.product_id);
+        }
+        if (stock.quantity > oldStock.quantity) {
+          alertProductStock(stock.product_id);
+        }
       },
     },
   },

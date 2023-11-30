@@ -23,17 +23,14 @@ const Product = sequelize.define(
     category_id: {
       type: DataTypes.UUID,
       allowNull: false,
-      price: {
-        type: DataTypes.DOUBLE,
-      },
-      // imageUrl: {
-      //   type: DataTypes.TEXT,
-      // },
-      stock: {
-        type: DataTypes.INTEGER,
-        allowNull: true,
-        defaultValue: 0,
-      },
+    },
+    // imageUrl: {
+    //   type: DataTypes.TEXT,
+    // },
+    stock: {
+      type: DataTypes.INTEGER,
+      allowNull: true,
+      defaultValue: 0,
     },
   },
 

@@ -28,10 +28,6 @@ Product.belongsTo(Category, {
 });
 
 // Alert relations
-Alert.belongsTo(Product, {
-  foreignKey: 'product_id',
-  onDelete: 'CASCADE',
-});
 
 Alert.belongsTo(User, {
   foreignKey: 'user_id',
@@ -80,4 +76,4 @@ DetailsOrder.belongsTo(Order, {
   onDelete: 'CASCADE',
 });
 
-sequelize.sync({ force: true });
+sequelize.sync({ alter: true });

@@ -21,8 +21,13 @@ import DetailProductPage from './pages/DetailProduct.vue';
 import CartPage from './pages/Cart.vue';
 import AuthPage from './pages/Auth.vue';
 import ProfilePage from './pages/Profile.vue';
+import AppProfile from './components/AppProfile.vue';
 import AppCredentials from './components/AppCredentials.vue';
 import AppUpdatePassword from './components/AppUpdatePassword.vue';
+import AppAlerts from './components/AppAlerts.vue';
+import { useAlertStore } from './stores/alert-store';
+import { useCategoryStore } from './stores/category-store';
+
 
 const routes: RouteRecordRaw[] = [
   {
@@ -41,7 +46,7 @@ const routes: RouteRecordRaw[] = [
         component: HomePage,
       },
       { path: '/products', name: 'products', component: ProductsPage },
-      { path: '/product/:id', name: 'detailProduct', component: DetailProductPage},
+      { path: '/product/:id', name: 'detailProduct', component: DetailProductPage },
       { path: '/cart', name: 'cart', component: CartPage },
       {
         path: '/auth',
@@ -67,6 +72,10 @@ const routes: RouteRecordRaw[] = [
             next({ name: 'home', replace: true });
           } else {
             await userStore.getUser();
+            const alertStore = useAlertStore();
+            const categoryStore = useCategoryStore();
+            await categoryStore.findAllCategories();
+            await alertStore.getUserAlerts(userStore.userInfo.id);
             if (!userStore.isLoggedIn) {
               next({ name: 'home', replace: true });
             }
@@ -74,15 +83,27 @@ const routes: RouteRecordRaw[] = [
           }
         },
         component: ProfilePage,
+
         children: [
           {
+            path: '',
+            name: '',
+            component: AppProfile,
+          },
+          {
             path: 'credentials',
+            name: 'credentials',
             component: AppCredentials,
           },
           {
             path: 'update-password',
             name: 'update-password',
             component: AppUpdatePassword,
+          },
+          {
+            path: 'alerts',
+            name: 'alerts',
+            component: AppAlerts,
           },
         ],
       },
