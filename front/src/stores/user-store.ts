@@ -72,6 +72,23 @@ export const useUserStore = defineStore('user', () => {
     }
   }
 
+  const deleteAccount = async () => {
+    try {
+      const response = await fetch('http://localhost:3000/users/' + userInfo.value.id, {
+        method: 'DELETE',
+        credentials: 'include',
+      });
+
+      if (!response.ok) {
+        throw new Error('Something went wrong, request failed!');
+      }
+      router.push({ name: 'home' });
+
+    } catch (err) {
+      console.log(err);
+    }
+  }
+
   return {
     user,
     userInfo,
@@ -81,6 +98,7 @@ export const useUserStore = defineStore('user', () => {
     updateLanguage,
     getUserInfo,
     getUser,
-    logout
+    logout,
+    deleteAccount
   };
 });

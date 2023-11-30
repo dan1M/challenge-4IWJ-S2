@@ -25,6 +25,7 @@ import AppProfile from './components/AppProfile.vue';
 import AppCredentials from './components/AppCredentials.vue';
 import AppUpdatePassword from './components/AppUpdatePassword.vue';
 import AppAlerts from './components/AppAlerts.vue';
+import AppDeleteAccount from './components/AppDeleteAccount.vue';
 import { useAlertStore } from './stores/alert-store';
 import { useCategoryStore } from './stores/category-store';
 
@@ -104,6 +105,11 @@ const routes: RouteRecordRaw[] = [
             path: 'alerts',
             name: 'alerts',
             component: AppAlerts,
+          },
+          {
+            path: 'delete-account',
+            name: 'delete-account',
+            component: AppDeleteAccount,
           },
         ],
       },

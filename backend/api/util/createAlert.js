@@ -102,8 +102,26 @@ const alertPriceChange = async product_id => {
   }
 };
 
+const alertNewsletter = async user => {
+  try {
+    send(
+      '/app/assets/template/template-newsletter.ejs',
+      {
+        firstname: user.firstname,
+        lastname: user.lastname,
+        link: 'http://localhost:5173',
+      },
+      user.email,
+      `Inscription à la newsletter`,
+    );
+  } catch (err) {
+    console.log(err);
+  }
+};
+
 module.exports = {
   alertNewProduct,
   alertProductStock,
   alertPriceChange,
+  alertNewsletter,
 };
