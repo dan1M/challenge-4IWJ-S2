@@ -24,6 +24,7 @@ import AuthPage from './pages/Auth.vue';
 import ProfilePage from './pages/Profile.vue';
 import AppCredentials from './components/AppCredentials.vue';
 import AppUpdatePassword from './components/AppUpdatePassword.vue';
+import CheckoutReturn from './pages/CheckoutReturn.vue';
 
 const routes: RouteRecordRaw[] = [
   {
@@ -67,6 +68,11 @@ const routes: RouteRecordRaw[] = [
             next();
           }
         },
+      },
+      {
+        path: '/cart/checkout-return',
+        name: 'checkout-return',
+        component: CheckoutReturn,
       },
       {
         path: '/auth',

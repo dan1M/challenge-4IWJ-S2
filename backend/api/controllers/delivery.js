@@ -49,7 +49,8 @@ exports.createPackage = async (req, res, next) => {
 
     const user = await User.findByPk(req.user.id);
     const cart = await Cart.findOne({
-      $and: [{ user_id: req.user.id }, { cart_step: { $eq: 4 } }],
+      user_id: req.user.id,
+      cart_step: { $eq: 4 },
     });
     if (!user || !cart) {
       const error = new Error('User or Cart not found.');
@@ -58,18 +59,21 @@ exports.createPackage = async (req, res, next) => {
     }
 
     let body = {
-      name: user.firstname + ' ' + user.lastname,
-      address: user.address,
-      city: user.city,
-      postal_code: user.zipcode,
-      country: 'France',
-      shipment: {
-        id: cart.shipment_id,
+      parcel: {
+        name: user.firstname + ' ' + user.lastname,
+        address: user.address,
+        city: user.city,
+        postal_code: user.zipcode,
+        country: 'FR',
+        request_label: true,
+        shipment: {
+          id: cart.shipment_id,
+        },
+        parcel_items: [],
       },
-      parcel_items: [],
     };
     for (const cartProduct of cart.products) {
-      body.parcel_items.push({
+      body.parcel.parcel_items.push({
         hs_code: HS_CODE,
         weight: WEIGHT,
         description: cartProduct.name,
@@ -96,7 +100,6 @@ exports.createPackage = async (req, res, next) => {
 
     res.status(201).json(data);
   } catch (err) {
-    console.log('err:', err);
     if (!err.statusCode) {
       err.statusCode = 500;
     }

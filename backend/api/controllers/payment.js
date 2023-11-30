@@ -1,17 +1,20 @@
 const Cart = require('../models/nosql/cart');
+const User = require('../models/sql/user');
 
 const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
 
 exports.createCheckoutSession = async (req, res, next) => {
   try {
+    const user = await User.findByPk(req.user.id);
     const cart = await Cart.findOne({
-      $and: [{ user_id: req.user.id }, { cart_step: { $eq: 4 } }],
+      user_id: req.user.id,
     });
     if (!cart) {
       const error = new Error('Cart not found.');
       error.statusCode = 404;
       throw error;
     }
+
     let checkout_items = [];
     cart.products.forEach(product => {
       checkout_items.push({
@@ -30,7 +33,8 @@ exports.createCheckoutSession = async (req, res, next) => {
       ui_mode: 'embedded',
       line_items: checkout_items,
       mode: 'payment',
-      return_url: `${process.env.HOST}/return?session_id={CHECKOUT_SESSION_ID}`,
+      customer_email: user.email,
+      return_url: `${process.env.FRONT_URL}/cart/checkout-return?session_id={CHECKOUT_SESSION_ID}`,
     });
 
     res.send({ clientSecret: session.client_secret });
@@ -44,11 +48,6 @@ exports.createCheckoutSession = async (req, res, next) => {
 
 exports.getSessionStatus = async (req, res, next) => {
   try {
-    if (!req.query.session_id) {
-      const error = new Error('Session not found.');
-      error.statusCode = 404;
-      throw error;
-    }
     const session = await stripe.checkout.sessions.retrieve(
       req.query.session_id,
     );

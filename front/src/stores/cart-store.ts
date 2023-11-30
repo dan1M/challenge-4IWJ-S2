@@ -151,7 +151,9 @@ export const useCartStore = defineStore('cart', () => {
     })
       .then(response => {
         if (!response.ok) {
-          throw new Error("Something went wrong, couldn't cart step!");
+          throw new Error(
+            "Something went wrong, couldn't get to next cart step!",
+          );
         }
         return response.json();
       })
@@ -177,7 +179,9 @@ export const useCartStore = defineStore('cart', () => {
     })
       .then(response => {
         if (!response.ok) {
-          throw new Error("Something went wrong, couldn't cart step!");
+          throw new Error(
+            "Something went wrong, couldn't get to previous cart step!",
+          );
         }
         return response.json();
       })

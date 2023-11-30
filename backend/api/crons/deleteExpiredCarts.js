@@ -11,10 +11,8 @@ async function deleteExpiredCarts() {
     const paniersExpires = await Cart.find({
       $or: [
         {
-          $and: [
-            { createdAt: { $lt: currentTimestamp - expirationTime } },
-            { cart_step: { $lt: 3 } },
-          ],
+          createdAt: { $lt: currentTimestamp - expirationTime },
+          cart_step: { $lt: 3 },
         },
         { products: { $size: 0 } },
       ],

@@ -41,7 +41,12 @@ const updateQuantity = (value: number, product: CartProduct) => {
   }
 };
 
+const checkoutEmbed = ref();
+
 const initStripeEmbed = async () => {
+  if (checkoutEmbed.value) {
+    checkoutEmbed.value.destroy();
+  }
   const response = await fetch(
     import.meta.env.VITE_BACKEND_URL + '/payment/create-checkout-session',
     {
@@ -52,17 +57,25 @@ const initStripeEmbed = async () => {
 
   const { clientSecret } = await response.json();
 
-  const checkout = await stripe.initEmbeddedCheckout({
+  checkoutEmbed.value = await stripe.initEmbeddedCheckout({
     clientSecret,
   });
 
   // Mount Checkout
-  checkout.mount('#cart-checkout');
+  checkoutEmbed.value.mount('#cart-checkout');
 };
 
 watch(userInfo, () => getUser());
+watch(currentCartStep, () => {
+  if (currentCartStep.value === 3) {
+    initStripeEmbed();
+  }
+});
+
 onMounted(() => {
-  initStripeEmbed();
+  if (currentCartStep.value === 3 && !checkoutEmbed.value) {
+    initStripeEmbed();
+  }
 });
 </script>
 
@@ -239,8 +252,7 @@ onMounted(() => {
           <div v-if="delivery === 'relay'"></div>
         </div>
         <div v-if="currentCartStep === 3">
-          <h1>Confirmez les informations de paiements</h1>
-          <div id="cart-checkout"></div>
+          <div id="cart-checkout" v-if="currentCartStep === 3"></div>
         </div>
         <div class="flex self-end mt-4 space-x-4">
           <Button
@@ -269,7 +281,7 @@ onMounted(() => {
         </div>
       </div>
 
-      <div class="space-y-4 bg-gray-200 w-4/12 p-2 h-fit">
+      <div class="space-y-4 bg-gray-100 w-4/12 p-2 h-fit">
         <h2 class="text-xl font-semibold">Résumé de la commande</h2>
         <Separator class="bg-zinc-300" />
 
