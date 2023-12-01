@@ -16,7 +16,7 @@ onMounted(() => {
   )
     .then(res => {
       if (!res.ok) {
-        router.push({ name: 'cart' });
+        router.push({ name: 'home' });
       }
       return res.json();
     })
@@ -44,6 +44,12 @@ onMounted(() => {
     <p>
       Merci pour votre commande! Un mail de confirmation sera envoyé à l'adresse
       <i>{{ customerEmail }}</i>
+    </p>
+    <p>
+      Vous pouvez suivre votre commande
+      <RouterLink :to="{ name: 'profile-orders' }" class="underline italic">
+        ici
+      </RouterLink>
     </p>
   </section>
 </template>

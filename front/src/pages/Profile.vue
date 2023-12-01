@@ -9,17 +9,24 @@ const { logout } = useUserStore();
       <div>
         <ul>
           <li class="list-item-profile">
-            <router-link to="/profile/credentials"
-              >Mes informations</router-link
-            >
+            <router-link :to="{ name: 'profile-credentials' }" class="flex p-5">
+              Mes informations
+            </router-link>
           </li>
           <li class="list-item-profile">
-            <router-link :to="{ name: 'update-password' }"
-              >Changer le mot de passe</router-link
-            >
+            <router-link :to="{ name: 'update-password' }" class="flex p-5">
+              Changer le mot de passe
+            </router-link>
           </li>
-          <li class="list-item-profile">Mes commandes</li>
-          <li class="list-item-profile cursor-pointer" @click="logout">
+          <li class="list-item-profile">
+            <router-link :to="{ name: 'profile-orders' }" class="flex p-5">
+              Mes commandes
+            </router-link>
+          </li>
+          <li
+            class="list-item-profile cursor-pointer flex p-5 text-red-500"
+            @click="logout"
+          >
             Déconnexion
           </li>
         </ul>

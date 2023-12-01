@@ -24,6 +24,7 @@ import AuthPage from './pages/Auth.vue';
 import ProfilePage from './pages/Profile.vue';
 import AppCredentials from './components/AppCredentials.vue';
 import AppUpdatePassword from './components/AppUpdatePassword.vue';
+import AppOrders from './components/AppOrders.vue';
 import CheckoutReturn from './pages/CheckoutReturn.vue';
 
 const routes: RouteRecordRaw[] = [
@@ -107,12 +108,18 @@ const routes: RouteRecordRaw[] = [
         children: [
           {
             path: 'credentials',
+            name: 'profile-credentials',
             component: AppCredentials,
           },
           {
             path: 'update-password',
             name: 'update-password',
             component: AppUpdatePassword,
+          },
+          {
+            path: 'profile-orders',
+            name: 'profile-orders',
+            component: AppOrders,
           },
         ],
       },
