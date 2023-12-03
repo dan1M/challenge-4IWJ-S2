@@ -21,9 +21,12 @@ export const useUserStore = defineStore('user', () => {
 
   const getUser = async () => {
     try {
-      const response = await fetch('http://localhost:3000/users/' + userInfo.value.id, {
-        credentials: 'include',
-      });
+      const response = await fetch(
+        'http://localhost:3000/users/' + userInfo.value.id,
+        {
+          credentials: 'include',
+        },
+      );
       if (!response.ok) {
         throw new Error('Something went wrong, request failed!');
       }
@@ -41,12 +44,10 @@ export const useUserStore = defineStore('user', () => {
       });
       if (!response.ok) {
         throw new Error('Something went wrong, request failed!');
-
       }
       isLoggedIn.value = true;
 
       userInfo.value = await response.json();
-
     } catch (err) {
       isLoggedIn.value = false;
       console.log(err);
@@ -66,28 +67,29 @@ export const useUserStore = defineStore('user', () => {
       isLoggedIn.value = false;
       canAccessDashboard.value = false;
       router.go();
-
     } catch (err) {
       console.log(err);
     }
-  }
+  };
 
   const deleteAccount = async () => {
     try {
-      const response = await fetch('http://localhost:3000/users/' + userInfo.value.id, {
-        method: 'DELETE',
-        credentials: 'include',
-      });
+      const response = await fetch(
+        'http://localhost:3000/users/' + userInfo.value.id,
+        {
+          method: 'DELETE',
+          credentials: 'include',
+        },
+      );
 
       if (!response.ok) {
         throw new Error('Something went wrong, request failed!');
       }
       router.push({ name: 'home' });
-
     } catch (err) {
       console.log(err);
     }
-  }
+  };
 
   return {
     user,
@@ -99,6 +101,6 @@ export const useUserStore = defineStore('user', () => {
     getUserInfo,
     getUser,
     logout,
-    deleteAccount
+    deleteAccount,
   };
 });

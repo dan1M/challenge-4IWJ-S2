@@ -32,18 +32,7 @@ onMounted(() => {
   <Button
     @click="
       () => {
-        addProductToCart({
-          stockId: 1,
-          name: 'Oe la chaussure',
-          price: 10.9,
-          quantity: 1,
-        });
-        addProductToCart({
-          stockId: 2,
-          name: 'Oe la DEUX',
-          price: 10.9,
-          quantity: 1,
-        });
+        addProductToCart('0dcd2217-a6fb-4f09-8aa3-32909f8b5e0a');
       }
     "
   >

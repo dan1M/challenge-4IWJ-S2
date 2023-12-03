@@ -2,10 +2,8 @@
 @tailwind components;
 @tailwind utilities;
 
-
 @layer components {
-
-    .list-item-profile {
-      @apply p-5 w-80 font-medium hover:border-l-8 border-s-primary-500 bg-stone-50;
-    }
+  .list-item-profile {
+    @apply w-80 font-medium hover:border-l-8 border-s-primary-500 bg-stone-50;
   }
+}

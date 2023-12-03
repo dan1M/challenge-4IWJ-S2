@@ -36,7 +36,7 @@ const { canAccessDashboard, isLoggedIn, userInfo } = storeToRefs(
 
 const { logout } = useUserStore();
 
-const { cartTotalItems } = storeToRefs(useCartStore());
+const { cart } = storeToRefs(useCartStore());
 </script>
 
 <template>
@@ -94,8 +94,8 @@ const { cartTotalItems } = storeToRefs(useCartStore());
           >
             <ShoppingCart :size="36" />
 
-            <Badge class="absolute right-0 top-0" v-if="cartTotalItems > 0">
-              {{ cartTotalItems }}
+            <Badge class="absolute right-0 top-0" v-if="cart.length > 0">
+              {{ cart.length }}
             </Badge>
             <span>Panier</span>
           </router-link>

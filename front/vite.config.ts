@@ -13,4 +13,11 @@ export default defineConfig({
   optimizeDeps: {
     exclude: ['oh-vue-icons/icons'],
   },
+  server: {
+    host: true,
+    port: 5173,
+    watch: {
+      usePolling: true,
+    },
+  },
 });

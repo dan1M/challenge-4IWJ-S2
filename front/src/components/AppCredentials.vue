@@ -67,14 +67,6 @@ watch(serverResponse, () => {
   getUserInfo();
 });
 
-const passwordConfirmationError = computed(() => {
-  if (password.value !== passwordConfirmation.value) {
-    return 'Les mots de passe ne correspondent pas';
-  }
-
-  return '';
-});
-
 let cities = ref([]);
 const getCity = async () => {
   cities.value = [];
@@ -155,7 +147,7 @@ const getCity = async () => {
         >
           Date de naissance
         </label>
-        <VueDatePicker v:model="dob"></VueDatePicker>
+        <VueDatePicker v:model="dob" />
       </div>
       <div class="flex flex-col">
         <label

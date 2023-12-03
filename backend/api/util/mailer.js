@@ -3,7 +3,7 @@ const Transport = require('nodemailer-brevo-transport');
 const ejs = require('ejs');
 
 const transporter = nodemailer.createTransport(
-  new Transport({ apiKey: process.env.API_KEY }),
+  new Transport({ apiKey: process.env.MAILER_API_KEY }),
 );
 
 const send = (template, options, to, subject) => {

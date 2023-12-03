@@ -1,4 +1,5 @@
 const fs = require('node:fs');
+
 const path = require('node:path');
 const { validationResult } = require('express-validator/check');
 const Product = require('../models/sql/product.js');
