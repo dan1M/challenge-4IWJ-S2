@@ -4,14 +4,17 @@ import { ref } from "vue";
 import { Button } from "@/components/ui/button";
 import { useProductStore } from '../stores/product-store';
 import { RadioGroup, RadioGroupLabel, RadioGroupOption } from '@headlessui/vue';
+import { watch } from 'vue';
 
 const { product } = useProductStore();
 
 const selectedColor = ref('');
 const selectedSize = ref('');
+const selectedPrice = ref(product.variants[0].price);
 
 const selectColor = (color: string) => {
     selectedColor.value = color;
+    selectedSize.value = '';
     updateSizeAvailability();
     
 };
@@ -29,11 +32,33 @@ const updateSizeAvailability = ()  =>{
       
 }
 
+
+function isOutOfStock(variants) {
+  return variants.every(variant => variant.quantity === 0);
+}
+
+watch(selectedSize, (newSize) => {
+    
+    const selectedVariant = product.variants.find((variant) => {
+      return variant.color.id === selectedColor.value && variant.size.id === newSize;
+    });
+   
+    if (selectedVariant) {
+      selectedPrice.value = selectedVariant.price;
+    }
+    
+});
+
+
+const buttonAddToCart = isOutOfStock(product.variants) ? 'Rupture de stock' : 'Ajouter au panier';
+
 const addToCart = () => {
     console.log('add to cart color: ', selectedColor.value,' Size: ', selectedSize.value );
+
     const selectedVariant = product.variants.find((variant) => {
       return variant.color.id === selectedColor.value && variant.size.id === selectedSize.value;
     });
+   
     if (selectedVariant) {
       const variantId = selectedVariant.id;
 
@@ -64,9 +89,7 @@ const addToCart = () => {
                         <div>
                             <h2 class="text-2xl font-bold text-gray-800 dark:text-white mb-2">{{ product.title }}</h2>
                             <p class="text-gray-600 dark:text-gray-300 text-sm mb-4">{{ product.description }}</p>
-                            <div class="mb-4">
-                                <span className="text-xl text-pink-500 ">{{product.variants[0].price}}€</span>
-                            </div>
+                           
 
                             <div class="mb-4">
                                 <span class="font-bold text-gray-700 dark:text-gray-300">Sélectionner une couleur:</span>
@@ -111,6 +134,9 @@ const addToCart = () => {
                                     </div>
                                 </RadioGroup>
                             </div>
+                            <div class="mb-4">
+                                <span className="text-xl text-pink-500 ">{{selectedPrice}}€</span>
+                            </div>
                             
                         </div>
                         <div class="mb-6 mt-6">
@@ -120,7 +146,7 @@ const addToCart = () => {
                                         @click="addToCart"
                                         :disabled="!selectedColor || !selectedSize"
                                     >
-                                        Ajouter au panier
+                                        {{buttonAddToCart}}
                                     </Button>
                                 </div>
                             </div>
