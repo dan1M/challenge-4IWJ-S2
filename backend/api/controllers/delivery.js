@@ -98,7 +98,7 @@ exports.createPackage = async (req, res, next) => {
       body: JSON.stringify(body),
     }).then(response => response.json());
 
-    res.status(201).json(data);
+    return data;
   } catch (err) {
     if (!err.statusCode) {
       err.statusCode = 500;

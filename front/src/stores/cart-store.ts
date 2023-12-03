@@ -39,6 +39,7 @@ export const useCartStore = defineStore('cart', () => {
       .then(response => {
         if (!response.ok) {
           cart.value = [];
+          currentCartStep.value = 1;
           throw new Error('No cart found or not logged in!');
         }
         return response.json();

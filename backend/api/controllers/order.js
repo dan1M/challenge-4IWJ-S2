@@ -1,5 +1,10 @@
 const { validationResult } = require('express-validator/check');
 const Order = require('../models/nosql/order');
+const Cart = require('../models/nosql/cart');
+const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
+const deliveryController = require('../controllers/delivery');
+const User = require('../models/sql/user');
+const { send } = require('../util/mailer');
 
 exports.findAll = async (req, res, next) => {
   try {
@@ -70,10 +75,6 @@ exports.findOneUserOrder = async (req, res, next) => {
   }
 };
 
-// * NEXT CART STEP
-// * CREATION COLIS (SENDCLOUD)
-// * CREATION COMMANDE A PARTIR DE PANIER
-// * DELETE PANIER
 exports.create = async (req, res, next) => {
   const errors = validationResult(req);
   try {
@@ -83,6 +84,57 @@ exports.create = async (req, res, next) => {
       error.data = errors.array();
       throw error;
     }
+    const sessionId = req.body.session_id;
+
+    const user = await User.findByPk(req.user.id);
+
+    const session = await stripe.checkout.sessions.retrieve(sessionId);
+    if (
+      session.status !== 'complete' ||
+      session.customer_details.email !== user.email
+    ) {
+      const error = new Error('Invalid payment.');
+      error.statusCode = 422;
+      throw error;
+    }
+
+    const existingOrder = await Order.findOne({ payment_id: sessionId });
+    if (existingOrder) {
+      const error = new Error('Order already created.');
+      error.statusCode = 422;
+      throw error;
+    }
+
+    const cart = await Cart.findOne({ user_id: req.user.id });
+    if (!cart) {
+      const error = new Error('Could not find cart informations.');
+      error.statusCode = 404;
+      throw error;
+    }
+    if (cart.cart_step < 3) {
+      const error = new Error('Cart is not paid.');
+      error.statusCode = 422;
+      throw error;
+    }
+    // Next cart step
+    cart.cart_step = 4;
+    await cart.save();
+
+    // Creating parcel with Sendcloud
+    const deliveryData = await deliveryController.createPackage(req, res, next);
+
+    // Creating order
+    const order = await Order.create({
+      user_id: req.user.id,
+      products: cart.products,
+      payment_id: sessionId,
+      tracking_id: deliveryData.parcel.tracking_number,
+      tracking_url: deliveryData.parcel.tracking_url,
+      parcel_id: deliveryData.parcel.id,
+    });
+
+    // Deleting cart
+    await cart.deleteOne({ _id: cart._id });
 
     res.status(201).json(order);
   } catch (err) {

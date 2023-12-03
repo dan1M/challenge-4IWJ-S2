@@ -117,7 +117,7 @@ const routes: RouteRecordRaw[] = [
             component: AppUpdatePassword,
           },
           {
-            path: 'profile-orders',
+            path: 'my-orders',
             name: 'profile-orders',
             component: AppOrders,
           },

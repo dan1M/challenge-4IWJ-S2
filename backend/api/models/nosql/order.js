@@ -42,6 +42,18 @@ const orderSchema = new Schema(
       type: Schema.Types.String,
       default: 'created',
     },
+    payment_id: {
+      type: Schema.Types.String,
+    },
+    tracking_id: {
+      type: Schema.Types.String,
+    },
+    tracking_url: {
+      type: Schema.Types.String,
+    },
+    parcel_id: {
+      type: Schema.Types.Number,
+    },
   },
   { timestamps: true },
 );

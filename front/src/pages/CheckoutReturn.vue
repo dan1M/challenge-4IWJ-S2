@@ -1,10 +1,12 @@
 <script setup lang="ts">
+import { useCartStore } from '@/stores/cart-store';
 import { onMounted, ref } from 'vue';
 import { useRouter } from 'vue-router';
 
 const router = useRouter();
 const status = ref(null);
 const customerEmail = ref('');
+const { getCart } = useCartStore();
 
 onMounted(() => {
   const sessionId = router.currentRoute.value.query.session_id;
@@ -29,8 +31,18 @@ onMounted(() => {
       status.value = data.status;
       customerEmail.value = data.customer_email;
 
-      console.log(data);
-      // TODO: Create order giving session_id query param
+      fetch(import.meta.env.VITE_BACKEND_URL + `/orders`, {
+        method: 'POST',
+        credentials: 'include',
+        body: JSON.stringify({ session_id: data.id }),
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      })
+        .then(res => res.json())
+        .then(orderData => {
+          getCart();
+        });
     });
 });
 </script>
