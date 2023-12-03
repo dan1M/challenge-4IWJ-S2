@@ -22,10 +22,15 @@ import DetailProductPage from './pages/DetailProduct.vue';
 import CartPage from './pages/Cart.vue';
 import AuthPage from './pages/Auth.vue';
 import ProfilePage from './pages/Profile.vue';
+import AppProfile from './components/AppProfile.vue';
 import AppCredentials from './components/AppCredentials.vue';
 import AppUpdatePassword from './components/AppUpdatePassword.vue';
 import AppOrders from './components/AppOrders.vue';
 import CheckoutReturn from './pages/CheckoutReturn.vue';
+import AppAlerts from './components/AppAlerts.vue';
+import AppDeleteAccount from './components/AppDeleteAccount.vue';
+import { useAlertStore } from './stores/alert-store';
+import { useCategoryStore } from './stores/category-store';
 
 const routes: RouteRecordRaw[] = [
   {
@@ -92,20 +97,28 @@ const routes: RouteRecordRaw[] = [
         path: '/profile',
         name: 'profile',
         beforeEnter: async (to, from, next) => {
-          const { isLoggedIn, getUser } = useUserStore();
+          const { isLoggedIn, getUser, userInfo } = useUserStore();
 
           if (!isLoggedIn) {
             next({ name: 'home', replace: true });
           } else {
             await getUser();
-            if (!isLoggedIn) {
-              next({ name: 'home', replace: true });
-            }
+            const alertStore = useAlertStore();
+            const categoryStore = useCategoryStore();
+            await categoryStore.findAllCategories();
+            await alertStore.getUserAlerts(userInfo.id);
+
             next();
           }
         },
         component: ProfilePage,
+
         children: [
+          {
+            path: '',
+            name: '',
+            component: AppProfile,
+          },
           {
             path: 'credentials',
             name: 'profile-credentials',
@@ -120,6 +133,16 @@ const routes: RouteRecordRaw[] = [
             path: 'my-orders',
             name: 'profile-orders',
             component: AppOrders,
+          },
+          {
+            path: 'alerts',
+            name: 'alerts',
+            component: AppAlerts,
+          },
+          {
+            path: 'delete-account',
+            name: 'delete-account',
+            component: AppDeleteAccount,
           },
         ],
       },

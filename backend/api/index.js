@@ -19,7 +19,8 @@ const cartRoutes = require('./routes/cart');
 const deliveryRoutes = require('./routes/delivery');
 const paymentRoutes = require('./routes/payment');
 const cronDeleteExpiredCart = require('./crons/deleteExpiredCarts');
-
+const alertTypeRoutes = require('./routes/alert-type');
+const alertsRoutes = require('./routes/alerts');
 const port = process.env.PORT;
 
 const app = express();
@@ -69,6 +70,8 @@ app.use('/orders', orderRoutes);
 app.use('/cart', cartRoutes);
 app.use('/delivery', deliveryRoutes);
 app.use('/payment', paymentRoutes);
+app.use('/alert-type', alertTypeRoutes);
+app.use('/alerts', alertsRoutes);
 
 cronDeleteExpiredCart();
 

@@ -23,6 +23,16 @@ const { logout } = useUserStore();
               Mes commandes
             </router-link>
           </li>
+          <li class="list-item-profile">
+            <router-link :to="{ name: 'alerts' }" class="flex p-5">
+              Mes alertes
+            </router-link>
+          </li>
+          <li class="list-item-profile">
+            <router-link :to="{ name: 'delete-account' }" class="flex p-5">
+              Supprimer mon compte
+            </router-link>
+          </li>
           <li
             class="list-item-profile cursor-pointer flex p-5 text-red-500"
             @click="logout"

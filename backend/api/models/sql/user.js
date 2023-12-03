@@ -55,6 +55,10 @@ const User = sequelize.define(
       allowNull: true,
       defaultValue: ['ROLE_USER'],
     },
+    newsletter: {
+      type: DataTypes.BOOLEAN,
+      allowNull: true,
+    },
   },
   {
     hooks: {

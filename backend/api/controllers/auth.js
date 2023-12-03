@@ -5,7 +5,11 @@ const { transporter } = require('../util/mailer');
 const User = require('../models/sql/user');
 const Lockout = require('../models/sql/lockout');
 const Token = require('../models/sql/token');
+const AlertType = require('../models/sql/alert-type');
+const Alert = require('../models/sql/alert');
 const ejs = require('ejs');
+const { alertNewsletter } = require('../util/createAlert');
+const { send } = require('../util/mailer');
 
 exports.signup = async (req, res, next) => {
   try {
@@ -25,6 +29,7 @@ exports.signup = async (req, res, next) => {
     const city = req.body.city;
     const password = req.body.password;
     const hashedPw = await bcrypt.hash(password, 12);
+    const newsletter = req.body.newsletter;
 
     const user = await User.create({
       email: email,
@@ -35,7 +40,21 @@ exports.signup = async (req, res, next) => {
       address: address,
       zipcode: zipcode,
       city: city,
+      newsletter: newsletter,
     });
+
+    const alertsType = await AlertType.findAll();
+
+    alertsType.forEach(async alertType => {
+      await Alert.create({
+        alert_type_id: alertType.id,
+        user_id: user.id,
+      });
+    });
+
+    if (user.newsletter) {
+      alertNewsletter(user);
+    }
 
     const token = await Token.create({
       userId: user.id,
@@ -321,6 +340,49 @@ exports.changePassword = async (req, res, next) => {
     );
     await token.destroy();
     res.send('password reset sucessfully.');
+  } catch (err) {
+    if (!err.statusCode) {
+      err.statusCode = 500;
+    }
+    next(err);
+  }
+};
+
+exports.newsletter = async (req, res, next) => {
+  try {
+    const user = await User.findOne({
+      where: {
+        email: req.body.email,
+      },
+    });
+
+    if (!user) {
+      send(
+        '/app/assets/template/template-newsletter.ejs',
+        {
+          firstname: 'nouveau client',
+          link: 'http://localhost:5173',
+        },
+        req.body.email,
+        `Inscription à la newsletter`,
+      );
+      res.sendStatus(200);
+    } else if (user.newsletter) {
+      const error = new Error('Utilisateur déja inscrit à la newsletter.');
+      error.statusCode = 403;
+      throw error;
+    } else {
+      send(
+        '/app/assets/template/template-newsletter.ejs',
+        {
+          firstname: user.firstname,
+          link: 'http://localhost:5173',
+        },
+        user.email,
+        `Inscription à la newsletter`,
+      );
+      res.sendStatus(200);
+    }
   } catch (err) {
     if (!err.statusCode) {
       err.statusCode = 500;

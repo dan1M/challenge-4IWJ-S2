@@ -20,7 +20,8 @@ const { email, submitForm } = useCustomForm({
   validationSchema: z.object({
     email: z.string().email({ message: 'Email invalide' }),
   }),
-  submitEndpoint: '/newsletter',
+  submitEndpoint: '/auth/newsletter',
+  method: 'POST',
 });
 </script>
 
