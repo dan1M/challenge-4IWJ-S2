@@ -41,7 +41,7 @@ onMounted(async () => {
           >
             <div
               :class="{
-                'overflow-hidden rounded-md bg-gray-100 transition-all hover:scale-105 dark:bg-gray-800': true,
+                'overflow-hidden rounded-md bg-gray-100 transition-all hover:scale-105 ': true,
               }"
             >
               <img
@@ -63,21 +63,15 @@ onMounted(async () => {
 
             <div class="flex items-center justify-between">
               <div class="flex-1">
-                <div
-                  class="mt-2 flex items-center space-x-2 text-gray-500 dark:text-gray-400"
-                >
+                <div class="mt-2 flex items-center space-x-2 text-gray-500">
                   <div>
                     <div
-                      className="mt-3 flex items-center space-x-3 text-gray-500 dark:text-gray-400"
+                      className="mt-3 flex items-center space-x-3 text-gray-500 "
                     >
                       <div class="flex gap-3">
                         {{ product.category[0].name }}
                       </div>
-                      <span
-                        className="text-xs text-gray-300 dark:text-gray-600"
-                      >
-                        &bull;
-                      </span>
+                      <span className="text-xs text-gray-300 "> &bull; </span>
                       <span className="text-xl text-pink-500 "
                         >{{ product.variants[0].price }}€</span
                       >
@@ -86,11 +80,11 @@ onMounted(async () => {
                       :class="[
                         'text-lg',
                         'font-semibold leading-snug tracking-tight',
-                        'mt-2 dark:text-white',
+                        'mt-2 ',
                       ]"
                     >
                       <span
-                        class="bg-gradient-to-r from-pink-200 to-pink-100 bg-[length:0px_10px] bg-left-bottom bg-no-repeat transition-[background-size] duration-500 hover:bg-[length:100%_3px] group-hover:bg-[length:100%_10px] dark:from-purple-800 dark:to-purple-900"
+                        class="bg-gradient-to-r from-pink-200 to-pink-100 bg-[length:0px_10px] bg-left-bottom bg-no-repeat transition-[background-size] duration-500 hover:bg-[length:100%_3px] group-hover:bg-[length:100%_10px]"
                       >
                         {{ product.title }}
                       </span>
@@ -109,7 +103,7 @@ onMounted(async () => {
       <div class="mt-10 flex justify-center">
         <router-link
           to="/products"
-          class="relative inline-flex items-center gap-1 rounded-md border border-gray-300 bg-white px-3 py-2 pl-4 text-sm font-medium text-gray-500 hover:bg-gray-50 focus:z-20 disabled:pointer-events-none disabled:opacity-40 dark:border-gray-500 dark:bg-gray-800 dark:text-gray-300"
+          class="relative inline-flex items-center gap-1 rounded-md border border-gray-300 bg-white px-3 py-2 pl-4 text-sm font-medium text-gray-500 hover:bg-gray-50 focus:z-20 disabled:pointer-events-none disabled:opacity-40"
         >
           <span>Voir plus</span>
         </router-link>

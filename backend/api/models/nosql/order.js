@@ -38,6 +38,10 @@ const orderSchema = new Schema(
         },
       },
     ],
+    total: {
+      type: Schema.Types.Number,
+      default: 0,
+    },
     status: {
       type: Schema.Types.String,
       default: 'created',

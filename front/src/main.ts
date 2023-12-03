@@ -22,7 +22,6 @@ import DetailProductPage from './pages/DetailProduct.vue';
 import CartPage from './pages/Cart.vue';
 import AuthPage from './pages/Auth.vue';
 import ProfilePage from './pages/Profile.vue';
-import AppProfile from './components/AppProfile.vue';
 import AppCredentials from './components/AppCredentials.vue';
 import AppUpdatePassword from './components/AppUpdatePassword.vue';
 import AppOrders from './components/AppOrders.vue';
@@ -115,11 +114,6 @@ const routes: RouteRecordRaw[] = [
         component: ProfilePage,
 
         children: [
-          {
-            path: '',
-            name: '',
-            component: AppProfile,
-          },
           {
             path: 'credentials',
             name: 'profile-credentials',
