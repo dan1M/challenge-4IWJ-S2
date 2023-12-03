@@ -100,9 +100,8 @@ exports.create = async (req, res, next) => {
 
     const existingOrder = await Order.findOne({ payment_id: sessionId });
     if (existingOrder) {
-      const error = new Error('Order already created.');
-      error.statusCode = 422;
-      throw error;
+      res.status(303).json(existingOrder);
+      return;
     }
 
     const cart = await Cart.findOne({ user_id: req.user.id });
@@ -135,6 +134,19 @@ exports.create = async (req, res, next) => {
 
     // Deleting cart
     await cart.deleteOne({ _id: cart._id });
+
+    // Sending email
+    send(
+      './assets/template/template-order-confirmation.ejs',
+      {
+        firstname: user.firstname,
+        link: process.env.FRONT_URL + '/profile/my-orders/' + order._id,
+        products: order.products,
+        total: session.amount_total / 100,
+      },
+      user.email,
+      `Confirmation de commande`,
+    );
 
     res.status(201).json(order);
   } catch (err) {

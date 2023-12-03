@@ -31,6 +31,7 @@ import AppAlerts from './components/AppAlerts.vue';
 import AppDeleteAccount from './components/AppDeleteAccount.vue';
 import { useAlertStore } from './stores/alert-store';
 import { useCategoryStore } from './stores/category-store';
+import AppOrderDetails from './components/AppOrderDetails.vue';
 
 const routes: RouteRecordRaw[] = [
   {
@@ -133,6 +134,11 @@ const routes: RouteRecordRaw[] = [
             path: 'my-orders',
             name: 'profile-orders',
             component: AppOrders,
+          },
+          {
+            path: 'my-orders/:id',
+            name: 'profile-order-detail',
+            component: AppOrderDetails,
           },
           {
             path: 'alerts',

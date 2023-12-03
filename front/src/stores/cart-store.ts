@@ -48,9 +48,7 @@ export const useCartStore = defineStore('cart', () => {
         cart.value = data.products;
         currentCartStep.value = data.cart_step;
       })
-      .catch(err => {
-        console.log(err);
-      });
+      .catch(err => {});
   };
 
   const addProductToCart = (stockId: string) => {

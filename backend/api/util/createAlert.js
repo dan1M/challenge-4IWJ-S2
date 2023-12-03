@@ -23,7 +23,7 @@ const alertNewProduct = async product => {
         },
       });
       send(
-        '/app/assets/template/template-account-confirmation.ejs',
+        './assets/template/template-account-confirmation.ejs',
         {
           firstname: user.firstname,
           lastname: user.lastname,
@@ -55,7 +55,7 @@ const alertProductStock = async product_id => {
         },
       });
       send(
-        '/app/assets/template/template-alert-restock-product.ejs',
+        './assets/template/template-alert-restock-product.ejs',
         {
           firstname: user.firstname,
           lastname: user.lastname,
@@ -87,7 +87,7 @@ const alertPriceChange = async product_id => {
         },
       });
       send(
-        '/app/assets/template/template-account-confirmation.ejs',
+        './assets/template/template-account-confirmation.ejs',
         {
           firstname: user.firstname,
           lastname: user.lastname,
@@ -105,7 +105,7 @@ const alertPriceChange = async product_id => {
 const alertNewsletter = async user => {
   try {
     send(
-      '/app/assets/template/template-newsletter.ejs',
+      './assets/template/template-newsletter.ejs',
       {
         firstname: user.firstname,
         lastname: user.lastname,

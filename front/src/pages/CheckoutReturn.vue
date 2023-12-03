@@ -6,6 +6,7 @@ import { useRouter } from 'vue-router';
 const router = useRouter();
 const status = ref(null);
 const customerEmail = ref('');
+const order = ref(null);
 const { getCart } = useCartStore();
 
 onMounted(() => {
@@ -39,9 +40,14 @@ onMounted(() => {
           'Content-Type': 'application/json',
         },
       })
-        .then(res => res.json())
+        .then(res => {
+          if (!res.ok) {
+          }
+          return res.json();
+        })
         .then(orderData => {
           getCart();
+          order.value = orderData;
         });
     });
 });
@@ -59,7 +65,13 @@ onMounted(() => {
     </p>
     <p>
       Vous pouvez suivre votre commande
-      <RouterLink :to="{ name: 'profile-orders' }" class="underline italic">
+      <RouterLink
+        :to="{
+          name: order !== null ? 'profile-order-detail' : 'profile-orders',
+          params: order !== null ? { id: order._id } : undefined,
+        }"
+        class="underline italic"
+      >
         ici
       </RouterLink>
     </p>
