@@ -296,7 +296,7 @@ exports.forgotPassword = async (req, res, next) => {
           subject: 'Réinitialisation de votre mot de passe',
           html: html,
         };
-        res.cookie('JWT_RESET_PASSWORD', token.token, {
+        res.cookie(process.env.JWT_RESET_PASSWORD, token.token, {
           // secure: true,
           signed: true,
           httpOnly: true,
