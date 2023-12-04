@@ -122,6 +122,7 @@ onMounted(() => {
             <span class="bg-orange-100 rounded-md p-1">{{
               cartTimeRemaining
             }}</span>
+            pour finaliser votre commande.
           </small>
         </div>
         <ul v-if="currentCartStep === 1">

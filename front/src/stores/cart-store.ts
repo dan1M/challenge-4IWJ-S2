@@ -34,6 +34,11 @@ export const useCartStore = defineStore('cart', () => {
   );
 
   const updateCartTimeRemaining = (distance: number) => {
+    if (distance <= 0) {
+      cartTimeRemaining.value = '0s';
+      getCart();
+      return;
+    }
     const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
     const seconds = Math.floor((distance % (1000 * 60)) / 1000);
 
@@ -65,7 +70,8 @@ export const useCartStore = defineStore('cart', () => {
           new Date(data.createdAt).getTime() + 15 * 60 * 1000;
         const now = new Date().getTime();
         const distance = expirationDate - now;
-        updateCartTimeRemaining(distance);
+
+        distance > 0 && updateCartTimeRemaining(distance);
       })
       .catch(err => {});
   };
