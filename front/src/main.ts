@@ -136,7 +136,7 @@ const routes: RouteRecordRaw[] = [
           },
           {
             path: 'alerts',
-            name: 'alerts',
+            name: 'profile-alerts',
             component: AppAlerts,
           },
           {

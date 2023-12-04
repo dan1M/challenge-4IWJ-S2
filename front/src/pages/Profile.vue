@@ -42,11 +42,11 @@ const { logout } = useUserStore();
           </li>
           <li
             :class="{
-              'list-item-active': $route.name === 'alerts',
+              'list-item-active': $route.name === 'profile-alerts',
             }"
             class="list-item-profile"
           >
-            <router-link :to="{ name: 'alerts' }" class="flex p-5">
+            <router-link :to="{ name: 'profile-alerts' }" class="flex p-5">
               Mes alertes
             </router-link>
           </li>
