@@ -48,6 +48,8 @@ const routes: RouteRecordRaw[] = [
       next();
     },
     children: [
+      { path: '/:pathMatch(.*)*', name: 'not-found', component: NotFound },
+
       {
         path: '/',
         name: 'home',
@@ -58,11 +60,12 @@ const routes: RouteRecordRaw[] = [
         path: '/product/:id',
         name: 'detailProduct',
         beforeEnter: async (to, from, next) => {
-        const productStore = useProductStore();
-        await productStore.getProduct(to.params.id);
-        
-        next();
-      }, component: DetailProductPage,
+          const productStore = useProductStore();
+          await productStore.getProduct(to.params.id);
+
+
+          next();
+        }, component: DetailProductPage,
       },
       {
         path: '/cart',
@@ -168,7 +171,6 @@ const routes: RouteRecordRaw[] = [
       }
     },
   },
-  { path: '/:pathMatch(.*)*', name: 'not-found', component: NotFound },
 ];
 
 export const router = createRouter({
