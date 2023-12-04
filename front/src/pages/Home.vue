@@ -5,22 +5,24 @@ import { onMounted, ref } from 'vue';
 import { Button } from '@/components/ui/button';
 
 import { useCartStore } from '@/stores/cart-store';
+import { useRouter } from 'vue-router';
 
-const { addProductToCart, removeProductFromCart } = useCartStore();
+const { addProductToCart } = useCartStore();
+
+const router = useRouter();
 
 const mainCarouselPictures = ref([{ src: '/vite.svg' }]);
 const promoProducts = ref([{ id: 0, src: '/vite.svg', title: 'Ch1' }]);
 const newProducts = ref([{ id: 0, src: '/vite.svg', title: 'Ch1' }]);
 
 const getProducts = () => {
-  fetch('https://fakestoreapi.com/products?limit=5')
+  fetch(import.meta.env.VITE_BACKEND_URL + '/products')
     .then(res => res.json())
     .then(data => {
-      // console.log(data);
       const images = data.map((item: any) => ({
         src: item.image,
       }));
-      // mainCarouselPictures.value = images;
+      mainCarouselPictures.value = images;
     });
 };
 onMounted(() => {
@@ -29,7 +31,7 @@ onMounted(() => {
 </script>
 
 <template>
-  <Button
+  <!-- <Button
     @click="
       () => {
         addProductToCart('0dcd2217-a6fb-4f09-8aa3-32909f8b5e0a');
@@ -37,7 +39,7 @@ onMounted(() => {
     "
   >
     Ajouter produit
-  </Button>
+  </Button> -->
   <Carousel :autoplay="5000" :wrap-around="true">
     <Slide v-for="item in mainCarouselPictures" :key="item.src">
       <div class="carousel__item">
@@ -50,7 +52,9 @@ onMounted(() => {
     </template>
   </Carousel>
   <div class="flex justify-center py-10">
-    <Button>Voir plus de produits</Button>
+    <Button as="a" :href="router.resolve({ name: 'products' }).fullPath"
+      >Voir plus de produits</Button
+    >
   </div>
   <section class="home-section">
     <h1>Les offres du moment</h1>

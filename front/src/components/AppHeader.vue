@@ -26,7 +26,6 @@ import { storeToRefs } from 'pinia';
 
 const navLinks = [
   { name: 'Chaussures Femme', routeName: 'products' },
-  { name: 'Chaussures en promo', routeName: 'products' },
   { name: 'Nouveautés ✨', routeName: 'products' },
 ];
 

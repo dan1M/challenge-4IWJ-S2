@@ -15,6 +15,7 @@ import {
 } from '@/components/ui/select';
 import DropdownFilter from '../components/DropdownFilter.vue';
 import { Checkbox } from '@/components/ui/checkbox';
+import { useCartStore } from '@/stores/cart-store';
 
 const baseUrl = import.meta.env.VITE_BACKEND_URL || 'http://localhost:3000';
 const endpoint = '/products';
@@ -28,6 +29,8 @@ const sizes = ref([]);
 const searchInput = ref('');
 
 const route = useRoute();
+
+const { addProductToCart } = useCartStore();
 
 const fetchFilter = async newQuery => {
   try {
@@ -137,23 +140,6 @@ const findFirstInStockVariant = variants => {
 
 const isOutOfStock = variants => {
   return variants.every(variant => variant.quantity === 0);
-};
-
-const addToCart = (color, size, productId) => {
-  const selectedProduct = products.value.find(product => {
-    return product._id === productId;
-  });
-
-  if (selectedProduct) {
-    const selectedVariant = selectedProduct.variants.find(variant => {
-      return variant.color.id === color && variant.size.id === size;
-    });
-
-    if (selectedVariant) {
-      const variantId = selectedVariant.id;
-      console.log('Ajouter au panier :', variantId);
-    }
-  }
 };
 
 const selectedCategories = ref([]);
@@ -473,13 +459,7 @@ const changeStock = () => {
 
             <div>
               <Button
-                @click="
-                  addToCart(
-                    findFirstInStockVariant(product.variants).color.id,
-                    findFirstInStockVariant(product.variants).size.id,
-                    product._id,
-                  )
-                "
+                @click="addProductToCart(product._id)"
                 :disabled="isOutOfStock(product.variants)"
               >
                 {{

@@ -4,8 +4,11 @@ import { Button } from '@/components/ui/button';
 import { useProductStore } from '../stores/product-store';
 import { RadioGroup, RadioGroupLabel, RadioGroupOption } from '@headlessui/vue';
 import { watch } from 'vue';
+import { useCartStore } from '@/stores/cart-store';
 
 const { product } = useProductStore();
+
+const { addProductToCart } = useCartStore();
 
 const selectedColor = ref('');
 const selectedSize = ref('');
@@ -50,13 +53,6 @@ const buttonAddToCart = isOutOfStock(product.variants)
   : 'Ajouter au panier';
 
 const addToCart = () => {
-  console.log(
-    'add to cart color: ',
-    selectedColor.value,
-    ' Size: ',
-    selectedSize.value,
-  );
-
   const selectedVariant = product.variants.find(variant => {
     return (
       variant.color.id === selectedColor.value &&
@@ -65,9 +61,7 @@ const addToCart = () => {
   });
 
   if (selectedVariant) {
-    const variantId = selectedVariant.id;
-
-    console.log('Ajouter au panier :', variantId);
+    addProductToCart(selectedVariant.id);
   }
 };
 </script>
