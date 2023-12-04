@@ -8,6 +8,8 @@ import VueDatePicker from '@vuepic/vue-datepicker';
 import '@vuepic/vue-datepicker/dist/main.css';
 import { useUserStore } from './stores/user-store';
 import { useCartStore } from './stores/cart-store';
+import { useProductStore } from './stores/product-store';
+
 import { RouteRecordRaw, createRouter, createWebHistory } from 'vue-router';
 import VueCookies from 'vue-cookies';
 import VueNumberInput from '@chenfengyuan/vue-number-input';
@@ -55,7 +57,12 @@ const routes: RouteRecordRaw[] = [
       {
         path: '/product/:id',
         name: 'detailProduct',
-        component: DetailProductPage,
+        beforeEnter: async (to, from, next) => {
+        const productStore = useProductStore();
+        await productStore.getProduct(to.params.id);
+        
+        next();
+      }, component: DetailProductPage,
       },
       {
         path: '/cart',
