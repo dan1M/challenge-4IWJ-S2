@@ -115,8 +115,7 @@ const routes: RouteRecordRaw[] = [
 
         children: [
           {
-            path: '',
-            name: '',
+            path: 'profile',
             component: AppProfile,
           },
           {
