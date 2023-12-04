@@ -24,7 +24,7 @@ const forwarded = useForwardPropsEmits(props, emits);
       )
     "
   >
-    <CheckboxIndicator class="flex items-center justify-center text-current">
+    <CheckboxIndicator class="flex h-full w-full items-center justify-center text-current">
       <Check class="h-4 w-4" />
     </CheckboxIndicator>
   </CheckboxRoot>

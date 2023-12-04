@@ -52,7 +52,7 @@ const {
   method,
 });
 
-const selectedCategory = ref({});
+const selectedCategory = ref({}); 
 
 onMounted(() => {
   alerts.value.forEach(alert => {
