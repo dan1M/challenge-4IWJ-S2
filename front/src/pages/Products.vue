@@ -169,14 +169,13 @@ const addToCart = (color, size, productId) => {
 }
 
 
-
-
 const selectedCategories = ref([])
 const selectedColors = ref([])
 const selectedSizes = ref([])
 const selectedTitle = ref('')
 const inStock = ref(false)
-
+const minPrice = ref(10)
+const maxPrice = ref(100)
 
 
 
@@ -248,30 +247,55 @@ watch(inStock, async (newStock) => {
     await fetchFilter(newQuery);
 })
 
+watch(minPrice, async (newMinPrice) => {
+    const newQuery = { ...route.query };
+
+    if (newMinPrice !== undefined) {
+        if (newMinPrice) {
+            newQuery.minPrice = String(newMinPrice);
+            newQuery.maxPrice = String(maxPrice.value);
+
+        } else {
+            delete newQuery.minPrice;
+            delete newQuery.maxPrice;
+        }
+    } else {
+        delete newQuery.minPrice;
+        delete newQuery.maxPrice;
+    }
+
+    router.push({ query: newQuery });
+    await fetchFilter(newQuery);
+})
+
+watch(maxPrice, async (newMaxPrice) => {
+    const newQuery = { ...route.query };
+
+    if (newMaxPrice !== undefined) {
+        if (newMaxPrice) {
+            newQuery.maxPrice = String(newMaxPrice);
+            newQuery.minPrice = String(minPrice.value);
+
+        } else {
+            delete newQuery.minPrice;
+            delete newQuery.maxPrice;
+        }
+    } else {
+        delete newQuery.minPrice;
+        delete newQuery.maxPrice;
+    }
+
+    router.push({ query: newQuery });
+    await fetchFilter(newQuery);
+})
+
 const changeStock = () => {
     inStock.value = !inStock.value;
 }
 
-const minPrice = ref(10)
-const maxPrice = ref(100)
 
-const validateMinPrice = () => {
-    if (minPrice.value < 0) {
-        minPrice.value = 0
-    }
-    if (minPrice.value > maxPrice.value) {
-        minPrice.value = maxPrice.value
-    }
-}
 
-const validateMaxPrice = () => {
-    if (maxPrice.value < 0) {
-        maxPrice.value = 0
-    }
-    if (maxPrice.value < minPrice.value) {
-        maxPrice.value = minPrice.value
-    }
-}
+
 
 
 
@@ -320,9 +344,9 @@ const validateMaxPrice = () => {
                     <label for="price" class="text-sm font-semibold mr-2">Prix :</label>
 
                     <div class="flex space-x-2">
-                        <input type="number" id="minPrice" v-model="minPrice" @input="validateMinPrice"
+                        <input type="number" id="minPrice" v-model="minPrice" 
                             placeholder="Min" class="border rounded px-2 py-1 w-[3em] text-sm" style="max-width: 5em;" />
-                        <input type="number" id="maxPrice" v-model="maxPrice" @input="validateMaxPrice"
+                        <input type="number" id="maxPrice" v-model="maxPrice" 
                             placeholder="Max" class="border rounded px-2 py-1 w-[3em] text-sm" style="max-width: 5em;" />
                     </div>   
                 </div>
@@ -338,10 +362,6 @@ const validateMaxPrice = () => {
                     <input type="text" placeholder="Search" v-model="searchInput" @keyup.enter="performSearch"
                         class="block w-full py-1.5 pr-5 text-gray-700 bg-white border border-gray-200 rounded-lg md:w-80 placeholder-gray-400/70 pl-11 rtl:pr-11 rtl:pl-5 dark:bg-gray-900 dark:text-gray-300 dark:border-gray-600 focus:border-primary-500 dark:focus:border-primary-500 focus:ring-primary-500 focus:outline-none focus:ring focus:ring-opacity-40">
                 </div>
-
-
-
-
             </div>
         </div>
 
