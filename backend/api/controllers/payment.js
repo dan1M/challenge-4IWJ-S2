@@ -34,6 +34,7 @@ exports.createCheckoutSession = async (req, res, next) => {
       line_items: checkout_items,
       mode: 'payment',
       customer_email: user.email,
+      receipt_email: user.email,
       return_url: `${process.env.FRONT_URL}/cart/checkout-return?session_id={CHECKOUT_SESSION_ID}`,
     });
 

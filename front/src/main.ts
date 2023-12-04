@@ -25,7 +25,6 @@ import CartPage from './pages/Cart.vue';
 import AuthPage from './pages/Auth.vue';
 import ResetPasswordPage from './pages/ResetPassword.vue';
 import ProfilePage from './pages/Profile.vue';
-import AppProfile from './components/AppProfile.vue';
 import AppCredentials from './components/AppCredentials.vue';
 import AppUpdatePassword from './components/AppUpdatePassword.vue';
 import AppOrders from './components/AppOrders.vue';
@@ -36,6 +35,7 @@ import AppForgotPassword from './components/AppForgotPassword.vue';
 
 import { useAlertStore } from './stores/alert-store';
 import { useCategoryStore } from './stores/category-store';
+import AppOrderDetails from './components/AppOrderDetails.vue';
 
 const routes: RouteRecordRaw[] = [
   {
@@ -66,9 +66,9 @@ const routes: RouteRecordRaw[] = [
           const productStore = useProductStore();
           await productStore.getProduct(to.params.id);
 
-
           next();
-        }, component: DetailProductPage,
+        },
+        component: DetailProductPage,
       },
       {
         path: '/cart',
@@ -138,10 +138,6 @@ const routes: RouteRecordRaw[] = [
 
         children: [
           {
-            path: 'profile',
-            component: AppProfile,
-          },
-          {
             path: 'credentials',
             name: 'profile-credentials',
             component: AppCredentials,
@@ -157,8 +153,13 @@ const routes: RouteRecordRaw[] = [
             component: AppOrders,
           },
           {
+            path: 'my-orders/:id',
+            name: 'profile-order-detail',
+            component: AppOrderDetails,
+          },
+          {
             path: 'alerts',
-            name: 'alerts',
+            name: 'profile-alerts',
             component: AppAlerts,
           },
           {

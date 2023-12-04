@@ -69,7 +69,7 @@ exports.signup = async (req, res, next) => {
     });
 
     ejs.renderFile(
-      '/app/assets/template/template-account-confirmation.ejs',
+      './assets/template/template-account-confirmation.ejs',
       {
         firstname: firstname,
         lastname: lastname,
@@ -368,7 +368,7 @@ exports.newsletter = async (req, res, next) => {
 
     if (!user) {
       send(
-        '/app/assets/template/template-newsletter.ejs',
+        './assets/template/template-newsletter.ejs',
         {
           firstname: 'nouveau client',
           link: 'http://localhost:5173',
@@ -383,7 +383,7 @@ exports.newsletter = async (req, res, next) => {
       throw error;
     } else {
       send(
-        '/app/assets/template/template-newsletter.ejs',
+        './assets/template/template-newsletter.ejs',
         {
           firstname: user.firstname,
           link: 'http://localhost:5173',

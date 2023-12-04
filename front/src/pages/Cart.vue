@@ -15,7 +15,9 @@ import { ArrowLeft } from 'lucide-vue-next';
 import { onMounted, ref, watch } from 'vue';
 
 const { isLoggedIn, user, userInfo } = storeToRefs(useUserStore());
-const { cart, cartTotal, currentCartStep } = storeToRefs(useCartStore());
+const { cart, cartTotal, currentCartStep, cartTimeRemaining } = storeToRefs(
+  useCartStore(),
+);
 
 const { getUser } = useUserStore();
 const {
@@ -114,6 +116,15 @@ onMounted(() => {
     </div>
     <div v-else class="flex py-14 space-x-12">
       <div class="flex flex-col w-10/12">
+        <div v-if="currentCartStep < 3" class="mb-4">
+          <small class="text-orange-500">
+            ⚠ Votre panier expirera 15 minutes après sa création, il reste
+            <span class="bg-orange-100 rounded-md p-1">{{
+              cartTimeRemaining
+            }}</span>
+            pour finaliser votre commande.
+          </small>
+        </div>
         <ul v-if="currentCartStep === 1">
           <li
             v-for="(product, index) in cart"

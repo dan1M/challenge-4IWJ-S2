@@ -25,7 +25,7 @@ const port = process.env.PORT;
 
 const app = express();
 
-app.listen(port, () => {
+app.listen(port || 3000, () => {
   console.log(`Challenge S2 app listening on port ${port}`);
 });
 
