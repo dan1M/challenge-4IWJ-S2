@@ -21,6 +21,7 @@ export const CART_STEPS = [
 export const useCartStore = defineStore('cart', () => {
   const cart = ref<CartProduct[]>([]);
   const currentCartStep = ref(1);
+  const cartTimeRemaining = ref('');
 
   const cartTotal = computed(() =>
     priceDisplay(
@@ -31,6 +32,18 @@ export const useCartStore = defineStore('cart', () => {
       ),
     ),
   );
+
+  const updateCartTimeRemaining = (distance: number) => {
+    const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+    const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+    cartTimeRemaining.value =
+      minutes > 0 ? `${minutes}m ${seconds}s` : `${seconds}s`;
+
+    setTimeout(() => {
+      updateCartTimeRemaining(distance - 1000);
+    }, 1000);
+  };
 
   const getCart = async () => {
     return fetch(import.meta.env.VITE_BACKEND_URL + '/cart', {
@@ -47,6 +60,12 @@ export const useCartStore = defineStore('cart', () => {
       .then(data => {
         cart.value = data.products;
         currentCartStep.value = data.cart_step;
+
+        const expirationDate =
+          new Date(data.createdAt).getTime() + 15 * 60 * 1000;
+        const now = new Date().getTime();
+        const distance = expirationDate - now;
+        updateCartTimeRemaining(distance);
       })
       .catch(err => {});
   };
@@ -196,6 +215,7 @@ export const useCartStore = defineStore('cart', () => {
     cart,
     currentCartStep,
     cartTotal,
+    cartTimeRemaining,
     getCart,
     addProductToCart,
     removeProductFromCart,
