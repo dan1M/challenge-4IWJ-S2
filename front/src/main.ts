@@ -23,6 +23,7 @@ import ProductsPage from './pages/Products.vue';
 import DetailProductPage from './pages/DetailProduct.vue';
 import CartPage from './pages/Cart.vue';
 import AuthPage from './pages/Auth.vue';
+import ResetPasswordPage from './pages/ResetPassword.vue';
 import ProfilePage from './pages/Profile.vue';
 import AppProfile from './components/AppProfile.vue';
 import AppCredentials from './components/AppCredentials.vue';
@@ -31,6 +32,8 @@ import AppOrders from './components/AppOrders.vue';
 import CheckoutReturn from './pages/CheckoutReturn.vue';
 import AppAlerts from './components/AppAlerts.vue';
 import AppDeleteAccount from './components/AppDeleteAccount.vue';
+import AppForgotPassword from './components/AppForgotPassword.vue';
+
 import { useAlertStore } from './stores/alert-store';
 import { useCategoryStore } from './stores/category-store';
 
@@ -101,7 +104,17 @@ const routes: RouteRecordRaw[] = [
             next({ name: 'home', replace: true });
           }
         },
-        component: AuthPage,
+        component: AuthPage
+      },
+      {
+        path: 'forgot-password',
+        name: 'forgot-password',
+        component: AppForgotPassword
+      },
+      {
+        path: 'reset-password',
+        name: 'reset-password',
+        component: ResetPasswordPage
       },
       {
         path: '/profile',

@@ -249,7 +249,7 @@ exports.delete = async (req, res, next) => {
   }
 };
 
-exports.resetPassword = async (req, res, next) => {
+exports.forgotPassword = async (req, res, next) => {
   try {
     const user = await User.findOne({
       where: {
@@ -281,9 +281,10 @@ exports.resetPassword = async (req, res, next) => {
     }
 
     ejs.renderFile(
-      '/app/assets/template/template-account-confirmation.ejs',
+      '/app/assets/template/template-reset-password.ejs',
       {
-        link: `${process.env.HOST}/auth/reset-password/${user.id}/${token.token}`,
+        firstname: user.firstname,
+        link: `${process.env.FRONT_URL}/reset-password`,
       },
       (err, html) => {
         if (err) {
@@ -292,9 +293,14 @@ exports.resetPassword = async (req, res, next) => {
         const mailOptions = {
           from: 'challenge.s2@server.com',
           to: user.email,
-          subject: 'Password reset',
+          subject: 'Réinitialisation de votre mot de passe',
           html: html,
         };
+        res.cookie('JWT_RESET_PASSWORD', token.token, {
+          // secure: true,
+          signed: true,
+          httpOnly: true,
+        });
         transporter.sendMail(mailOptions, err => {
           if (err) {
             throw err;
@@ -313,7 +319,10 @@ exports.resetPassword = async (req, res, next) => {
 
 exports.changePassword = async (req, res, next) => {
   try {
-    const user = await User.findByPk(req.params.userId);
+    const cookieToken = req.signedCookies[process.env.JWT_RESET_PASSWORD];
+
+    const user = jwt.verify(cookieToken, process.env.JWT_SECRET);
+
     if (!user) {
       const error = new Error('Could not find user.');
       error.statusCode = 404;
@@ -329,7 +338,7 @@ exports.changePassword = async (req, res, next) => {
       error.statusCode = 404;
       throw error;
     }
-    const hashedPw = await bcrypt.hash(req.body.password, 12);
+    const hashedPw = await bcrypt.hash(req.body.newPassword, 12);
     await User.update(
       { password: hashedPw },
       {
@@ -339,7 +348,8 @@ exports.changePassword = async (req, res, next) => {
       },
     );
     await token.destroy();
-    res.send('password reset sucessfully.');
+    res.clearCookie(process.env.JWT_RESET_PASSWORD);
+    res.sendStatus(204);
   } catch (err) {
     if (!err.statusCode) {
       err.statusCode = 500;

@@ -72,6 +72,22 @@ export const useUserStore = defineStore('user', () => {
     }
   };
 
+  const resetPassword = async () => {
+    try {
+      const response = await fetch('http://localhost:3000/auth/reset-password', {
+        method: 'POST',
+        credentials: 'include',
+      });
+
+      if (!response.ok) {
+        throw new Error('Something went wrong, request failed!');
+      }
+
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
   const deleteAccount = async () => {
     try {
       const response = await fetch(
@@ -102,5 +118,6 @@ export const useUserStore = defineStore('user', () => {
     getUser,
     logout,
     deleteAccount,
+    resetPassword
   };
 });
