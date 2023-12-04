@@ -1,7 +1,10 @@
-<script setup></script>
+<script setup lang="ts">
+import Toaster from '@/components/ui/toast/Toaster.vue';
+</script>
 
 <template>
-  <h1 class="test">OE LE TITRE</h1>
+  <router-view></router-view>
+  <Toaster />
 </template>
 
 <style scoped></style>
