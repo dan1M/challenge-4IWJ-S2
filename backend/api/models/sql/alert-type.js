@@ -3,8 +3,8 @@ const { v4: uuidv4 } = require('uuid');
 
 const sequelize = require('./db-sql');
 
-const Order = sequelize.define(
-  'order',
+const AlertType = sequelize.define(
+  'alertType',
   {
     id: {
       type: DataTypes.UUID,
@@ -12,17 +12,17 @@ const Order = sequelize.define(
       allowNull: false,
       primaryKey: true,
     },
-    status: DataTypes.STRING,
+    type: DataTypes.STRING,
   },
   {
     hooks: {
-      beforeValidate: (order, options) => {
+      beforeValidate: (alertType, options) => {
         console.log('Before Create Hook');
-        order.id = uuidv4();
-        console.log('Generated ID:', order.id);
+        alertType.id = uuidv4();
+        console.log('Generated ID:', alertType.id);
       },
     },
   },
 );
 
-module.exports = Order;
+module.exports = AlertType;

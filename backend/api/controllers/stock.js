@@ -80,7 +80,6 @@ exports.create = async (req, res, next) => {
 
     await updateOrCreateMongoProduct(product);
 
-
     res.sendStatus(201);
   } catch (err) {
     if (!err.statusCode) {
@@ -106,17 +105,15 @@ exports.update = async (req, res, next) => {
         id: stockId,
       },
       returning: true,
+      individualHooks: true,
     });
     if (stocks[0]) {
       await updateOrCreateMongoProduct(stocks[0].product_id);
 
       res.status(200).json(stocks[0]);
-
     } else {
       res.sendStatus(404);
     }
-
-    
   } catch (err) {
     if (!err.statusCode) {
       err.statusCode = 500;

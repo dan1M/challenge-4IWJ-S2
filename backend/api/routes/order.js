@@ -1,35 +1,23 @@
 const express = require('express');
-const { body } = require('express-validator/check');
-
-const orderController = require('../controllers/order');
-
-const Product = require('../models/sql/product');
-
 const router = express.Router();
+const { body } = require('express-validator/check');
+const orderController = require('../controllers/order');
+const isAdmin = require('../middleware/is-admin');
+const isAuth = require('../middleware/is-auth');
 
-router.get('/', orderController.findAll);
+router.get('/', isAdmin, orderController.findAll);
+router.get('/my-orders', isAuth, orderController.findUserOrders);
 
-router.get('/:orderId', orderController.findOne);
-router.get('/user/:userId', orderController.findUserOrders);
+router.get('/:orderId', isAdmin, orderController.findOne);
+router.get('/my-orders/:orderId', isAuth, orderController.findOneUserOrder);
 
 router.post(
   '/',
-  [
-    body('user').isInt(),
-    body('details').isArray(),
-    body('details.*.product')
-      .isInt()
-      .custom(async value => {
-        const existingProduct = await Product.findByPk(value);
-        if (!existingProduct) {
-          throw new Error('Could not find product.');
-        }
-      }),
-    body('details.*.quantity').isInt({ gt: 0 }),
-  ],
+  isAuth,
+  [body('session_id').isString().trim()],
   orderController.create,
 );
 
-router.delete('/:orderId', orderController.delete);
+router.delete('/:orderId', isAdmin, orderController.delete);
 
 module.exports = router;

@@ -53,4 +53,6 @@ router.post('/reset-password/:userId/:token', authController.changePassword);
 
 router.get('/:userId/:token', authController.changePassword);
 
+router.post('/newsletter', authController.newsletter);
+
 module.exports = router;

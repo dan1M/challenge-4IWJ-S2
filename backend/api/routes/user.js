@@ -54,4 +54,6 @@ router.get('/:userId', userController.getUser);
 
 router.patch('/:id', isAuth, userController.update);
 
+router.delete('/:id', isAuth, userController.delete);
+
 module.exports = router;

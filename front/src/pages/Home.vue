@@ -1,9 +1,16 @@
 <script setup lang="ts">
+// @ts-ignore
 import { Carousel, Navigation, Slide, Pagination } from 'vue3-carousel';
 import { onMounted, ref } from 'vue';
 import { Button } from '@/components/ui/button';
 
-const pictures = ref([{ src: '/vite.svg', alt: 'Image 1' }]);
+import { useCartStore } from '@/stores/cart-store';
+
+const { addProductToCart, removeProductFromCart } = useCartStore();
+
+const mainCarouselPictures = ref([{ src: '/vite.svg' }]);
+const promoProducts = ref([{ id: 0, src: '/vite.svg', title: 'Ch1' }]);
+const newProducts = ref([{ id: 0, src: '/vite.svg', title: 'Ch1' }]);
 
 const getProducts = () => {
   fetch('https://fakestoreapi.com/products?limit=5')
@@ -12,9 +19,8 @@ const getProducts = () => {
       // console.log(data);
       const images = data.map((item: any) => ({
         src: item.image,
-        alt: item.title,
       }));
-      // pictures.value = images;
+      // mainCarouselPictures.value = images;
     });
 };
 onMounted(() => {
@@ -23,10 +29,19 @@ onMounted(() => {
 </script>
 
 <template>
+  <Button
+    @click="
+      () => {
+        addProductToCart('0dcd2217-a6fb-4f09-8aa3-32909f8b5e0a');
+      }
+    "
+  >
+    Ajouter produit
+  </Button>
   <Carousel :autoplay="5000" :wrap-around="true">
-    <Slide v-for="item in pictures" :key="item.alt">
+    <Slide v-for="item in mainCarouselPictures" :key="item.src">
       <div class="carousel__item">
-        <img :src="item.src" :alt="item.alt" />
+        <img :src="item.src" :alt="item.src" />
       </div>
     </Slide>
 
@@ -40,10 +55,10 @@ onMounted(() => {
   <section class="home-section">
     <h1>Les offres du moment</h1>
     <Carousel :items-to-show="2.5" class="mt-8">
-      <Slide v-for="item in pictures" :key="item.alt">
+      <Slide v-for="item in promoProducts" :key="item.id">
         <!-- Remplacer par component Card -->
         <div class="w-40 h-30">
-          <img :src="item.src" :alt="item.alt" />
+          <img :src="item.src" :alt="item.src" />
         </div>
       </Slide>
 
@@ -55,10 +70,10 @@ onMounted(() => {
   <section class="home-section">
     <h1>Les Nouveautés du mois</h1>
     <Carousel :items-to-show="2.5" class="mt-8">
-      <Slide v-for="item in pictures" :key="item.alt">
+      <Slide v-for="item in newProducts" :key="item.id">
         <!-- Remplacer par component Card -->
         <div class="w-40 h-30">
-          <img :src="item.src" :alt="item.alt" />
+          <img :src="item.src" :alt="item.title" />
         </div>
       </Slide>
 
@@ -74,7 +89,7 @@ onMounted(() => {
   @apply h-96 flex justify-center items-center;
 }
 .home-section {
-  @apply py-14 px-4;
+  @apply py-14 px-4 lg:px-16;
 }
 h1 {
   @apply text-center text-3xl;

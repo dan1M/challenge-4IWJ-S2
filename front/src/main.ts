@@ -7,10 +7,12 @@ import { createPinia } from 'pinia';
 import VueDatePicker from '@vuepic/vue-datepicker';
 import '@vuepic/vue-datepicker/dist/main.css';
 import { useUserStore } from './stores/user-store';
+import { useCartStore } from './stores/cart-store';
 import { useProductStore } from './stores/product-store';
 
 import { RouteRecordRaw, createRouter, createWebHistory } from 'vue-router';
-import VueCookies from 'vue-cookies'
+import VueCookies from 'vue-cookies';
+import VueNumberInput from '@chenfengyuan/vue-number-input';
 
 import DefaultLayout from './layouts/DefaultLayout.vue';
 import DashboardLayout from './layouts/DashboardLayout.vue';
@@ -22,70 +24,134 @@ import DetailProductPage from './pages/DetailProduct.vue';
 import CartPage from './pages/Cart.vue';
 import AuthPage from './pages/Auth.vue';
 import ProfilePage from './pages/Profile.vue';
+import AppProfile from './components/AppProfile.vue';
 import AppCredentials from './components/AppCredentials.vue';
 import AppUpdatePassword from './components/AppUpdatePassword.vue';
-
-
-
+import AppOrders from './components/AppOrders.vue';
+import CheckoutReturn from './pages/CheckoutReturn.vue';
+import AppAlerts from './components/AppAlerts.vue';
+import AppDeleteAccount from './components/AppDeleteAccount.vue';
+import { useAlertStore } from './stores/alert-store';
+import { useCategoryStore } from './stores/category-store';
 
 const routes: RouteRecordRaw[] = [
   {
     path: '/',
     component: DefaultLayout,
     name: 'default-layout',
+    beforeEnter: async (to, from, next) => {
+      const { getUserInfo } = useUserStore();
+      await getUserInfo();
+
+      const { getCart } = useCartStore();
+      await getCart();
+      next();
+    },
     children: [
       {
-        path: '/', name: 'home', beforeEnter: async (to, from, next) => {
-          const userStore = useUserStore();
-          await userStore.getUserInfo();
-          next();
-        }, component: HomePage
+        path: '/',
+        name: 'home',
+        component: HomePage,
       },
       { path: '/products', name: 'products', component: ProductsPage },
-      { path: '/product/:id', name: 'detailProduct', beforeEnter: async (to, from, next) => {
+      {
+        path: '/product/:id',
+        name: 'detailProduct',
+        beforeEnter: async (to, from, next) => {
         const productStore = useProductStore();
         await productStore.getProduct(to.params.id);
         
         next();
-      }, component: DetailProductPage},
-      { path: '/cart', name: 'cart', component: CartPage },
-      {
-        path: '/auth', name: 'auth', beforeEnter: async (to, from, next) => {
-          const userStore = useUserStore();
-          await userStore.getUserInfo();
-          if (!userStore.isLoggedIn) {
-            next();
-          }
-          else {
-            next({ name: 'home', replace: true });
-          }
-        }, component: AuthPage
+      }, component: DetailProductPage,
       },
       {
-        path: '/profile', name: 'profile', beforeEnter: async (to, from, next) => {
-          const userStore = useUserStore();
-          await userStore.getUserInfo();
-          if (!userStore.isLoggedIn) {
+        path: '/cart',
+        name: 'cart',
+        component: CartPage,
+        beforeEnter: async (to, from, next) => {
+          const { isLoggedIn, getUser } = useUserStore();
+
+          if (!isLoggedIn) {
             next({ name: 'home', replace: true });
           } else {
-            await userStore.getUser();
-            if (!userStore.isLoggedIn) {
+            await getUser();
+            if (!isLoggedIn) {
               next({ name: 'home', replace: true });
             }
             next();
           }
         },
-        component: ProfilePage, children: [
+      },
+      {
+        path: '/cart/checkout-return',
+        name: 'checkout-return',
+        component: CheckoutReturn,
+      },
+      {
+        path: '/auth',
+        name: 'auth',
+        beforeEnter: async (to, from, next) => {
+          const { isLoggedIn } = useUserStore();
+          if (!isLoggedIn) {
+            next();
+          } else {
+            next({ name: 'home', replace: true });
+          }
+        },
+        component: AuthPage,
+      },
+      {
+        path: '/profile',
+        name: 'profile',
+        beforeEnter: async (to, from, next) => {
+          const { isLoggedIn, getUser, userInfo } = useUserStore();
+
+          if (!isLoggedIn) {
+            next({ name: 'home', replace: true });
+          } else {
+            await getUser();
+            const alertStore = useAlertStore();
+            const categoryStore = useCategoryStore();
+            await categoryStore.findAllCategories();
+            await alertStore.getUserAlerts(userInfo.id);
+
+            next();
+          }
+        },
+        component: ProfilePage,
+
+        children: [
+          {
+            path: '',
+            name: '',
+            component: AppProfile,
+          },
           {
             path: 'credentials',
-            component: AppCredentials
+            name: 'profile-credentials',
+            component: AppCredentials,
           },
           {
             path: 'update-password',
             name: 'update-password',
-            component: AppUpdatePassword
-          }
-        ]
+            component: AppUpdatePassword,
+          },
+          {
+            path: 'my-orders',
+            name: 'profile-orders',
+            component: AppOrders,
+          },
+          {
+            path: 'alerts',
+            name: 'alerts',
+            component: AppAlerts,
+          },
+          {
+            path: 'delete-account',
+            name: 'delete-account',
+            component: AppDeleteAccount,
+          },
+        ],
       },
     ],
   },
@@ -94,9 +160,9 @@ const routes: RouteRecordRaw[] = [
     component: DashboardLayout,
     name: 'dashboard-layout',
     beforeEnter: async (to, from, next) => {
-      const userStore = useUserStore();
+      const { canAccessDashboard } = useUserStore();
 
-      if (!userStore.canAccessDashboard) {
+      if (!canAccessDashboard) {
         next({ name: 'home', replace: true });
       } else {
         next();
@@ -127,5 +193,6 @@ app.use(router);
 app.use(pinia);
 app.use(VueCookies);
 
+app.component(VueNumberInput.name, VueNumberInput);
 
 app.mount('#app');
