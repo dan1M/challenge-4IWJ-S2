@@ -75,7 +75,7 @@ exports.signup = async (req, res, next) => {
         const mailOptions = {
           from: 'challenge.s2@server.com',
           to: user.email,
-          subject: 'Verify account',
+          subject: 'Confirmation du compte',
           html: html,
         };
         transporter.sendMail(mailOptions, err => {
