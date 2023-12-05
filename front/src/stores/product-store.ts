@@ -12,7 +12,7 @@ const route = useRoute()
 
 
 export const useProductStore = defineStore('product', () => {
-  const product = ref(null);
+  const product = ref<any>(null);
 
   const actualLanguage = ref(LANGUAGES[0]);
 

@@ -1,5 +1,6 @@
 <script setup lang="ts">
-import { ref, onMounted } from 'vue';
+// @ts-ignore
+import { ref, onMounted, Ref } from 'vue';
 import { Button } from '@/components/ui/button';
 import { router } from '@/main';
 import { useRoute } from 'vue-router';
@@ -20,12 +21,28 @@ const baseUrl = import.meta.env.VITE_BACKEND_URL || 'http://localhost:3000';
 const endpoint = '/products';
 const method = 'GET';
 
-const products = ref([]);
-const fixProducts = ref([]);
-const categories = ref([]);
-const colors = ref([]);
-const sizes = ref([]);
-const searchInput = ref('');
+interface Size {
+  id: string;
+  name: string;
+}
+
+
+
+
+
+const products = ref<any[]>([]);
+const fixProducts = ref<any[]>([]);
+const categories = ref<any[]>([]);
+const colors = ref<any[]>([]);
+const sizes = ref<any[]>([]);
+const searchInput = ref<any>('');
+const selectedCategories = ref<any>([]);
+const selectedColors = ref<any>([]);
+const selectedSizes = ref<any>([]);
+const selectedTitle = ref<any>('');
+const inStock = ref<any>(false);
+const minPrice = ref<any>(10);
+const maxPrice = ref<any>(100);
 
 const route = useRoute();
 
@@ -62,6 +79,9 @@ const fetchProduct = async (url: any) => {
     });
 
     const json = await response.json();
+    //const formattedProduct: Product = convertJsonToProduct(json);
+
+    //products.value = [formattedProduct];
     products.value = json;
   } catch (error) {
     console.error(error);
@@ -146,7 +166,7 @@ const addToCart = (color: any, size: any, productId: any) => {
 
   if (selectedProduct ) {
     
-    const selectedVariant = selectedProduct.variants.find((variant: any) => {
+    const selectedVariant  = (selectedProduct as { variants: any[] }).variants.find((variant: any) => {
       return variant.color.id === color && variant.size.id === size;
     });
 
@@ -157,13 +177,7 @@ const addToCart = (color: any, size: any, productId: any) => {
   }
 };
 
-const selectedCategories = ref([]);
-const selectedColors = ref([]);
-const selectedSizes = ref([]);
-const selectedTitle = ref('');
-const inStock = ref(false);
-const minPrice = ref(10);
-const maxPrice = ref(100);
+
 
 watch(selectedCategories.value, async newCategories => {
   const newQuery = { ...route.query };
@@ -273,6 +287,7 @@ watch(maxPrice, async newMaxPrice => {
 const changeStock = () => {
   inStock.value = !inStock.value;
 };
+
 </script>
 
 <template>
@@ -294,7 +309,7 @@ const changeStock = () => {
             <SelectContent>
               <SelectGroup>
                 <SelectItem :value="'default'">Chaussure</SelectItem>
-                <SelectItem v-for="product in fixProducts" :value="product.title" :key="product.id">
+                <SelectItem v-for="product in fixProducts" :value="product.title" :key="product._id">
                   {{ product.title }}
                 </SelectItem>
               </SelectGroup>
@@ -347,13 +362,13 @@ const changeStock = () => {
                                                 </div-->
 
       <div class="mt-10 grid gap-10 md:grid-cols-2 lg:gap-10 xl:grid-cols-3">
-        <div :class="{ 'group cursor-pointer': true }" v-for="product in products" :key="product.id">
+        <div :class="{ 'group cursor-pointer': true }" v-for="product in products" :key="product._id">
           <router-link :to="{ name: 'detailProduct', params: { id: product._id } }">
             <div :class="{
               'overflow-hidden rounded-md bg-gray-100 transition-all hover:scale-105 dark:bg-gray-800': true,
             }">
-              <img v-if="product.img" :src="product.img" :placeholder="product.img.blurDataURL ? 'blur' : ''"
-                :blur-data-url="product.img.blurDataURL" :alt="product.img.alt || 'Thumbnail'"
+              <img v-if="product.img" :src="product.img" 
+                 :alt="product.title "
                 class="object-cover transition-all" fill sizes="(max-width: 768px) 30vw, 33vw" />
               <span v-else class="absolute left-1/2 top-1/2 h-16 w-16 -translate-x-1/2 -translate-y-1/2 text-gray-200">
               </span>
