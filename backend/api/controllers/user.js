@@ -71,7 +71,7 @@ exports.update = async (req, res, next) => {
       overwrite: true,
     });
 
-    res.sendStatus(204);
+    res.sendStatus(200);
   } catch (err) {
     if (!err.statusCode) {
       err.statusCode = 500;
@@ -113,7 +113,7 @@ exports.updatePassword = async (req, res, next) => {
 
     user.save();
 
-    res.sendStatus(204);
+    res.sendStatus(200);
   } catch (err) {
     if (!err.statusCode) {
       err.statusCode = 500;

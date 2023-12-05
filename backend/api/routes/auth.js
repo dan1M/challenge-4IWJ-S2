@@ -70,6 +70,8 @@ router.patch(
   authController.changePassword,
 );
 
+router.get('/check-token/:token', authController.checkToken);
+
 router.post('/newsletter', authController.newsletter);
 
 module.exports = router;

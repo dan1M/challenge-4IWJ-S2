@@ -58,14 +58,7 @@ exports.signup = async (req, res, next) => {
 
     const token = await Token.create({
       userId: user.id,
-      token: jwt.sign(
-        {
-          name: `${user.firstname} ${user.lastname}`,
-          id: user.id,
-        },
-        process.env.JWT_SECRET,
-        { expiresIn: '1h' },
-      ),
+      token: require('crypto').randomBytes(32).toString('hex'),
     });
 
     ejs.renderFile(
@@ -73,7 +66,7 @@ exports.signup = async (req, res, next) => {
       {
         firstname: firstname,
         lastname: lastname,
-        link: `${process.env.HOST}/auth/verify/${token.token}`,
+        link: `${process.env.FRONT_URL}/verify/${token.token}`,
       },
       (err, html) => {
         if (err) {
@@ -221,7 +214,7 @@ exports.verify = async (req, res, next) => {
         },
       },
     );
-    await token.destroy();
+    // await token.destroy();
     res.status(200).send('Email verified sucessfully!');
   } catch (err) {
     if (!err.statusCode) {
@@ -241,6 +234,32 @@ exports.delete = async (req, res, next) => {
     }
     await user.destroy();
     res.sendStatus(204);
+  } catch (err) {
+    if (!err.statusCode) {
+      err.statusCode = 500;
+    }
+    next(err);
+  }
+};
+
+exports.checkToken = async (req, res, next) => {
+  const tokenParams = req.params.token;
+  try {
+    const token = await Token.findOne({
+      where: {
+        token: tokenParams,
+      },
+    });
+
+    if (!token) {
+      const error = new Error('Could not find token.');
+      error.statusCode = 404;
+      throw error;
+    }
+
+    await token.destroy();
+
+    res.sendStatus(200);
   } catch (err) {
     if (!err.statusCode) {
       err.statusCode = 500;
@@ -349,7 +368,7 @@ exports.changePassword = async (req, res, next) => {
     );
     await token.destroy();
     res.clearCookie(process.env.JWT_RESET_PASSWORD);
-    res.sendStatus(204);
+    res.sendStatus(200);
   } catch (err) {
     if (!err.statusCode) {
       err.statusCode = 500;

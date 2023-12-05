@@ -6,6 +6,7 @@ import App from './App.vue';
 import { createPinia } from 'pinia';
 import VueDatePicker from '@vuepic/vue-datepicker';
 import '@vuepic/vue-datepicker/dist/main.css';
+import { storeToRefs } from 'pinia';
 import { useUserStore } from './stores/user-store';
 import { useCartStore } from './stores/cart-store';
 import { useProductStore } from './stores/product-store';
@@ -18,6 +19,7 @@ import DefaultLayout from './layouts/DefaultLayout.vue';
 import DashboardLayout from './layouts/DashboardLayout.vue';
 
 import NotFound from './pages/NotFound.vue';
+import Verify from './pages/Verify.vue';
 import HomePage from './pages/Home.vue';
 import ProductsPage from './pages/Products.vue';
 import DetailProductPage from './pages/DetailProduct.vue';
@@ -105,6 +107,23 @@ const routes: RouteRecordRaw[] = [
           }
         },
         component: AuthPage
+      },
+      {
+        path: 'verify/:token',
+        name: 'verify',
+        beforeEnter: async (to, from, next) => {
+          console.log(to.params.token);
+          const { checkToken } = useUserStore();
+          const { verifyAccount } = storeToRefs(useUserStore());
+
+          await checkToken(to.params.token);
+          if (!verifyAccount.value) {
+            next({ name: 'home', replace: true });
+          } else {
+            next()
+          }
+        },
+        component: Verify
       },
       {
         path: 'forgot-password',
