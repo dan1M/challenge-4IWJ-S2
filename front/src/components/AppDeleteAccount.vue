@@ -1,4 +1,5 @@
 <script setup lang="ts">
+// @ts-ignore
 import useCustomForm from '../composables/useCustomForm';
 import { watch, computed } from 'vue';
 import { z } from 'zod';
@@ -36,10 +37,8 @@ const { deleteAccount } = useUserStore();
     <form class="flex flex-col pt-8 space-y-6" @submit.prevent="deleteAccount">
       <div class="flex flex-col">
         <div class="flex justify-center">
-          <button
-            type="submit"
-            class="bg-black text-white px-16 py-3 hover:bg-white hover:border hover:border-black hover:text-black transition duration-300 uppercase tracking-wider font-bold"
-          >
+          <button type="submit"
+            class="bg-black text-white px-16 py-3 hover:bg-white hover:border hover:border-black hover:text-black transition duration-300 uppercase tracking-wider font-bold">
             Supprimer
           </button>
         </div>

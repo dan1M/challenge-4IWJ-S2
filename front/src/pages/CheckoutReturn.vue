@@ -1,4 +1,5 @@
 <script setup lang="ts">
+// @ts-ignore
 import { useCartStore } from '@/stores/cart-store';
 import { onMounted, ref } from 'vue';
 import { useRouter } from 'vue-router';
