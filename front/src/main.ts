@@ -2,6 +2,8 @@ import './style.css';
 import 'vue3-carousel/dist/carousel.css';
 
 import { createApp } from 'vue';
+import posthogPlugin from "./plugins/posthog"; //import the plugin. 
+
 import App from './App.vue';
 import { createPinia } from 'pinia';
 import VueDatePicker from '@vuepic/vue-datepicker';
@@ -220,6 +222,8 @@ export const router = createRouter({
 // });
 
 const app = createApp(App);
+
+
 app.component('VueDatePicker', VueDatePicker);
 
 const pinia = createPinia();
@@ -228,5 +232,7 @@ app.use(pinia);
 app.use(VueCookies);
 
 app.component(VueNumberInput.name, VueNumberInput);
+
+app.use(posthogPlugin); //install the plugin
 
 app.mount('#app');
