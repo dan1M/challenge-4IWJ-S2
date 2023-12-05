@@ -44,7 +44,8 @@ const { canAccessDashboard, isLoggedIn } = storeToRefs(useUserStore());
 
 watch(serverResponse, newServerResponse => {
   isLoggedIn.value = true;
-  router.push('/');
+  router.push({ name: 'home' });
+  router.go();
 });
 </script>
 
