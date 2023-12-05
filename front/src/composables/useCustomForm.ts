@@ -52,6 +52,8 @@ export default function useCustomForm({
   });
 
   const submitForm = async () => {
+
+    console.log('data', data);
     if (!isFormValid.value) return;
     isSubmitting.value = true;
 

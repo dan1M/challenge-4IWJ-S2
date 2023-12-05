@@ -53,7 +53,7 @@ const { cart } = storeToRefs(useCartStore());
             </DropdownMenuTrigger>
             <DropdownMenuContent>
               <DropdownMenuLabel>
-                {{ userInfo.name }}
+                <!-- {{ userInfo.name }} -->
               </DropdownMenuLabel>
               <DropdownMenuSeparator />
               <DropdownMenuItem v-if="canAccessDashboard">

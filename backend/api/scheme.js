@@ -80,4 +80,4 @@ DetailsOrder.belongsTo(Order, {
   onDelete: 'CASCADE',
 });
 
-sequelize.sync({ force: true });
+sequelize.sync({ alter: true });

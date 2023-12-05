@@ -11,10 +11,12 @@ import { useCartStore } from './stores/cart-store';
 import { RouteRecordRaw, createRouter, createWebHistory } from 'vue-router';
 import VueCookies from 'vue-cookies';
 import VueNumberInput from '@chenfengyuan/vue-number-input';
+import 'bootstrap';
+import 'bootstrap/dist/css/bootstrap.min.css';
 
 import DefaultLayout from './layouts/DefaultLayout.vue';
 import DashboardLayout from './layouts/DashboardLayout.vue';
-
+import DashboardContent from './components/DashboardContent.vue';
 import NotFound from './pages/NotFound.vue';
 import HomePage from './pages/Home.vue';
 import ProductsPage from './pages/Products.vue';
@@ -24,6 +26,18 @@ import AuthPage from './pages/Auth.vue';
 import ProfilePage from './pages/Profile.vue';
 import AppCredentials from './components/AppCredentials.vue';
 import AppUpdatePassword from './components/AppUpdatePassword.vue';
+import ColorPage from './pages/dashboard/color/ListColor.vue';
+import AddColorVue from './pages/dashboard/color/AddColor.vue';
+import EditColorVue from './pages/dashboard/color/EditColor.vue';
+import CategoryPage from './pages/dashboard/category/ListCategory.vue';
+import AddCategoryVue from './pages/dashboard/category/AddCategory.vue';
+import EditCategoryVue from './pages/dashboard/category/EditCategory.vue';
+import AddProductVue from './pages/dashboard/product/AddProduct.vue';
+import EditProductVue from './pages/dashboard/product/EditProduct.vue';
+import ListProductVue from './pages/dashboard/product/ListProduct.vue';
+import ListSizeVue from './pages/dashboard/size/ListSize.vue';
+import AddSizeVue from './pages/dashboard/size/AddSize.vue';
+import EditSizeVue from './pages/dashboard/size/EditSize.vue';
 
 const routes: RouteRecordRaw[] = [
   {
@@ -112,22 +126,100 @@ const routes: RouteRecordRaw[] = [
       },
     ],
   },
-  {
-    path: '/dashboard',
-    component: DashboardLayout,
-    name: 'dashboard-layout',
-    beforeEnter: async (to, from, next) => {
-      const { canAccessDashboard } = useUserStore();
 
-      if (!canAccessDashboard) {
-        next({ name: 'home', replace: true });
-      } else {
+  {
+    path: '/dashboard-content',
+    component: DashboardLayout,
+    beforeEnter: async (to, from, next) => {
+      const { isLoggedIn , canAccessDashboard} = useUserStore();
+      if (!isLoggedIn || !canAccessDashboard) {
         next();
+      } else {
+        next({ name: 'home', replace: true });
       }
     },
+    name: 'dashboard-layout',
+
+    children: [
+      {
+        path: '/dashboard-content',
+        name: 'home',
+        component: DashboardContent,
+      },
+      {
+        path: '/products',
+        name: 'products',
+        component: ProductsPage,
+      },
+      {
+        path: '/colors',
+        name: 'colors',
+        component: ColorPage,
+      },
+      {
+        path: '/colors/add',
+        name: 'addColor',
+        component: AddColorVue,
+      },
+      {
+        path: '/colors/:id/edit',
+        name: 'editColor',
+        component: EditColorVue,
+      },
+
+      {
+        path: '/categories',
+        name: 'categories',
+        component: CategoryPage,
+      },
+      {
+        path: '/categories/add',
+        name: 'addCategories',
+        component: AddCategoryVue,
+      },
+      {
+        path: '/categories/:id/edit',
+        name: 'editCategories',
+        component: EditCategoryVue,
+      },
+
+      {
+        path: '/productList',
+        name: 'productList',
+        component: ListProductVue,
+      },
+      {
+        path: '/productList/add',
+        name: 'addProduct',
+        component: AddProductVue
+      },
+      {
+        path: '/productList/:id/edit',
+        name: 'editProduct',
+        component: EditProductVue
+      },
+
+      {
+        path: '/sizes',
+        name: 'sizes',
+        component: ListSizeVue,
+      },
+      {
+        path: '/sizes/add',
+        name: 'addSize',
+        component: AddSizeVue,
+      },
+      {
+        path: '/sizes/:id/edit',
+        name: 'editSize',
+        component: EditSizeVue,
+      },
+    ],
   },
+  
   { path: '/:pathMatch(.*)*', name: 'not-found', component: NotFound },
 ];
+export const EventBus = createApp({});
 
 export const router = createRouter({
   history: createWebHistory(),
