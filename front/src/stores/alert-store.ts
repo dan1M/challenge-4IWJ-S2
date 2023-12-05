@@ -35,7 +35,7 @@ export const useAlertStore = defineStore('alert', () => {
             alerts.value = await response.json();
 
             console.log(alerts.value);
-
+            
         } catch (err) {
             console.log(err);
         }
