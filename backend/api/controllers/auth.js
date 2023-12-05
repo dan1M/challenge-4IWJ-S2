@@ -261,7 +261,7 @@ exports.forgotPassword = async (req, res, next) => {
       error.statusCode = 404;
       throw error;
     }
-    const token = await Token.findOne({
+    let token = await Token.findOne({
       where: {
         userId: user.id,
       },
