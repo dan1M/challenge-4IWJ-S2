@@ -11,9 +11,6 @@ const Token = require('./models/sql/token');
 const Product = require('./models/sql/product');
 const Category = require('./models/sql/category');
 
-const Order = require('./models/sql/order');
-const DetailsOrder = require('./models/sql/detailsOrder');
-
 const Size = require('./models/sql/size');
 const Color = require('./models/sql/color');
 const Stock = require('./models/sql/stock');
@@ -28,10 +25,6 @@ Product.belongsTo(Category, {
 });
 
 // Alert relations
-Alert.belongsTo(Product, {
-  foreignKey: 'product_id',
-  onDelete: 'CASCADE',
-});
 
 Alert.belongsTo(User, {
   foreignKey: 'user_id',

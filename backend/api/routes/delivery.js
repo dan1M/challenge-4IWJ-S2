@@ -7,6 +7,4 @@ const isAuth = require('../middleware/is-auth');
 
 router.get('/shipping_methods', isAuth, deliveryController.shippingMethods);
 
-router.post('/packages', isAuth, deliveryController.createPackage);
-
 module.exports = router;

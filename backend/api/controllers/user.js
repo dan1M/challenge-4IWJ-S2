@@ -121,3 +121,25 @@ exports.updatePassword = async (req, res, next) => {
     next(err);
   }
 };
+
+exports.delete = async (req, res, next) => {
+  try {
+    const user = await User.findByPk(req.params.id);
+    if (!user) {
+      const error = new Error('Could not find user.');
+      error.statusCode = 404;
+      throw error;
+    }
+    const hashedEmail = await bcrypt.hash(user.email, 12);
+    user.email = hashedEmail;
+    user.firstname = 'Compte';
+    user.lastname = 'Supprimé';
+    user.save();
+    res.sendStatus(204);
+  } catch (err) {
+    if (!err.statusCode) {
+      err.statusCode = 500;
+    }
+    next(err);
+  }
+};

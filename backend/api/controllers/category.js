@@ -4,7 +4,7 @@ const CategoryMongo = require('../models/nosql/category');
 
 exports.findAll = async (req, res, next) => {
   try {
-    const categories = await CategoryMongo.find({});
+    const categories = await CategoryMongo.find();
     res.status(200).json(categories);
   } catch (err) {
     if (!err.statusCode) {

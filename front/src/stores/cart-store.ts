@@ -21,6 +21,7 @@ export const CART_STEPS = [
 export const useCartStore = defineStore('cart', () => {
   const cart = ref<CartProduct[]>([]);
   const currentCartStep = ref(1);
+  const cartTimeRemaining = ref('');
 
   const cartTotal = computed(() =>
     priceDisplay(
@@ -32,6 +33,23 @@ export const useCartStore = defineStore('cart', () => {
     ),
   );
 
+  const updateCartTimeRemaining = (distance: number) => {
+    if (distance <= 0) {
+      cartTimeRemaining.value = '0s';
+      getCart();
+      return;
+    }
+    const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+    const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+    cartTimeRemaining.value =
+      minutes > 0 ? `${minutes}m ${seconds}s` : `${seconds}s`;
+
+    setTimeout(() => {
+      updateCartTimeRemaining(distance - 1000);
+    }, 1000);
+  };
+
   const getCart = async () => {
     return fetch(import.meta.env.VITE_BACKEND_URL + '/cart', {
       credentials: 'include',
@@ -39,6 +57,8 @@ export const useCartStore = defineStore('cart', () => {
       .then(response => {
         if (!response.ok) {
           cart.value = [];
+          currentCartStep.value = 1;
+          cartTimeRemaining.value = '';
           throw new Error('No cart found or not logged in!');
         }
         return response.json();
@@ -46,10 +66,15 @@ export const useCartStore = defineStore('cart', () => {
       .then(data => {
         cart.value = data.products;
         currentCartStep.value = data.cart_step;
+
+        const expirationDate =
+          new Date(data.createdAt).getTime() + 15 * 60 * 1000;
+        const now = new Date().getTime();
+        const distance = expirationDate - now;
+
+        distance > 0 && updateCartTimeRemaining(distance);
       })
-      .catch(err => {
-        console.log(err);
-      });
+      .catch(err => {});
   };
 
   const addProductToCart = (stockId: string) => {
@@ -76,6 +101,7 @@ export const useCartStore = defineStore('cart', () => {
       })
       .then(data => {
         cart.value = data.products;
+        getCart();
       })
       .catch(err => {
         console.log(err);
@@ -151,7 +177,9 @@ export const useCartStore = defineStore('cart', () => {
     })
       .then(response => {
         if (!response.ok) {
-          throw new Error("Something went wrong, couldn't cart step!");
+          throw new Error(
+            "Something went wrong, couldn't get to next cart step!",
+          );
         }
         return response.json();
       })
@@ -177,7 +205,9 @@ export const useCartStore = defineStore('cart', () => {
     })
       .then(response => {
         if (!response.ok) {
-          throw new Error("Something went wrong, couldn't cart step!");
+          throw new Error(
+            "Something went wrong, couldn't get to previous cart step!",
+          );
         }
         return response.json();
       })
@@ -193,6 +223,7 @@ export const useCartStore = defineStore('cart', () => {
     cart,
     currentCartStep,
     cartTotal,
+    cartTimeRemaining,
     getCart,
     addProductToCart,
     removeProductFromCart,

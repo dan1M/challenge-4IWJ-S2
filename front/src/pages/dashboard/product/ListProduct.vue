@@ -12,7 +12,7 @@ const products = ref([]);
 const searchData = ref({
   title: '',
   description: '',
-  category: '',
+  name: '',
   quantity: '',
   price: '',
   size: '',
@@ -90,9 +90,18 @@ const filteredProduct = computed(() => {
       ?.toLowerCase()
       .includes(searchData.value.description.trim().toLowerCase());
 
-      const categoryMatch = item.category
-  ? item.category.toString().toLowerCase().includes(searchData.value.category.trim().toLowerCase())
-  : false;
+    const categoryMatch = item.category
+      ? item.category.some(cat => {
+          const categoryNameMatch =
+            cat.name &&
+            cat.name
+              .toString()
+              .toLowerCase()
+              .includes(searchData.value.name.trim().toLowerCase());
+
+          return categoryNameMatch;
+        })
+      : false;
 
     const variantsMatch = item.variants
       ? item.variants.some(variant => {
@@ -110,19 +119,21 @@ const filteredProduct = computed(() => {
               .toLowerCase()
               .includes(searchData.value.price.trim().toLowerCase());
 
-          const sizeMatch =
-            variant.size &&
-            variant.size
-              .toString()
-              .toLowerCase()
-              .includes(searchData.value.size.trim().toLowerCase());
+          const sizeMatch = item.variants
+            ? item.variants.some(variant => {
+                return variant.size.name
+                  ?.toLowerCase()
+                  .includes(searchData.value.size.trim().toLowerCase());
+              })
+            : false;
 
-          const colorMatch =
-            variant.color &&
-            variant.color
-              .toString()
-              .toLowerCase()
-              .includes(searchData.value.color.trim().toLowerCase());
+          const colorMatch = item.variants
+            ? item.variants.some(variant => {
+                return variant.color.name
+                  ?.toLowerCase()
+                  .includes(searchData.value.color.trim().toLowerCase());
+              })
+            : false;
 
           return quantityMatch && priceMatch && sizeMatch && colorMatch;
         })
@@ -172,7 +183,7 @@ const filteredProduct = computed(() => {
             <div>
               <label>Categorie:</label>
               <input
-                v-model="searchData.category"
+                v-model="searchData.name"
                 placeholder="Rechercher par catégorie..."
               />
             </div>
@@ -207,7 +218,13 @@ const filteredProduct = computed(() => {
         <tr v-for="item in filteredProduct" :key="item._id">
           <td>{{ item.title }}</td>
           <td>{{ item.description }}</td>
-          <td>{{ item.category.name }}</td>
+
+          <td>
+            <span v-for="(cat, index) in item.category" :key="index">
+              {{ cat.name }}
+              <span v-if="index < item.category.length - 1">, </span>
+            </span>
+          </td>
 
           <td>
             <table>

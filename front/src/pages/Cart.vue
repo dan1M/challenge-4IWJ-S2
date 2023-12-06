@@ -12,10 +12,12 @@ import {
 } from '@/components/ui/hover-card';
 import { Separator } from '@/components/ui/separator';
 import { ArrowLeft } from 'lucide-vue-next';
-import { ref, watch } from 'vue';
+import { onMounted, ref, watch } from 'vue';
 
 const { isLoggedIn, user, userInfo } = storeToRefs(useUserStore());
-const { cart, cartTotal, currentCartStep } = storeToRefs(useCartStore());
+const { cart, cartTotal, currentCartStep, cartTimeRemaining } = storeToRefs(
+  useCartStore(),
+);
 
 const { getUser } = useUserStore();
 const {
@@ -26,6 +28,13 @@ const {
   previousCartStep,
 } = useCartStore();
 
+const delivery = ref<'home' | 'relay'>('home');
+
+// @ts-ignore
+const stripe = Stripe(
+  import.meta.env.VITE_PUBLIC_STRIPE_PUBLISHABLE_KEY as string,
+);
+
 const updateQuantity = (value: number, product: CartProduct) => {
   if (value > product.quantity) {
     addProductToCart(product.stock_id);
@@ -34,8 +43,42 @@ const updateQuantity = (value: number, product: CartProduct) => {
   }
 };
 
-const delivery = ref<'home' | 'relay'>('home');
+const checkoutEmbed = ref();
+
+const initStripeEmbed = async () => {
+  if (checkoutEmbed.value) {
+    checkoutEmbed.value.destroy();
+  }
+  const response = await fetch(
+    import.meta.env.VITE_BACKEND_URL + '/payment/create-checkout-session',
+    {
+      method: 'POST',
+      credentials: 'include',
+    },
+  );
+
+  const { clientSecret } = await response.json();
+
+  checkoutEmbed.value = await stripe.initEmbeddedCheckout({
+    clientSecret,
+  });
+
+  // Mount Checkout
+  checkoutEmbed.value.mount('#cart-checkout');
+};
+
 watch(userInfo, () => getUser());
+watch(currentCartStep, () => {
+  if (currentCartStep.value === 3) {
+    initStripeEmbed();
+  }
+});
+
+onMounted(() => {
+  if (currentCartStep.value === 3 && !checkoutEmbed.value) {
+    initStripeEmbed();
+  }
+});
 </script>
 
 <template>
@@ -73,6 +116,15 @@ watch(userInfo, () => getUser());
     </div>
     <div v-else class="flex py-14 space-x-12">
       <div class="flex flex-col w-10/12">
+        <div v-if="currentCartStep < 3" class="mb-4">
+          <small class="text-orange-500">
+            ⚠ Votre panier expirera 15 minutes après sa création, il reste
+            <span class="bg-orange-100 rounded-md p-1">{{
+              cartTimeRemaining
+            }}</span>
+            pour finaliser votre commande.
+          </small>
+        </div>
         <ul v-if="currentCartStep === 1">
           <li
             v-for="(product, index) in cart"
@@ -124,7 +176,7 @@ watch(userInfo, () => getUser());
           </li>
         </ul>
         <div v-if="currentCartStep === 2">
-          <h1>Choisir le mode de livraison</h1>
+          <h1>Confirmez les informations de livraison</h1>
           <div
             class="flex items-center space-x-4 border px-2 mb-2"
             :class="{ 'border-2 border-primary-500': delivery === 'home' }"
@@ -193,6 +245,7 @@ watch(userInfo, () => getUser());
             </div>
           </div>
           <div
+            v-if="false"
             class="flex items-center space-x-4 border px-2"
             :class="{ 'border-2 border-primary-500': delivery === 'relay' }"
           >
@@ -208,6 +261,9 @@ watch(userInfo, () => getUser());
             </label>
           </div>
           <div v-if="delivery === 'relay'"></div>
+        </div>
+        <div v-if="currentCartStep === 3">
+          <div id="cart-checkout" v-if="currentCartStep === 3"></div>
         </div>
         <div class="flex self-end mt-4 space-x-4">
           <Button
@@ -236,7 +292,7 @@ watch(userInfo, () => getUser());
         </div>
       </div>
 
-      <div class="space-y-4 bg-gray-200 w-4/12 p-2 h-fit">
+      <div class="space-y-4 bg-gray-100 w-4/12 p-2 h-fit">
         <h2 class="text-xl font-semibold">Résumé de la commande</h2>
         <Separator class="bg-zinc-300" />
 

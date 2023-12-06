@@ -1,7 +1,6 @@
 const { DataTypes } = require('sequelize');
 const { v4: uuidv4 } = require('uuid');
 const { alertNewProduct } = require('../../util/createAlert');
-
 const sequelize = require('./db-sql');
 
 const Product = sequelize.define(
@@ -23,17 +22,14 @@ const Product = sequelize.define(
     category_id: {
       type: DataTypes.UUID,
       allowNull: false,
-      price: {
-        type: DataTypes.DOUBLE,
-      },
-      // imageUrl: {
-      //   type: DataTypes.TEXT,
-      // },
-      stock: {
-        type: DataTypes.INTEGER,
-        allowNull: true,
-        defaultValue: 0,
-      },
+    },
+    // imageUrl: {
+    //   type: DataTypes.TEXT,
+    // },
+    stock: {
+      type: DataTypes.INTEGER,
+      allowNull: true,
+      defaultValue: 0,
     },
   },
 

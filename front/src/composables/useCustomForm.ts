@@ -51,11 +51,13 @@ export default function useCustomForm({
     }
   });
 
+
   const submitForm = async () => {
 
     console.log('data', data);
     if (!isFormValid.value) return;
     isSubmitting.value = true;
+    console.log('data', data);
 
     const abortController = new AbortController();
 

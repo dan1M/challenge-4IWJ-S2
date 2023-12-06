@@ -8,6 +8,8 @@ import VueDatePicker from '@vuepic/vue-datepicker';
 import '@vuepic/vue-datepicker/dist/main.css';
 import { useUserStore } from './stores/user-store';
 import { useCartStore } from './stores/cart-store';
+import { useProductStore } from './stores/product-store';
+
 import { RouteRecordRaw, createRouter, createWebHistory } from 'vue-router';
 import VueCookies from 'vue-cookies';
 import VueNumberInput from '@chenfengyuan/vue-number-input';
@@ -38,6 +40,13 @@ import ListProductVue from './pages/dashboard/product/ListProduct.vue';
 import ListSizeVue from './pages/dashboard/size/ListSize.vue';
 import AddSizeVue from './pages/dashboard/size/AddSize.vue';
 import EditSizeVue from './pages/dashboard/size/EditSize.vue';
+import AppOrders from './components/AppOrders.vue';
+import CheckoutReturn from './pages/CheckoutReturn.vue';
+import AppAlerts from './components/AppAlerts.vue';
+import AppDeleteAccount from './components/AppDeleteAccount.vue';
+import { useAlertStore } from './stores/alert-store';
+import { useCategoryStore } from './stores/category-store';
+import AppOrderDetails from './components/AppOrderDetails.vue';
 
 const routes: RouteRecordRaw[] = [
   {
@@ -53,6 +62,8 @@ const routes: RouteRecordRaw[] = [
       next();
     },
     children: [
+      { path: '/:pathMatch(.*)*', name: 'not-found', component: NotFound },
+
       {
         path: '/',
         name: 'home',
@@ -62,6 +73,12 @@ const routes: RouteRecordRaw[] = [
       {
         path: '/product/:id',
         name: 'detailProduct',
+        beforeEnter: async (to, from, next) => {
+          const productStore = useProductStore();
+          await productStore.getProduct(to.params.id);
+
+          next();
+        },
         component: DetailProductPage,
       },
       {
@@ -83,6 +100,11 @@ const routes: RouteRecordRaw[] = [
         },
       },
       {
+        path: '/cart/checkout-return',
+        name: 'checkout-return',
+        component: CheckoutReturn,
+      },
+      {
         path: '/auth',
         name: 'auth',
         beforeEnter: async (to, from, next) => {
@@ -99,28 +121,52 @@ const routes: RouteRecordRaw[] = [
         path: '/profile',
         name: 'profile',
         beforeEnter: async (to, from, next) => {
-          const { isLoggedIn, getUser } = useUserStore();
+          const { isLoggedIn, getUser, userInfo } = useUserStore();
 
           if (!isLoggedIn) {
             next({ name: 'home', replace: true });
           } else {
             await getUser();
-            if (!isLoggedIn) {
-              next({ name: 'home', replace: true });
-            }
+            const alertStore = useAlertStore();
+            const categoryStore = useCategoryStore();
+            await categoryStore.findAllCategories();
+            await alertStore.getUserAlerts(userInfo.id);
+
             next();
           }
         },
         component: ProfilePage,
+
         children: [
           {
             path: 'credentials',
+            name: 'profile-credentials',
             component: AppCredentials,
           },
           {
             path: 'update-password',
             name: 'update-password',
             component: AppUpdatePassword,
+          },
+          {
+            path: 'my-orders',
+            name: 'profile-orders',
+            component: AppOrders,
+          },
+          {
+            path: 'my-orders/:id',
+            name: 'profile-order-detail',
+            component: AppOrderDetails,
+          },
+          {
+            path: 'alerts',
+            name: 'profile-alerts',
+            component: AppAlerts,
+          },
+          {
+            path: 'delete-account',
+            name: 'delete-account',
+            component: AppDeleteAccount,
           },
         ],
       },

@@ -31,19 +31,25 @@ exports.findAll = async (req, res, next) => {
         case 'title':
           filter.title = { $regex: new RegExp(req.query.title, 'i') };
           break;
-        case 'category':
-          filter['category.name'] = req.query.category;
+        case 'categories':
+          filter['category.name'] = { $in: req.query.categories.split(',') };
+          break;
+        case 'sizes':
+          filter['variants.size.name'] = { $in: req.query.sizes.split(',') };
+          break;
+        case 'colors':
+          filter['variants.color.name'] = { $in: req.query.colors.split(',') };
           break;
         case 'brand':
           filter.brand = req.query.brand;
           break;
-        case 'priceMin':
+        case 'minPrice':
           filter['variants.price'] = filter['variants.price'] || {};
-          filter['variants.price'].$gte = parseFloat(req.query.priceMin);
+          filter['variants.price'].$gte = parseFloat(req.query.minPrice);
           break;
-        case 'priceMax':
+        case 'maxPrice':
           filter['variants.price'] = filter['variants.price'] || {};
-          filter['variants.price'].$lte = parseFloat(req.query.priceMax);
+          filter['variants.price'].$lte = parseFloat(req.query.maxPrice);
           break;
         case 'onSale':
           filter.onSale = true;
@@ -110,19 +116,18 @@ exports.create = async (req, res, next) => {
 
     //create variants for a product
     for (const variant of variantsBody) {
-      for (const color of variant.colors) {
-        const stock = await Stock.create({
-          quantity: color.quantity,
-          product_id: product.id,
-          size_id: variant.size,
-          color_id: color.color,
-          price: color.price,
-        });
-      }
+      const stock = await Stock.create({
+        quantity: variant.quantity,
+        product_id: product.id,
+        size_id: variant.size,
+        color_id: variant.color,
+        price: variant.price,
+      });
+
     }
 
     // insert product and variants in mongo
-    // await updateOrCreateMongoProduct(product.id);
+    await updateOrCreateMongoProduct(product.id);
 
     res.sendStatus(201);
   } catch (err) {

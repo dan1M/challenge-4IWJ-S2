@@ -54,7 +54,6 @@ exports.create = async (req, res, next) => {
     const product = await Product.findByPk(stock.product_id);
     const color = await Color.findByPk(stock.color_id);
     const size = await Size.findByPk(stock.size_id);
-
     const cart = await Cart.create({
       user_id: req.user.id,
       products: [

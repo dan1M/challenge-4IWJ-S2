@@ -1,7 +1,6 @@
 const express = require('express');
 const router = express.Router();
 const { body } = require('express-validator/check');
-const Cart = require('../models/nosql/cart');
 const cartController = require('../controllers/cart');
 const isAdmin = require('../middleware/is-admin');
 const isAuth = require('../middleware/is-auth');

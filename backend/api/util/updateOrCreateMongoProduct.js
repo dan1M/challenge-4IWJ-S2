@@ -28,6 +28,7 @@ async function updateOrCreateMongoProduct(productId) {
             id: color.id,
             name: color.name,
           },
+          disabled: productVariant.quantity === 0 ? true : false,
         });
       }
   

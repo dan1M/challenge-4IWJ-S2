@@ -8,18 +8,62 @@ const { logout } = useUserStore();
     <div class="flex justify-around">
       <div>
         <ul>
-          <li class="list-item-profile">
-            <router-link to="/profile/credentials"
-              >Mes informations</router-link
-            >
+          <li
+            :class="{
+              'list-item-active': $route.name === 'profile-credentials',
+            }"
+            class="list-item-profile"
+          >
+            <router-link :to="{ name: 'profile-credentials' }" class="flex p-5">
+              Mes informations
+            </router-link>
           </li>
-          <li class="list-item-profile">
-            <router-link :to="{ name: 'update-password' }"
-              >Changer le mot de passe</router-link
-            >
+          <li
+            :class="{
+              'list-item-active': $route.name === 'update-password',
+            }"
+            class="list-item-profile"
+          >
+            <router-link :to="{ name: 'update-password' }" class="flex p-5">
+              Changer le mot de passe
+            </router-link>
           </li>
-          <li class="list-item-profile">Mes commandes</li>
-          <li class="list-item-profile cursor-pointer" @click="logout">
+          <li
+            :class="{
+              'list-item-active':
+                $route.name === 'profile-orders' ||
+                $route.name === 'profile-order-detail',
+            }"
+            class="list-item-profile"
+          >
+            <router-link :to="{ name: 'profile-orders' }" class="flex p-5">
+              Mes commandes
+            </router-link>
+          </li>
+          <li
+            :class="{
+              'list-item-active': $route.name === 'profile-alerts',
+            }"
+            class="list-item-profile"
+          >
+            <router-link :to="{ name: 'profile-alerts' }" class="flex p-5">
+              Mes alertes
+            </router-link>
+          </li>
+          <li
+            :class="{
+              'list-item-active': $route.name === 'delete-account',
+            }"
+            class="list-item-profile"
+          >
+            <router-link :to="{ name: 'delete-account' }" class="flex p-5">
+              Supprimer mon compte
+            </router-link>
+          </li>
+          <li
+            class="list-item-profile cursor-pointer flex p-5 text-red-500"
+            @click="logout"
+          >
             Déconnexion
           </li>
         </ul>
@@ -31,12 +75,11 @@ const { logout } = useUserStore();
   </section>
 </template>
 
-<style scoped>
-/* .list-item-profile {
-  padding: 20px;
-  background-color: whitesmoke;
-  width: 350px;
-  font-weight: 500;
-  border-left: 5px solid pink;
-} */
+<style scoped lang="postcss">
+.list-item-profile {
+  @apply w-80 font-medium hover:border-l-8 border-s-primary-500 bg-stone-50;
+}
+.list-item-active {
+  @apply border-l-8;
+}
 </style>

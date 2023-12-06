@@ -61,19 +61,31 @@ const { cart } = storeToRefs(useCartStore());
                 <span>Dashboard Admin</span>
               </DropdownMenuItem>
               <DropdownMenuItem>
-                <User class="mr-2 h-4 w-4" />
-                <router-link :to="{ name: 'profile' }">
+                <router-link
+                  :to="{ name: 'profile-credentials' }"
+                  class="flex items-center"
+                >
+                  <User class="mr-2 h-4 w-4" />
                   <span>Mon compte</span>
                 </router-link>
               </DropdownMenuItem>
               <DropdownMenuItem>
-                <Bell class="mr-2 h-4 w-4" />
-                <span>Mes alertes</span>
-                <Badge variant="destructive" class="ml-2">1</Badge>
+                <router-link
+                  :to="{ name: 'profile-orders' }"
+                  class="flex items-center"
+                >
+                  <PackageSearch class="mr-2 h-4 w-4" />
+                  <span>Mes commandes</span>
+                </router-link>
               </DropdownMenuItem>
               <DropdownMenuItem>
-                <PackageSearch class="mr-2 h-4 w-4" />
-                <span>Mes commandes</span>
+                <router-link
+                  :to="{ name: 'profile-alerts' }"
+                  class="flex items-center"
+                >
+                  <Bell class="mr-2 h-4 w-4" />
+                  <span>Mes alertes</span>
+                </router-link>
               </DropdownMenuItem>
               <DropdownMenuItem>
                 <LogOut class="mr-2 h-4 w-4 text-red-500" />

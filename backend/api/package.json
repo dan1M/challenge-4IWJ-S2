@@ -5,6 +5,7 @@
   "main": "index.js",
   "scripts": {
     "dev": "node --watch index.js",
+    "start": "node --watch index.js",
     "test": "jest",
     "test:watch": "jest --watch",
     "migration": "node scheme.js"
@@ -33,6 +34,7 @@
     "pg": "^8.11.3",
     "pg-hstore": "^2.3.4",
     "sequelize": "^6.33.0",
+    "stripe": "^14.5.0",
     "uuid": "^9.0.1"
   }
 }
