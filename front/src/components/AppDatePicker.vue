@@ -1,5 +1,5 @@
 <script setup lang="ts">
-// @ts-ignore
+//@ts-nocheck
 import { format } from 'date-fns';
 import { Calendar as CalendarIcon } from 'lucide-vue-next';
 

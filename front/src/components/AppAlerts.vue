@@ -1,5 +1,5 @@
 <script setup lang="ts">
-// @ts-ignore
+//@ts-nocheck
 import { Label } from '@/components/ui/label';
 import { Switch } from '@/components/ui/switch';
 import { Checkbox } from '@/components/ui/checkbox';

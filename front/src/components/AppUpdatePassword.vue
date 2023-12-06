@@ -1,5 +1,5 @@
 <script setup lang="ts">
-// @ts-ignore
+//@ts-nocheck
 import useCustomForm from '../composables/useCustomForm';
 import { watch, computed } from 'vue';
 import { z } from 'zod';

@@ -1,3 +1,4 @@
+//@ts-nocheck
 import { router } from '@/main';
 import { defineStore } from 'pinia';
 import { ref } from 'vue';

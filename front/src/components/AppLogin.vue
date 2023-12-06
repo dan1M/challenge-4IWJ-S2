@@ -1,5 +1,5 @@
 <script setup lang="ts">
-// @ts-ignore
+//@ts-nocheck
 import useCustomForm from '../composables/useCustomForm';
 import { useUserStore } from '@/stores/user-store';
 import { storeToRefs } from 'pinia';

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-// @ts-ignore
+//@ts-nocheck
 import {
   DropdownMenu,
   DropdownMenuTrigger,

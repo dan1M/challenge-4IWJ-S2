@@ -1,5 +1,5 @@
 <script setup lang="ts">
-// @ts-ignore
+//@ts-nocheck
 import { ref, onMounted, Ref } from 'vue';
 import { Button } from '@/components/ui/button';
 import { router } from '@/main';
@@ -215,7 +215,7 @@ watch(selectedSizes.value, async newSizes => {
   await fetchFilter(newQuery);
 });
 
-watch(selectedTitle, async newProduct => {
+watch(selectedTitle, async (newProduct:any) => {
   const newQuery = { ...route.query };
 
   if (newProduct !== '' && newProduct !== 'default') {

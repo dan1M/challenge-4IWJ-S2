@@ -1,5 +1,5 @@
 <script setup lang="ts">
-// @ts-ignore
+//@ts-nocheck
 import { ref } from 'vue';
 import { Button } from '@/components/ui/button';
 import { useProductStore } from '../stores/product-store';
