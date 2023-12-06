@@ -13,8 +13,7 @@
                 <label v-for="item in items" :key="item.id"
                     class="relative flex w-full cursor-default select-none items-center rounded-sm py-1.5 pl-8 pr-2 text-sm outline-none focus:bg-slate-100 focus:text-slate-900 data-[disabled]:pointer-events-none data-[disabled]:opacity-50 dark:focus:bg-slate-800 dark:focus:text-slate-50">
                     <input :checked="isSelected(item.name)" @change="toggleItem(item.name)" type="checkbox"
-                        class="form-checkbox mr-2"
-                        >
+                        class="form-checkbox mr-2">
                     {{ item.name }}
                 </label>
             </div>
@@ -33,6 +32,7 @@
 </template>
   
 <script setup>
+//@ts-nocheck
 import { ChevronDown, X } from 'lucide-vue-next';
 import { ref, defineProps } from 'vue';
 

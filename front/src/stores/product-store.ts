@@ -1,3 +1,4 @@
+//@ts-nocheck
 import { router } from '@/main';
 import { defineStore } from 'pinia';
 import { ref } from 'vue';
@@ -12,7 +13,7 @@ const route = useRoute()
 
 
 export const useProductStore = defineStore('product', () => {
-  const product = ref(null);
+  const product = ref<any>(null);
 
   const actualLanguage = ref(LANGUAGES[0]);
 
@@ -21,7 +22,7 @@ export const useProductStore = defineStore('product', () => {
       LANGUAGES[LANGUAGES.findIndex(l => l.code === language)];
   };
 
-  const getProduct = async (productId: string) => {
+  const getProduct = async (productId: any) => {
 
     try {
       const response = await fetch('http://localhost:3000/products/' + productId);

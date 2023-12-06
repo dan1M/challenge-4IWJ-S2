@@ -47,11 +47,30 @@ router.get('/verify/:token', authController.verify);
 
 router.delete('/:id', isAdmin, authController.delete);
 
-router.post('/reset-password', authController.resetPassword);
+router.post(
+  '/forgot-password',
+  [body('email').isEmail().withMessage('Please enter a valid email.')],
+  authController.forgotPassword,
+);
 
-router.post('/reset-password/:userId/:token', authController.changePassword);
+router.patch(
+  '/reset-password',
+  [
+    body('password')
+      .trim()
+      .isLength({ min: 12 })
+      .withMessage('Le mot de passe doit comporter au moins 12 caractères')
+      .matches(
+        /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]+$/,
+      )
+      .withMessage(
+        'Le mot de passe doit contenir des symboles, des chiffres, des lettres minuscules et des lettres majuscules',
+      ),
+  ],
+  authController.changePassword,
+);
 
-router.get('/:userId/:token', authController.changePassword);
+router.get('/check-token/:token', authController.checkToken);
 
 router.post('/newsletter', authController.newsletter);
 

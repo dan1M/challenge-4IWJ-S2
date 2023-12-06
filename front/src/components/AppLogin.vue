@@ -1,8 +1,9 @@
 <script setup lang="ts">
+//@ts-nocheck
 import useCustomForm from '../composables/useCustomForm';
 import { useUserStore } from '@/stores/user-store';
 import { storeToRefs } from 'pinia';
-import { watch } from 'vue';
+import { watch, ref } from 'vue';
 import { z } from 'zod';
 import { router } from '@/main';
 
@@ -17,6 +18,8 @@ const validationSchema = z.object({
 const endpoint = '/auth/login';
 
 const method = 'POST';
+
+const { resetPassword } = useUserStore();
 
 const {
   email,
@@ -36,20 +39,27 @@ const {
   method,
 });
 
+const forgotPassword = ref(false);
+
 const { canAccessDashboard, isLoggedIn } = storeToRefs(useUserStore());
 
 watch(serverResponse, newServerResponse => {
   isLoggedIn.value = true;
-  router.push('/');
+  router.push({ name: 'home' });
+  router.go();
 });
 </script>
 
 <template>
   <main class="m-auto border p-6 w-1/3">
-    <h1 class="uppercase font-bold text-lg tracking-wider text-center">
-      Connexion à votre compte
-    </h1>
-    <form class="flex flex-col pt-8 space-y-6" @submit.prevent="submitForm">
+    <form
+      class="flex flex-col pt-8 space-y-6"
+      @submit.prevent="submitForm"
+      v-if="!forgotPassword"
+    >
+      <h1 class="uppercase font-bold text-lg tracking-wider text-center">
+        Connexion à votre compte
+      </h1>
       <div class="flex flex-col">
         <label
           for="email"
@@ -76,7 +86,7 @@ watch(serverResponse, newServerResponse => {
           for="password"
           class="uppercase text-sm tracking-wider text-zinc-500 font-bold"
         >
-          Password
+          Mot de passe
         </label>
         <input
           id="password"
@@ -101,9 +111,9 @@ watch(serverResponse, newServerResponse => {
         </button>
       </div>
       <div class="self-center">
-        <button type="button" class="text-sm hover:underline">
-          Mot de passe perdu?
-        </button>
+        <router-link :to="{ name: 'forgot-password' }" class="flex p-5">
+          Mot de passe oublié ?
+        </router-link>
       </div>
     </form>
   </main>

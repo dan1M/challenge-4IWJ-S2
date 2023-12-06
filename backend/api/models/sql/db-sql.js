@@ -7,12 +7,12 @@ const Sequelize = require('sequelize');
   {
     dialect: 'postgres',
     host: process.env.POSTGRES_HOST,
-    dialectOptions: {
-      ssl: {
-        require: true,
-        rejectUnauthorized: false,
-      },
-    },
+    // dialectOptions: {
+    //   ssl: {
+    //     require: true,
+    //     rejectUnauthorized: false,
+    //   },
+    // },
   },
 );*/
 const sequelize = new Sequelize(
@@ -21,7 +21,7 @@ const sequelize = new Sequelize(
   process.env.POSTGRES_PASSWORD,
   {
     dialect: 'postgres',
-    host: process.env.POSTGRES_HOST
+    host: process.env.POSTGRES_HOST,
   },
 );
 

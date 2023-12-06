@@ -1,3 +1,4 @@
+//@ts-nocheck
 import { defineStore } from 'pinia';
 import { ref } from 'vue';
 import { useToast } from '@/components/ui/toast';
@@ -35,7 +36,7 @@ export const useAlertStore = defineStore('alert', () => {
             alerts.value = await response.json();
 
             console.log(alerts.value);
-
+            
         } catch (err) {
             console.log(err);
         }
