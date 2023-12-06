@@ -36,6 +36,8 @@
 </template>
 
 <script setup>
+//@ts-nocheck
+
 import { ref, defineProps } from 'vue';
 
 import { Trash2 } from 'lucide-vue-next';

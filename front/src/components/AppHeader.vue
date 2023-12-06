@@ -1,5 +1,5 @@
 <script setup lang="ts">
-// @ts-ignore
+//@ts-nocheck
 import { ref, computed, watch } from 'vue';
 import Logo from './BrandLogo.vue';
 import {

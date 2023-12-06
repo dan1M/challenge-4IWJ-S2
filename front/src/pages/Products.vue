@@ -21,13 +21,6 @@ const baseUrl = import.meta.env.VITE_BACKEND_URL || 'http://localhost:3000';
 const endpoint = '/products';
 const method = 'GET';
 
-interface Size {
-  id: string;
-  name: string;
-}
-
-
-
 
 
 const products = ref<any[]>([]);

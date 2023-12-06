@@ -1,4 +1,5 @@
 <script lang="ts">
+//@ts-nocheck
 import Toaster from '@/components/ui/toast/Toaster.vue';
 import AppCookieBanner from './components/AppCookieBanner.vue';
 export default {

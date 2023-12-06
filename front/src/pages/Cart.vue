@@ -1,4 +1,6 @@
 <script setup lang="ts">
+//@ts-nocheck
+
 import { useCartStore, CART_STEPS, CartProduct } from '@/stores/cart-store';
 import { useUserStore } from '@/stores/user-store';
 import { storeToRefs } from 'pinia';

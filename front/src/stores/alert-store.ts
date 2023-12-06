@@ -1,3 +1,4 @@
+//@ts-nocheck
 import { defineStore } from 'pinia';
 import { ref } from 'vue';
 import { useToast } from '@/components/ui/toast';

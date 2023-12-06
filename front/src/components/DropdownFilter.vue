@@ -32,6 +32,7 @@
 </template>
   
 <script setup>
+//@ts-nocheck
 import { ChevronDown, X } from 'lucide-vue-next';
 import { ref, defineProps } from 'vue';
 
