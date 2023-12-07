@@ -10,7 +10,7 @@ module.exports = (req, res, next) => {
     res.clearCookie(process.env.JWT_NAME);
     return res.sendStatus(401);
   }
-  if (!user.roles.includes('ROLE_ADMIN')) {
+  if (!user.canAccessDashboard) {
     return res.sendStatus(401);
   }
 
