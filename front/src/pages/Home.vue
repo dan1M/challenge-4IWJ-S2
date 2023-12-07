@@ -90,12 +90,8 @@ onMounted(() => {
   </div>
   <section class="home-section">
     <h1>Les Nouveautés du mois</h1>
-    <Carousel :items-to-show="2.5" class="mt-8">
-      <Slide
-        v-for="item in newProducts"
-        :key="item.id"
-        class="flex flex-col mx-8"
-      >
+    <Carousel :items-to-show="3" class="mt-8 px-12">
+      <Slide v-for="item in newProducts" :key="item.id" class="flex flex-col">
         <!-- Remplacer par component Card -->
         <router-link :to="{ name: 'detailProduct', params: { id: item.id } }">
           <div
