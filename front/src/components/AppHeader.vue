@@ -48,7 +48,7 @@ const { cart } = storeToRefs(useCartStore());
           <DropdownMenu v-if="isLoggedIn">
             <DropdownMenuTrigger as-child>
               <Avatar class="border mr-4" as="button">
-                <AvatarImage src="/vite.svg" alt="Avatar Utilisateur" />
+                <User />
               </Avatar>
             </DropdownMenuTrigger>
             <DropdownMenuContent>
@@ -104,7 +104,7 @@ const { cart } = storeToRefs(useCartStore());
             :to="{ name: 'cart' }"
             class="relative text-gray-800 flex flex-col justify-center items-center hover:bg-gray-50 focus:ring-4 focus:ring-gray-300 font-medium rounded-lg text-xs px-4 lg:px-5 py-2 lg:py-2.5 focus:outline-none"
           >
-            <ShoppingCart :size="36" />
+            <ShoppingCart :size="32" />
 
             <Badge class="absolute right-0 top-0" v-if="cart.length > 0">
               {{ cart.length }}
