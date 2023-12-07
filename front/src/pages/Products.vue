@@ -157,9 +157,9 @@ const addToCart = (color: any, size: any, productId: any) => {
     return product._id === productId;
   });
 
-  if (selectedProduct ) {
-    
-    const selectedVariant  = (selectedProduct as { variants: any[] }).variants.find((variant: any) => {
+  if (selectedProduct) {
+
+    const selectedVariant = (selectedProduct as { variants: any[] }).variants.find((variant: any) => {
       return variant.color.id === color && variant.size.id === size;
     });
 
@@ -208,7 +208,7 @@ watch(selectedSizes.value, async newSizes => {
   await fetchFilter(newQuery);
 });
 
-watch(selectedTitle, async (newProduct:any) => {
+watch(selectedTitle, async (newProduct: any) => {
   const newQuery = { ...route.query };
 
   if (newProduct !== '' && newProduct !== 'default') {
@@ -280,6 +280,18 @@ watch(maxPrice, async newMaxPrice => {
 const changeStock = () => {
   inStock.value = !inStock.value;
 };
+const clearFilter = () => {
+  selectedCategories.value = [];
+  selectedColors.value = [];
+  selectedSizes.value = [];
+  selectedTitle.value = '';
+  inStock.value = false;
+  minPrice.value = 10;
+  maxPrice.value = 100;
+  searchInput.value = '';
+  router.push({ query: {} });
+  fetchProduct(baseUrl + endpoint);
+};
 
 </script>
 
@@ -287,7 +299,12 @@ const changeStock = () => {
   <div>
     <div class="bg-gray-100 p-4">
       <div class="flex items-center justify-between space-x-2">
-        <div class="flex items-center space-x-2"></div>
+        <div class="flex items-center space-x-2">
+          <button @click="clearFilter"  class="flex h-10 w-full items-center justify-between rounded-md border border-slate-200 bg-white px-3 py-2 text-sm ring-offset-white placeholder:text-slate-500 focus:outline-none focus:ring-2 focus:ring-slate-950 focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 dark:border-slate-800 dark:bg-slate-950 dark:ring-offset-slate-950 dark:placeholder:text-slate-400 dark:focus:ring-slate-300"
+            >
+            Réinitialiser les filtres
+          </button>
+        </div>
 
         <dropdown-filter :items="categories" v-model:selectedItems="selectedCategories" buttonLabel="Catégories" />
         <dropdown-filter :items="colors" v-model:selectedItems="selectedColors" buttonLabel="Couleurs" />
@@ -360,9 +377,8 @@ const changeStock = () => {
             <div :class="{
               'overflow-hidden rounded-md bg-gray-100 transition-all hover:scale-105 dark:bg-gray-800': true,
             }">
-              <img v-if="product.img" :src="product.img" 
-                 :alt="product.title "
-                class="object-cover transition-all" fill sizes="(max-width: 768px) 30vw, 33vw" />
+              <img v-if="product.img" :src="product.img" :alt="product.title" class="object-cover transition-all" fill
+                sizes="(max-width: 768px) 30vw, 33vw" />
               <span v-else class="absolute left-1/2 top-1/2 h-16 w-16 -translate-x-1/2 -translate-y-1/2 text-gray-200">
               </span>
             </div>
