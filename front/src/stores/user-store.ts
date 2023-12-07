@@ -75,6 +75,21 @@ export const useUserStore = defineStore('user', () => {
     }
   };
 
+  const download = async () => {
+    try {
+      const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/users/download`, {
+        credentials: 'include',
+      });
+
+      if (!response.ok) {
+        throw new Error('Something went wrong, request failed!');
+      }
+
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
   const resetPassword = async () => {
     try {
       const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/auth/reset-password`, {
@@ -142,6 +157,7 @@ export const useUserStore = defineStore('user', () => {
     logout,
     deleteAccount,
     resetPassword,
-    checkToken
+    checkToken,
+    download
   };
 });
