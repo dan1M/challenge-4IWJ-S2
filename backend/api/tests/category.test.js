@@ -1,71 +1,82 @@
-// Importez la fonction que vous souhaitez tester
 let { findAll, findOne, update } = require('../controllers/category');
 const categoryController = require('../controllers/category');
 const { validationResult } = require('express-validator/check');
 
-// Importez le modèle que vous utilisez dans la fonction
 const CategoryMongo = require('../models/nosql/category');
 const Category = require('../models/sql/category');
 
-// Utilisez jest.mock pour créer un mock du modèle
 jest.mock('../models/nosql/category');
 jest.mock('../models/sql/category');
 
+describe('Test categorie', () => {
+  it('devrait retourner un tableau de catégories', async () => {
+    CategoryMongo.find.mockResolvedValue(['Catégorie 1', 'Catégorie 2']);
 
+    const req = {};
+    const res = {
+      status: jest.fn().mockReturnThis(),
+      json: jest.fn(),
+    };
+    const next = jest.fn();
 
-describe('Test de la fonction update', () => {
-  it('devrait échouer à mettre à jour une catégorie suite à une validation ratée', async () => {
-    // Appelez la fonction update avec des paramètres fictifs
+    await findAll(req, res, next);
+
+    expect(CategoryMongo.find).toHaveBeenCalledTimes(1);
+
+    expect(res.status).toHaveBeenCalledWith(200);
+    expect(res.json).toHaveBeenCalledWith(['Catégorie 1', 'Catégorie 2']);
+
+    expect(next).not.toHaveBeenCalled();
+  });
+
+  it('devrait retourner une catégorie précise', async () => {
+    CategoryMongo.findById.mockResolvedValue('Catégorie 1');
+
+    const req = {
+      params: jest.fn(),
+    };
+    const res = {
+      status: jest.fn().mockReturnThis(),
+      json: jest.fn(),
+    };
+    const next = jest.fn();
+
+    await findOne(req, res, next);
+
+    expect(CategoryMongo.findById).toHaveBeenCalledTimes(1);
+
+    expect(res.status).toHaveBeenCalledWith(200);
+    expect(res.json).toHaveBeenCalledWith('Catégorie 1');
+
+    expect(next).not.toHaveBeenCalled();
+  });
+
+  it("devrait appeler next en cas d'erreur si il ne trouve pas une catégorie précise", async () => {
+    const errorMessage = 'Could not find category.';
+    CategoryMongo.findById.mockRejectedValue(new Error(errorMessage));
+
     const req = {
       params: {
-        categoryId: 'categoryId',
-      },
-      body: {
-        name: 'U',
+        categoryId: '123456789',
       },
     };
     const res = {
+      status: jest.fn().mockReturnThis(),
       json: jest.fn(),
-      sendStatus: jest.fn(),
     };
     const next = jest.fn();
-  
-  
-    await update(req, res, next);
-  
+
+    await findOne(req, res, next);
+
+    expect(CategoryMongo.findById).toHaveBeenCalledTimes(2);
+
     expect(next).toHaveBeenCalledWith(expect.any(Error));
-  
-    expect(res.sendStatus).not.toHaveBeenCalled();
+
+    expect(res.status).not.toHaveBeenCalled();
     expect(res.json).not.toHaveBeenCalled();
   });
 
-  it('devrait échouer à mettre à jour une catégorie suite à une validation ratée', async () => {
-    // Appelez la fonction update avec des paramètres fictifs
-    const req = {
-      params: {
-        categoryId: '',
-      },
-      body: {
-        name: 'Test',
-      },
-    };
-    const res = {
-      json: jest.fn(),
-      sendStatus: jest.fn(),
-    };
-    const next = jest.fn();
-  
-  
-    await update(req, res, next);
-  
-    expect(next).toHaveBeenCalledWith(expect.any(Error));
-  
-    expect(res.sendStatus).not.toHaveBeenCalled();
-    expect(res.json).not.toHaveBeenCalled();
-  });
-
-  /*it('devrait mettre à jour une catégorie avec refus', async () => {
-    // Mock la fonction validationResult pour simuler une validation réussie
+  it('devrait mettre à jour une catégorie avec succès', async () => {
     const req = {
       params: {
         categoryId: 'categoryId',
@@ -81,29 +92,26 @@ describe('Test de la fonction update', () => {
     };
     const next = jest.fn();
 
-    // Mock la fonction update du modèle Sequelize pour simuler une mise à jour réussie
     Category.update.mockResolvedValue([
       1,
-      [{ id: 'categoryId', name: 'Updated Category gg' }],
+      [{ id: 'categoryId', name: 'Updated Category' }],
     ]);
 
-    // Mock la fonction updateOne du modèle MongoDB pour simuler une mise à jour réussie
     CategoryMongo.updateOne.mockResolvedValue({ nModified: 1 });
 
-    // Appelez la fonction update avec des paramètres fictifs
 
     await update(req, res, next);
 
-    // Assurez-vous que les fonctions update du modèle Sequelize et CategoryMongo ont été appelées une fois
     expect(Category.update).toHaveBeenCalledTimes(1);
     expect(CategoryMongo.updateOne).toHaveBeenCalledTimes(1);
 
-    // Assurez-vous que la réponse de la fonction est correcte
     expect(res.sendStatus).toHaveBeenCalledWith(200);
 
-    // Assurez-vous que la fonction next n'a pas été appelée
     expect(next).not.toHaveBeenCalled();
     expect(res.json).not.toHaveBeenCalled();
-  });*/
+  });
+  
 
 });
+
+
