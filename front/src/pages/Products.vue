@@ -46,6 +46,8 @@ const fetchFilter = async (newQuery: any) => {
       .join('&');
 
     await fetchProduct(baseUrl + endpoint + '?' + queryString);
+    filterProductWithOnlyVariantInStock();
+    
   } catch (error) {
     console.error(error);
   }
@@ -80,6 +82,8 @@ const fetchProduct = async (url: any) => {
     console.error(error);
   }
 };
+
+
 
 const fetchCategories = async () => {
   try {
@@ -142,32 +146,35 @@ onMounted(async () => {
   await fetchColors();
   await fetchSizes();
   fixProducts.value = products.value;
+  filterProductWithOnlyVariantInStock();
+
+  console.log(products.value, 'product with stock');
+
 });
 
-const findFirstInStockVariant = (variants: any) => {
-  return variants.find((variant: any) => variant.quantity > 0);
-};
+
+
+/*const isOutOfStock = (variants: any) => {
+  return variants.every((variant: any) => variant.quantity === 0);
+};*/
 
 const isOutOfStock = (variants: any) => {
-  return variants.every((variant: any) => variant.quantity === 0);
+  return variants.length === 0;
 };
 
-const addToCart = (color: any, size: any, productId: any) => {
-  const selectedProduct = products.value.find((product: any) => {
-    return product._id === productId;
-  });
-
-  if (selectedProduct) {
-
-    const selectedVariant = (selectedProduct as { variants: any[] }).variants.find((variant: any) => {
-      return variant.color.id === color && variant.size.id === size;
-    });
-
-    if (selectedVariant) {
-      const variantId = selectedVariant.id;
-      console.log('Ajouter au panier :', variantId);
+const filterProductWithOnlyVariantInStock = () => {
+  products.value.forEach(product => {
+    if (product.variants) {
+      product.variants = product.variants.filter(variant => variant.quantity > 0);
     }
-  }
+  });
+};
+
+
+
+const addToCart = () => {
+  console.log('add to cart');
+
 };
 
 
@@ -300,8 +307,8 @@ const clearFilter = () => {
     <div class="bg-gray-100 p-4">
       <div class="flex items-center justify-between space-x-2">
         <div class="flex items-center space-x-2">
-          <button @click="clearFilter"  class="flex h-10 w-full items-center justify-between rounded-md border border-slate-200 bg-white px-3 py-2 text-sm ring-offset-white placeholder:text-slate-500 focus:outline-none focus:ring-2 focus:ring-slate-950 focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 dark:border-slate-800 dark:bg-slate-950 dark:ring-offset-slate-950 dark:placeholder:text-slate-400 dark:focus:ring-slate-300"
-            >
+          <button @click="clearFilter"
+            class="flex h-10 w-full items-center justify-between rounded-md border border-slate-200 bg-white px-3 py-2 text-sm ring-offset-white placeholder:text-slate-500 focus:outline-none focus:ring-2 focus:ring-slate-950 focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 dark:border-slate-800 dark:bg-slate-950 dark:ring-offset-slate-950 dark:placeholder:text-slate-400 dark:focus:ring-slate-300">
             Réinitialiser les filtres
           </button>
         </div>
@@ -396,17 +403,13 @@ const clearFilter = () => {
                       <span className="text-xs text-gray-300 dark:text-gray-600">
                         &bull;
                       </span>
-                      <span className="text-xl text-pink-500 ">{{
-                        findFirstInStockVariant(product.variants)
-                        ? findFirstInStockVariant(product.variants).price
-                        : product.variants[0].price
-                      }}€</span>
+                      <span className="text-xl text-pink-500 ">{{ !isOutOfStock(product.variants)? `${product.variants[0].price}€` : ''}}</span>
                     </div>
                     <h2 :class="[
-                          'text-lg',
-                          'font-semibold leading-snug tracking-tight',
-                          'mt-2 dark:text-white',
-                        ]">
+                        'text-lg',
+                        'font-semibold leading-snug tracking-tight',
+                        'mt-2 dark:text-white',
+                      ]">
                       <span
                         class="bg-gradient-to-r from-pink-200 to-pink-100 bg-[length:0px_10px] bg-left-bottom bg-no-repeat transition-[background-size] duration-500 hover:bg-[length:100%_3px] group-hover:bg-[length:100%_10px] dark:from-purple-800 dark:to-purple-900">
                         {{ product.title }}
@@ -419,12 +422,7 @@ const clearFilter = () => {
 
             <div>
               <Button @click="
-                addToCart(
-                  findFirstInStockVariant(product.variants).color.id,
-                  findFirstInStockVariant(product.variants).size.id,
-                  product._id,
-                )
-                " :disabled="isOutOfStock(product.variants)">
+                addToCart()" :disabled="isOutOfStock(product.variants)">
                 {{
                   isOutOfStock(product.variants)
                   ? 'Rupture de stock'

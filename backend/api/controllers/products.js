@@ -61,7 +61,7 @@ exports.findAll = async (req, res, next) => {
       }
     });
 
-    const products = await ProductMongo.find(filter);
+    const products = await ProductMongo.find(filter).sort({ createdAt: -1 });
     res.status(200).json(products);
   } catch (err) {
     if (!err.statusCode) {
