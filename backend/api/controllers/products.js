@@ -61,7 +61,9 @@ exports.findAll = async (req, res, next) => {
       }
     });
 
-    const products = await ProductMongo.find(filter).sort({ createdAt: -1 });
+    const products = await ProductMongo.find(filter)
+      .limit(req.query._limit)
+      .sort({ createdAt: -1 });
     res.status(200).json(products);
   } catch (err) {
     if (!err.statusCode) {
@@ -122,7 +124,6 @@ exports.create = async (req, res, next) => {
         color_id: variant.color,
         price: variant.price,
       });
-
     }
 
     // insert product and variants in mongo
