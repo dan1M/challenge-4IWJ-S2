@@ -53,6 +53,9 @@ import {
   AlertDialogTrigger,
 } from '@/components/ui/alert-dialog';
 
+const baseUrl = import.meta.env.VITE_BACKEND_URL || 'http://localhost:3000';
+
+
 const { tableDelete, idToDelete } = defineProps(['tableDelete', 'idToDelete']);
 
 const loading = ref(false);
@@ -70,7 +73,7 @@ async function deleteConfirmed() {
   displayError.value = '';
   try {
     const response = await fetch(
-      `http://localhost:3000/${tableDelete}/${idToDelete}`,
+      `${baseUrl}/${tableDelete}/${idToDelete}`,
       {
         method: 'DELETE',
         headers: {
