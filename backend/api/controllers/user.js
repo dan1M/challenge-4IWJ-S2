@@ -1,10 +1,42 @@
 const User = require('../models/sql/user');
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs');
+const { downloadResource } = require('../util/downloadResource');
 
 exports.getUserInfo = async (req, res, next) => {
   try {
     res.status(200).json(req.user);
+  } catch (err) {
+    if (!err.statusCode) {
+      err.statusCode = 500;
+    }
+    next(err);
+  }
+};
+
+exports.download = async (req, res, next) => {
+  try {
+    const fields = [
+      {
+        label: 'First Name',
+        value: 'first_name',
+      },
+      {
+        label: 'Last Name',
+        value: 'last_name',
+      },
+      {
+        label: 'Email Address',
+        value: 'email_address',
+      },
+    ];
+    const user = await User.findByPk(req.user.id);
+    if (!user) {
+      const error = new Error('Could not find user.');
+      error.statusCode = 404;
+      throw error;
+    }
+    return downloadResource(res, 'users.csv', fields, data);
   } catch (err) {
     if (!err.statusCode) {
       err.statusCode = 500;
@@ -135,6 +167,7 @@ exports.delete = async (req, res, next) => {
     user.firstname = 'Compte';
     user.lastname = 'Supprimé';
     user.save();
+    res.clearCookie(process.env.JWT_NAME);
     res.sendStatus(204);
   } catch (err) {
     if (!err.statusCode) {

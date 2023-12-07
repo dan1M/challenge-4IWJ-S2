@@ -5,8 +5,11 @@ import { Button } from '@/components/ui/button';
 import { useProductStore } from '../stores/product-store';
 import { RadioGroup, RadioGroupLabel, RadioGroupOption } from '@headlessui/vue';
 import { watch } from 'vue';
+import { useCartStore } from '@/stores/cart-store';
 
 const { product } = useProductStore();
+
+const { addProductToCart } = useCartStore();
 
 const selectedColor = ref('');
 const selectedSize = ref('');
@@ -24,7 +27,7 @@ const selectSize = (size: string) => {
 };
 
 const updateSizeAvailability = () => {
-  product.variants.forEach((variant:any) => {
+  product.variants.forEach((variant: any) => {
     variant.disabled =
       variant.color.id !== selectedColor.value || variant.quantity === 0;
   });
@@ -35,7 +38,7 @@ function isOutOfStock(variants: any[]) {
 }
 
 watch(selectedSize, newSize => {
-  const selectedVariant = product.variants.find((variant:any) => {
+  const selectedVariant = product.variants.find((variant: any) => {
     return (
       variant.color.id === selectedColor.value && variant.size.id === newSize
     );
@@ -51,14 +54,7 @@ const buttonAddToCart = isOutOfStock(product.variants)
   : 'Ajouter au panier';
 
 const addToCart = () => {
-  console.log(
-    'add to cart color: ',
-    selectedColor.value,
-    ' Size: ',
-    selectedSize.value,
-  );
-
-  const selectedVariant = product.variants.find((variant:any) => {
+  const selectedVariant = product.variants.find(variant => {
     return (
       variant.color.id === selectedColor.value &&
       variant.size.id === selectedSize.value
@@ -66,9 +62,7 @@ const addToCart = () => {
   });
 
   if (selectedVariant) {
-    const variantId = selectedVariant.id;
-
-    console.log('Ajouter au panier :', variantId);
+    addProductToCart(selectedVariant.id);
   }
 };
 </script>
@@ -181,11 +175,9 @@ const addToCart = () => {
                   </RadioGroup>
                 </div>
                 <div class="mb-4">
-                  <span className="text-xl text-pink-500 "
-                    >
-                    {{ selectedPrice? `${selectedPrice} €` : ''}}
-                    </span
-                  >
+                  <span className="text-xl text-pink-500 ">
+                    {{ selectedPrice ? `${selectedPrice} €` : '' }}
+                  </span>
                 </div>
               </div>
               <div class="mb-6 mt-6">

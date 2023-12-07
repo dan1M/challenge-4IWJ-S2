@@ -43,7 +43,8 @@ const forgotPassword = ref(false);
 
 const { canAccessDashboard, isLoggedIn } = storeToRefs(useUserStore());
 
-watch(serverResponse, newServerResponse => {
+watch(serverResponse, () => {
+  canAccessDashboard.value = serverResponse.canAccessDashboard;
   isLoggedIn.value = true;
   router.push({ name: 'home' });
   router.go();
