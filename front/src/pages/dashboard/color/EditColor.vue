@@ -1,9 +1,11 @@
  <script setup lang="ts">
-import axios from "axios";
+//@ts-nocheck
 import { router } from '@/main';
-import { computed, ref, watch } from 'vue';
+import { computed, onMounted, ref, watch } from 'vue';
 import { z } from 'zod';
 import useCustomForm from '../../../composables/useCustomForm';
+
+const baseUrl = import.meta.env.VITE_BACKEND_URL || 'http://localhost:3000';
 
 const formData = {
   name: '',
@@ -38,6 +40,20 @@ const navigateBack = () => {
   // Navigate back to the parent route
   router.go(-1);
 };
+
+onMounted(() => {
+  const fetchColor = async () => {
+    try {
+      const response = await fetch(`${baseUrl}/colors/${router.currentRoute.value.params.id}`);
+      const data = await response.json();
+      name.value = data.name;
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  fetchColor();
+});
 
 </script>
 

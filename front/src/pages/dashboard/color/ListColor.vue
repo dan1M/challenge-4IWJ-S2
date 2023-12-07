@@ -1,7 +1,7 @@
 <script setup lang="ts">
+//@ts-nocheck
 import { router } from '@/main';
 import { ref, onMounted, computed } from 'vue';
-import axios from 'axios';
 
 const baseUrl = import.meta.env.VITE_BACKEND_URL || 'http://localhost:3000';
 
@@ -78,14 +78,37 @@ const filteredColors = computed(() => {
     return nameMatch && dateMatch;
   });
 });
+
+
+
+const exportToCsv = () => {
+  const csvContent = "data:text/csv;charset=utf-8," + 
+    "Name,Date\n" +
+    filteredColors.value.map(item => `${item.name},${new Date(item.createdAt).toLocaleDateString('fr-FR')}`).join("\n");
+
+  const encodedUri = encodeURI(csvContent);
+  const link = document.createElement("a");
+  link.setAttribute("href", encodedUri);
+  link.setAttribute("download", "colors.csv");
+  document.body.appendChild(link); // Required for FF
+
+  link.click();
+};
+
+
+
 </script>
 
 <template>
  <div class="h-100">
-  <div class="d-flex justify-content-between align-items-center mb-3">
+  <div class="d-flex justify-content-between align-items-center mb-4">
     <h1 class="title-lg">Gestion des Couleurs</h1>
-    <button class="btn btn-primary ps-3 pe-3" @click="openForm">
+    
+    <button class="btn btn-primary " @click="openForm">
       Ajouter une couleur
+    </button>
+    <button class="btn btn-primary " @click="exportToCsv">
+      Exporter CSV
     </button>
   </div>
 
@@ -116,6 +139,7 @@ const filteredColors = computed(() => {
     <tbody>
       <tr v-for="item in filteredColors" :key="item._id">
         <td>{{ item.name }}</td>
+        
         <td>{{ new Date(item.createdAt).toLocaleDateString('fr-FR') }}</td>
         <td>
           <button

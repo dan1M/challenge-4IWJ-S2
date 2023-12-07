@@ -1,4 +1,5 @@
 <script setup lang="ts">
+//@ts-nocheck
 import { router } from '@/main';
 import { ref, onMounted, computed } from 'vue';
 
@@ -148,6 +149,49 @@ const filteredProduct = computed(() => {
     );
   });
 });
+
+
+
+const exportToCsv = () => {
+  const csv = [
+    [
+      'Nom',
+      'Description',
+      'Categorie',
+      'Quantité',
+      'Prix',
+      'Taille',
+      'Couleur',
+      'Image',
+    ],
+  ];
+
+  products.value.forEach(product => {
+    product.variants.forEach(variant => {
+      csv.push([
+        product.title,
+        product.description,
+        product.category.map(cat => cat.name).join(', '),
+        variant.quantity,
+        variant.price,
+        variant.size.name,
+        variant.color.name,
+        product.img,
+      ]);
+    });
+  });
+
+  const csvContent = 'data:text/csv;charset=utf-8,' + csv.map(e => e.join(',')).join('\n');
+
+  const encodedUri = encodeURI(csvContent);
+  const link = document.createElement('a');
+  link.setAttribute('href', encodedUri);
+  link.setAttribute('download', 'products.csv');
+  document.body.appendChild(link); // Required for FF
+
+  link.click();
+};
+
 </script>
 
 <template>
@@ -157,6 +201,9 @@ const filteredProduct = computed(() => {
       <button class="btn btn-primary ps-3 pe-3" @click="openForm">
         Ajouter une chaussure
       </button>
+      <button class="btn btn-primary " @click="exportToCsv">
+      Exporter CSV
+    </button>
     </div>
     <table class="table product-table">
       <thead>
@@ -191,18 +238,7 @@ const filteredProduct = computed(() => {
           <th>
             <div>
               <label>Variantes:</label>
-              <input
-                v-model="searchData.quantity"
-                placeholder="Rechercher par quantité..."
-              />
-              <input
-                v-model="searchData.price"
-                placeholder="Rechercher par prix..."
-              />
-              <input
-                v-model="searchData.size"
-                placeholder="Rechercher par taille..."
-              />
+             
               <input
                 v-model="searchData.color"
                 placeholder="Rechercher par couleur..."

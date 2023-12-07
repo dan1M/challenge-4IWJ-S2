@@ -17,7 +17,6 @@ const formData = {
   category: {
     name: '',
   },
-  img: '',
   variants: [
     {
       size: {
@@ -139,7 +138,7 @@ const handleImageUpload = (event: any) => {
     formData.img = reader.result as string;
   };
 
-  reader.onerror = (error) => {
+  reader.onerror = error => {
     console.error('Erreur lors de la lecture du fichier :', error);
   };
 
@@ -163,23 +162,14 @@ const removeVariant = (index: number) => {
   formData.variants.splice(index, 1);
 };
 
-const submitForm = async () => {
-console.log(formData);
-  if (!isFormValid.value) 
-  {
+const submitForm = async e => {
+  const formData = new FormData(e.target);
+  formData.set('quantity', parseInt(formData.get('quantity')));
+  if (!isFormValid.value) {
     try {
       const response = await fetch(baseUrl + endpoint, {
-        method ,
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          title: title.value,
-          description: description.value,
-          category: category.value,
-          img: formData.img,
-          variants: formData.variants ,
-        }),
+        method,
+        body: formData,
       });
 
       const jsonData = await response.json();
@@ -192,7 +182,6 @@ console.log(formData);
     }
   }
 };
-
 </script>
 
 <template>
@@ -208,9 +197,9 @@ console.log(formData);
       Ajouter une chaussure
     </h1>
     <form
-      class="flex flex-col pt-8 space-y-6 "
+      class="flex flex-col pt-8 space-y-6"
       @submit.prevent="submitForm"
-      
+      enctype="multipart/form-data"
     >
       <div class="flex flex-col">
         <label
@@ -220,7 +209,7 @@ console.log(formData);
           Nom
         </label>
         <input
-          id="title"
+          id="title" name="title"
           type="text"
           v-model="title"
           required
@@ -236,14 +225,14 @@ console.log(formData);
         >
           Description
         </label>
-        <input
-          id="description"
+        <textarea
+          id="description" name="description"
           type="text"
           v-model="description"
           required
           autofocus
           class="border p-2"
-        />
+        ></textarea>
       </div>
       <!-- Category select -->
       <label
@@ -252,12 +241,11 @@ console.log(formData);
       >
         Catégorie
       </label>
-      <select id="category" v-model="category" required class="border p-2">
+      <select id="category" name="category" v-model="category" required class="border p-2">
         <option v-for="cat in categories" :key="cat._id" :value="cat._id">
           {{ cat.name }}
         </option>
       </select>
-
 
       <div class="flex flex-col">
         <label
@@ -266,13 +254,7 @@ console.log(formData);
         >
           Image
         </label>
-        <input
-          id="img"
-          type="file"
-          accept="image/*"
-          @change="handleImageUpload"
-          class="border p-2"
-        />
+        <input id="img" name="image" type="file" accept="image/*" class="border p-2" />
         <img
           v-if="formData.img"
           :src="formData.img"
@@ -281,104 +263,98 @@ console.log(formData);
         />
       </div>
 
-
-      <form
-      class="flex flex-col pt-8 space-y-6  w-2/3 self-center  variant-form"
-    @submit.prevent="submitForm"
-  >
-  
-    <!-- Variants section -->
-    <div v-for="(variant, index) in variants" :key="index">
-      <h2 class="uppercase font-bold text-lg tracking-wider text-center">
-        Variant {{ index + 1 }}
-      </h2>
-
-      <!-- Size select -->
-      <div class="flex flex-col">
-      <label
-        for="size"
-        class="uppercase text-sm tracking-wider text-zinc-500 font-bold"
+      <div
+        class="flex flex-col pt-8 space-y-6 w-2/3 self-center variant-form"
       >
-        Taille
-      </label>
-      <select v-model="variant.size" required class="border p-2">
-        <option v-for="item in sizes" :key="item._id" :value="item._id">
-          {{ item.name }}
-        </option>
-      </select>
+        <!-- Variants section -->
+        <div v-for="(variant, index) in variants" :key="index">
+          <h2 class="uppercase font-bold text-lg tracking-wider text-center">
+            Variant {{ index + 1 }}
+          </h2>
+
+          <!-- Size select -->
+          <div class="flex flex-col">
+            <label
+              for="size"
+              class="uppercase text-sm tracking-wider text-zinc-500 font-bold"
+            >
+              Taille
+            </label>
+            <select v-model="variant.size" required class="border p-2" :name="'variants[' + index + '][size]'">
+              <option v-for="item in sizes" :key="item._id" :value="item._id">
+                {{ item.name }}
+              </option>
+            </select>
+          </div>
+
+          <!-- Color select -->
+          <div class="flex flex-col">
+            <label
+              for="color"
+              class="uppercase text-sm tracking-wider text-zinc-500 font-bold"
+            >
+              Couleur
+            </label>
+            <select v-model="variant.color" required class="border p-2" :name="'variants[' + index + '][color]'">
+              <option v-for="item in colors" :key="item._id" :value="item._id">
+                {{ item.name }}
+              </option>
+            </select>
+          </div>
+
+          <!-- Price input -->
+          <div class="flex flex-col">
+            <label
+              for="price"
+              class="uppercase text-sm tracking-wider text-zinc-500 font-bold"
+            >
+              Prix
+            </label>
+            <input
+              id="price" name="price"
+              type="text"
+              v-model="variant.price"
+              required
+              class="border p-2"
+              :name="'variants[' + index + '][price]'"
+            />
+          </div>
+
+          <!-- Quantity input -->
+          <div class="flex flex-col">
+            <label
+              for="quantity"
+              class="uppercase text-sm tracking-wider text-zinc-500 font-bold"
+            >
+              Quantité
+            </label>
+            <input
+              id="quantity" name="quantity"
+              type="number"
+              v-model="variant.quantity"
+              required
+              class="border p-2"
+              :name="'variants[' + index + '][quantity]'"
+            />
+          </div>
+
+          <button type="button" @click="removeVariant(index)">
+            Supprimer cette variante
+          </button>
+        </div>
+
+        <!-- Bouton pour ajouter une nouvelle variante -->
+        <button
+          type="button"
+          class="btn btn-light w-2/3 self-center"
+          @click="addVariantForm"
+        >
+          <i class="fas fa-plus"></i> Ajouter une variante
+        </button>
       </div>
-
-      <!-- Color select -->
-      <div class="flex flex-col">
-      <label
-        for="color"
-        class="uppercase text-sm tracking-wider text-zinc-500 font-bold"
-      >
-        Couleur
-      </label>
-      <select v-model="variant.color" required class="border p-2">
-        <option v-for="item in colors" :key="item._id" :value="item._id">
-          {{ item.name }}
-        </option>
-      </select>
-      </div>
-
-      <!-- Price input -->
-      <div class="flex flex-col">
-      <label
-        for="price"
-        class="uppercase text-sm tracking-wider text-zinc-500 font-bold"
-      >
-        Prix
-      </label>
-      <input
-        id="price"
-        type="text"
-        v-model="variant.price"
-        required
-        class="border p-2"
-      />
-      </div>
-
-      <!-- Quantity input -->
-      <div class="flex flex-col">
-      <label
-        for="quantity"
-        class="uppercase text-sm tracking-wider text-zinc-500 font-bold"
-      >
-        Quantité
-      </label>
-      <input
-        id="quantity"
-        type="number"
-        v-model="variant.quantity"
-        required
-        class="border p-2"
-      />
-      </div>
-
-      <button type="button"  @click="removeVariant(index)">
-        Supprimer cette variante
-      </button>
-    </div>
-
-    <!-- Bouton pour ajouter une nouvelle variante -->
-    <button type="button" class="btn btn-light w-2/3 self-center" @click="addVariantForm">
-  <i class="fas fa-plus"></i> Ajouter une variante
-</button>
-
-
-  </form>
-
 
       <div class="self-center">
-        <button
-          type="submit"
-         
-          class="btn btn-primary ps-3 pe-3"
-        >
-          Ajouter
-        </button>
+        <button type="submit" class="btn btn-primary ps-3 pe-3">Ajouter</button>
       </div>
     </form>
   </main>

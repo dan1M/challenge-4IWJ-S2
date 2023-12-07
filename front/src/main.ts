@@ -224,12 +224,12 @@ const routes: RouteRecordRaw[] = [
     children: [
       {
         path: '/dashboard-content',
-        name: 'home',
+        name: 'homedashboard',
         component: DashboardContent,
       },
       {
         path: '/products',
-        name: 'products',
+        name: 'productsdashboard',
         component: ProductsPage,
       },
       {

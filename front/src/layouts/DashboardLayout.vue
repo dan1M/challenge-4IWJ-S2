@@ -1,14 +1,14 @@
 <template>
  <div class="w-screen h-screen flex">
     <!-- Side bar -->
-    <div class="w-[400px] h-full bg-gray-200 text-white" v-show="showSide">
+    <div class="sidebar h-full bg-gray-200 text-white  " v-show="showSide">
       <div class="h-[90px] bg-gray-900 flex items-center justify-between">
         <div class="px-90px] flex items-center">
           <img src="/public/2.svg" class="w-[100px]" alt="">
           <h3 class="font-bold text-xl text-white">WOMENY</h3>
         </div>
       </div>
-      <div class="h-[calc(100vh-50px)] bg-gray-800 py-[20px] ">
+      <div class="h-[calc(100vh-50px)] w-500px bg-gray-800 py-[20px] ">
         <div class="flex flex-col justify-between h-full px-[20px] space-y-[10px] ">
           <div class=" flex flex-col justify-between space-y-[10px]">
 
@@ -63,7 +63,7 @@
         </div>
       </div>
     </div>
-    <div class="w-full h-full bg-gray-400">
+    <div class=" bg-white flex-1 overflow-y-auto">
       <div class="h-[90px] bg-gray-100 flex items-center shadow-sm px-[20px] w-full py-[10px] z-10 border-b ">
         <!-- Hambuger menu -->
         <div class="cursor-pointer w-[30px]" @click="toggleSideBar">
@@ -116,8 +116,8 @@
           </div>
         </div>
       </div>
-      <div class="h-[calc(100vh-50px)] bg-gray-50 p-[20px]">
-        <div class="border border-gray-300 rounded-md p-[20px] h-auto">
+      <div class="h-[calc(100vh-50px)] bg-white p-[20px]">
+        <div class="border border-white rounded-md p-[20px] h-auto">
           <router-view></router-view>
         </div>
       </div>
@@ -155,5 +155,13 @@ export default {
 </script>
 
 <style>
+
+.sidebar {
+  width: 300px;
+    transition: all 0.5s ease-in-out;
+}
+
+ 
+
 
 </style>

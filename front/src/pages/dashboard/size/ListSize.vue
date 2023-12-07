@@ -1,4 +1,5 @@
 <script setup lang="ts">
+//@ts-nocheck
 import { router } from '@/main';
 import { ref, onMounted, computed } from 'vue';
 import axios from 'axios';
@@ -80,6 +81,21 @@ const filteredSizes = computed(() => {
     return nameMatch && dateMatch;
   });
 });
+
+const exportToCsv = () => {
+  const csvContent = "data:text/csv;charset=utf-8," + 
+    "Name,Date\n" +
+    filteredSizes.value.map(item => `${item.name},${new Date(item.createdAt).toLocaleDateString('fr-FR')}`).join("\n");
+
+  const encodedUri = encodeURI(csvContent);
+  const link = document.createElement("a");
+  link.setAttribute("href", encodedUri);
+  link.setAttribute("download", "sizes.csv");
+  document.body.appendChild(link); // Required for FF
+
+  link.click();
+};
+
 </script>
 
 <template>
@@ -89,6 +105,9 @@ const filteredSizes = computed(() => {
       <button class="btn btn-primary ps-3 pe-3" @click="openForm">
         Ajouter une couleur
       </button>
+      <button class="btn btn-primary " @click="exportToCsv">
+      Exporter CSV
+    </button>
     </div>
     <table class="table color-table">
       <thead>

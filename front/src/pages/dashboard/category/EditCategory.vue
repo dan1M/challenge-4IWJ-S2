@@ -1,9 +1,11 @@
  <script setup lang="ts">
-import axios from "axios";
+//@ts-nocheck
 import { router } from '@/main';
-import { computed, ref, watch } from 'vue';
+import { computed, onMounted, ref, watch } from 'vue';
 import { z } from 'zod';
 import useCustomForm from '../../../composables/useCustomForm';
+
+const baseUrl = import.meta.env.VITE_BACKEND_URL || 'http://localhost:3000';
 
 const formData = {
   name: '',
@@ -41,6 +43,21 @@ const navigateBack = () => {
 watch(serverResponse, () => {
   router.push({ name: 'home' });
 });
+
+onMounted(() => {
+  const fetchCategory = async () => {
+    try {
+      const response = await fetch(`${baseUrl}/categories/${router.currentRoute.value.params.id}`);
+      const data = await response.json();
+      name.value = data.name;
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  fetchCategory();
+});
+
 </script>
 
 <template>

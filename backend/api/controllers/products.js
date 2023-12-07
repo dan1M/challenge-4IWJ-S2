@@ -92,6 +92,8 @@ exports.findOne = async (req, res, next) => {
 
 exports.create = async (req, res, next) => {
   const errors = validationResult(req);
+console.log(req.body, req.file, "req file");
+
   try {
     if (!errors.isEmpty()) {
       const error = new Error('Validation failed.');
@@ -99,17 +101,16 @@ exports.create = async (req, res, next) => {
       error.data = errors.array();
       throw error;
     }
-
     const title = req.body.title;
     const description = req.body.description;
     const category = req.body.category;
+    const imageUrl = req.file.path;
 
-    // const imageUrl = req.file.path;
     const variantsBody = req.body.variants;
 
     const product = await Product.create({
       title: title,
-      // imageUrl: imageUrl,
+      imageUrl: imageUrl,
       description: description,
       category_id: category,
     });

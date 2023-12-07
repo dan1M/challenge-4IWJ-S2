@@ -55,22 +55,4 @@ Stock.belongsTo(Color, {
   onDelete: 'CASCADE',
 });
 
-// Order relation
-Order.belongsTo(User, {
-  foreignKey: 'user_id',
-  onDelete: 'CASCADE',
-});
-
-Order.hasMany(DetailsOrder, { foreignKey: 'order_id' });
-
-// detailsOrder relations
-DetailsOrder.belongsTo(Product, {
-  foreignKey: 'product_id',
-  onDelete: 'CASCADE',
-});
-DetailsOrder.belongsTo(Order, {
-  foreignKey: 'order_id',
-  onDelete: 'CASCADE',
-});
-
 sequelize.sync({ alter: true });

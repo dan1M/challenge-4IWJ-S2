@@ -23,9 +23,9 @@ const Product = sequelize.define(
       type: DataTypes.UUID,
       allowNull: false,
     },
-    // imageUrl: {
-    //   type: DataTypes.TEXT,
-    // },
+    imageUrl: {
+      type: DataTypes.TEXT,
+    },
     stock: {
       type: DataTypes.INTEGER,
       allowNull: true,

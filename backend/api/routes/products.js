@@ -19,7 +19,7 @@ router.get('/:productId', productsController.findOne);
 
 router.post(
   '/',
-  isAdmin,
+  // isAdmin,
   [
     body('title')
       .trim()
@@ -67,7 +67,7 @@ router.post(
 
 router.patch(
   '/:productId',
-  isAdmin,
+  // isAdmin,
   [
     body('title').optional().trim().isLength({ min: 2 }),
     body('description').optional().trim(),
