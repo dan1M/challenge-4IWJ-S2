@@ -22,7 +22,7 @@ const router = useRouter();
 const newProducts = ref([
   {
     id: 0,
-    src: '/vite.svg',
+    src: '',
     title: 'Ch1',
     stock_id: '',
     price: '',
@@ -95,15 +95,13 @@ onMounted(() => {
         <!-- Remplacer par component Card -->
         <router-link :to="{ name: 'detailProduct', params: { id: item.id } }">
           <div
-            :class="{
-              'overflow-hidden rounded-md bg-gray-100 transition-all hover:scale-105 dark:bg-gray-800': true,
-            }"
+            class="overflow-hidden rounded-md transition-all hover:scale-105"
           >
             <img
               v-if="item.src"
               :src="item.src"
               :alt="item.title"
-              class="object-cover transition-all h-64"
+              class="object-cover transition-all h-64 w-80"
               fill
             />
             <span
