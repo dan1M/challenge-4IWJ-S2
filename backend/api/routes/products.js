@@ -6,6 +6,7 @@ const productsController = require('../controllers/products');
 const Product = require('../models/sql/product');
 
 const isAdmin = require('../middleware/is-admin');
+const useMulter = require('../middleware/use-multer');
 
 const Category = require('../models/sql/category');
 const Color = require('../models/sql/color');
@@ -19,7 +20,7 @@ router.get('/:productId', productsController.findOne);
 
 router.post(
   '/',
-  multer({ storage: fileStorage, fileFilter: fileFilter }).single('image'),
+  useMulter,
   isAdmin,
   [
     body('title')

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-//@ts-nocheck
+// @ts-nocheck
 import { ref, onMounted, Ref } from 'vue';
 import { Button } from '@/components/ui/button';
 import { router } from '@/main';
@@ -16,6 +16,8 @@ import {
 } from '@/components/ui/select';
 import DropdownFilter from '../components/DropdownFilter.vue';
 import { Checkbox } from '@/components/ui/checkbox';
+import { useCartStore } from '@/stores/cart-store';
+
 const currentPage = ref(1);
 const baseUrl = import.meta.env.VITE_BACKEND_URL || 'http://localhost:3000';
 const endpoint = '/products';
@@ -37,7 +39,9 @@ const maxPrice = ref<any>(100);
 
 const route = useRoute();
 
-const fetchFilter = async (newQuery: any) => {
+const { addProductToCart } = useCartStore();
+
+const fetchFilter = async newQuery => {
   try {
     const queryString = Object.entries(newQuery)
       .map(([key, value]) => `${key}=${value}`)
@@ -129,6 +133,7 @@ const fetchSizes = async () => {
     });
 
     const json = await response.json();
+
     sizes.value = json;
   } catch (error) {
     console.error(error);
@@ -166,8 +171,6 @@ const filterProductWithOnlyVariantInStock = () => {
     }
   });
 };
-
-const addToCart = () => {};
 
 watch(selectedCategories.value, async newCategories => {
   const newQuery = { ...route.query };
@@ -424,7 +427,7 @@ const clearFilter = () => {
 
       <div class="mt-10 grid gap-10 md:grid-cols-2 lg:gap-10 xl:grid-cols-3">
         <div
-          :class="{ 'group cursor-pointer': true }"
+          class="group cursor-pointer"
           v-for="product in products"
           :key="product._id"
         >
@@ -498,7 +501,7 @@ const clearFilter = () => {
 
             <div>
               <Button
-                @click="addToCart()"
+                @click="addProductToCart(product.variants[0].id)"
                 :disabled="isOutOfStock(product.variants)"
               >
                 {{
