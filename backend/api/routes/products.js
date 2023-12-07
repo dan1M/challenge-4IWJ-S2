@@ -19,6 +19,7 @@ router.get('/:productId', productsController.findOne);
 
 router.post(
   '/',
+  multer({ storage: fileStorage, fileFilter: fileFilter }).single('image'),
   isAdmin,
   [
     body('title')

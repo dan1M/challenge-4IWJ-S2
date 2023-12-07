@@ -18,6 +18,7 @@ import DropdownFilter from '../components/DropdownFilter.vue';
 import { Checkbox } from '@/components/ui/checkbox';
 import { useCartStore } from '@/stores/cart-store';
 
+const currentPage = ref(1);
 const baseUrl = import.meta.env.VITE_BACKEND_URL || 'http://localhost:3000';
 const endpoint = '/products';
 const method = 'GET';
@@ -65,8 +66,17 @@ const performSearch = async () => {
 };
 
 const fetchProduct = async (url: any) => {
+  const filterExist = route.query;
+  let filterPage = '';
+  let pageQuery = '?';
+  if (Object.keys(filterExist).length !== 0) {
+    pageQuery = '&';
+  }
+  if (!route.query.page) {
+    filterPage = pageQuery + 'page=' + currentPage.value;
+  }
   try {
-    const response = await fetch(url, {
+    const response = await fetch(url + filterPage, {
       method: method,
       headers: {
         'Content-Type': 'application/json',
@@ -137,6 +147,8 @@ onMounted(async () => {
       queryString += `${key}=${route.query[key]}&`;
     }
   }
+  console.log(endpoint);
+
   const generalUrl = `${baseUrl + endpoint}?${queryString}`;
   await fetchProduct(generalUrl);
   await fetchCategories();
@@ -263,6 +275,10 @@ watch(maxPrice, async newMaxPrice => {
 
   router.push({ query: newQuery });
   await fetchFilter(newQuery);
+});
+
+watch(currentPage, () => {
+  fetchProduct(baseUrl + endpoint);
 });
 
 const changeStock = () => {
@@ -498,13 +514,10 @@ const clearFilter = () => {
           </div>
         </div>
       </div>
-      <div class="mt-10 flex justify-center">
-        <router-link
-          to="/products"
-          class="relative inline-flex items-center gap-1 rounded-md border border-gray-300 bg-white px-3 py-2 pl-4 text-sm font-medium text-gray-500 hover:bg-gray-50 focus:z-20 disabled:pointer-events-none disabled:opacity-40 dark:border-gray-500 dark:bg-gray-800 dark:text-gray-300"
-        >
+      <div class="my-10 flex justify-center">
+        <Button @click="currentPage++" variant="outline">
           <span>Voir plus</span>
-        </router-link>
+        </Button>
       </div>
     </div>
   </div>
