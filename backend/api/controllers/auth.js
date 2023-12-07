@@ -116,15 +116,15 @@ exports.login = async (req, res, next) => {
       where: { email: email },
     });
     if (!user) {
-      const error = new Error('A user with this email could not be found.');
+      const error = new Error(
+        "Un utilisateur avec ce mail n'a pas pu être trouvé.",
+      );
       error.statusCode = 404;
       throw error;
     }
     loadedUser = user;
     if (loadedUser.active === false) {
-      const error = new Error(
-        'You must verify your account. Check your email.',
-      );
+      const error = new Error('Vous devez confirmer votre compte.');
       error.statusCode = 401;
       throw error;
     }
@@ -146,7 +146,7 @@ exports.login = async (req, res, next) => {
           lastAttempt: new Date(),
         });
       }
-      const error = new Error('Wrong password!');
+      const error = new Error('Mauvais mot de passe !');
       error.statusCode = 422;
       throw error;
     }
@@ -214,8 +214,8 @@ exports.verify = async (req, res, next) => {
         },
       },
     );
-    // await token.destroy();
-    res.status(200).send('Email verified sucessfully!');
+    await token.destroy();
+    res.sendStatus(200);
   } catch (err) {
     if (!err.statusCode) {
       err.statusCode = 500;
