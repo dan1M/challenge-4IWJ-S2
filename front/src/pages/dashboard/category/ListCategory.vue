@@ -2,6 +2,7 @@
 //@ts-nocheck
 import { router } from '@/main';
 import { ref, onMounted, computed } from 'vue';
+import  DeleteBoutton  from "../../../components/DeleteButton.vue";
 
 const baseUrl = import.meta.env.VITE_BACKEND_URL || 'http://localhost:3000';
 
@@ -16,7 +17,7 @@ const searchData = ref({
 });
 const noColorLabel = 'No color found';
 
-onMounted(async () => {
+const fetchCategories = async () => {
   try {
     const response = await fetch(baseUrl + endpoint, {
       method: method,
@@ -31,6 +32,10 @@ onMounted(async () => {
   } catch (error) {
     console.error(error);
   }
+};
+
+onMounted(async () => {
+  fetchCategories();
 });
 
 const openForm = () => {
@@ -139,12 +144,8 @@ const exportToCsv = () => {
           <td>{{ item.name }}</td>
           <td>{{ new Date(item.createdAt).toLocaleDateString('fr-FR') }}</td>
           <td>
-            <button
-              @click="deleteItem(item)"
-              class="btn btn-sm btn-outline-danger me-3"
-            >
-              Supprimer
-            </button>
+            <DeleteBoutton :tableDelete="'categories'" :idToDelete="item._id" :onSuccess="fetchCategories" />
+
             <button @click="editItem(item)" class="btn btn-sm btn-outline-info">
               Modifier
             </button>

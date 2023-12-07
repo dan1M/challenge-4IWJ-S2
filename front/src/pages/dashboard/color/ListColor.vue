@@ -2,6 +2,9 @@
 //@ts-nocheck
 import { router } from '@/main';
 import { ref, onMounted, computed } from 'vue';
+import  DeleteBoutton  from "../../../components/DeleteButton.vue";
+import { orderBy } from 'lodash';
+
 
 const baseUrl = import.meta.env.VITE_BACKEND_URL || 'http://localhost:3000';
 
@@ -18,6 +21,12 @@ const searchData = ref({
 const noColorLabel = 'No color found';
 
 onMounted(async () => {
+ 
+  fetchColors();
+
+});
+
+const fetchColors = async () => {
   try {
     const response = await fetch(baseUrl + endpoint, {
       method: method,
@@ -32,35 +41,14 @@ onMounted(async () => {
   } catch (error) {
     console.error(error);
   }
-});
+};
+
 
 const openForm = () => {
   router.push('/colors/add');
 };
 
-const deleteItem = async (item: any) => {
-  try {
-    const response = await fetch(baseUrl + endpoint + '/' + item._id, {
-      method: 'DELETE',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-    });
-    if (response.ok) {
-      colors.value = colors.value.filter(
-        (colors: any) => colors._id !== item._id,
-      );
-    } else {
-      console.error(
-        'Failed to delete item:',
-        response.status,
-        response.statusText,
-      );
-    }
-  } catch (error) {
-    console.error(error);
-  }
-};
+
 
 const editItem = (item: { _id: any }) => {
   router.push(`/colors/${item._id}/edit`);
@@ -79,6 +67,7 @@ const filteredColors = computed(() => {
   });
 });
 
+const orderedColors = computed(() => orderBy(filteredColors.value, orderKey, order));
 
 
 const exportToCsv = () => {
@@ -117,7 +106,7 @@ const exportToCsv = () => {
       <tr>
         <th>
           <div>
-            <label>Couleur:</label>
+            <label><a @click="orderKey = 'name' ">Couleur:</a></label>
             <input
               v-model="searchData.name"
               placeholder="Rechercher par couleur..."
@@ -137,17 +126,12 @@ const exportToCsv = () => {
       </tr>
     </thead>
     <tbody>
-      <tr v-for="item in filteredColors" :key="item._id">
+      <tr v-for="item in filteredColors " :key="item._id">
         <td>{{ item.name }}</td>
         
         <td>{{ new Date(item.createdAt).toLocaleDateString('fr-FR') }}</td>
         <td>
-          <button
-            @click="deleteItem(item)"
-            class="btn btn-sm btn-outline-danger me-3"
-          >
-            Supprimer
-          </button>
+         <DeleteBoutton :tableDelete="'colors'" :idToDelete="item._id" :onSuccess="fetchColors"  />
           <button @click="editItem(item)" class="btn btn-sm btn-outline-info">
             Modifier
           </button>

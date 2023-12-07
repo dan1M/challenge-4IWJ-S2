@@ -74,7 +74,7 @@ exports.delete = async (req, res, next) => {
       throw error;
     }
     await color.destroy();
-    //await ColorMongo.deleteOne({ name: color.name });
+    await ColorMongo.deleteOne({ name: color.name });
 
     res.sendStatus(204);
   } catch (err) {

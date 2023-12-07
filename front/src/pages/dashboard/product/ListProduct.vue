@@ -2,6 +2,7 @@
 //@ts-nocheck
 import { router } from '@/main';
 import { ref, onMounted, computed } from 'vue';
+import  DeleteBoutton  from "../../../components/DeleteButton.vue";
 
 const baseUrl = import.meta.env.VITE_BACKEND_URL || 'http://localhost:3000';
 
@@ -22,7 +23,7 @@ const searchData = ref({
 });
 const noProductLabel = 'No product found';
 
-onMounted(async () => {
+const fetchProducts = async () => {
   try {
     const response = await fetch(baseUrl + endpoint, {
       method: method,
@@ -37,41 +38,24 @@ onMounted(async () => {
   } catch (error) {
     console.error(error);
   }
+};
+
+onMounted(async () => {
+  fetchProducts();
 });
+
 
 const openForm = () => {
   router.push('/productList/add');
 };
 
-const deleteItem = async (item: any) => {
-  try {
-    const response = await fetch(baseUrl + endpoint + '/' + item._id, {
-      method: 'DELETE',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-    });
-    if (response.ok) {
-      products.value = products.value.filter(
-        (product: any) => product._id !== item._id,
-      );
-    } else {
-      console.error(
-        'Failed to delete item:',
-        response.status,
-        response.statusText,
-      );
-    }
-  } catch (error) {
-    console.error(error);
-  }
-};
 
 const editItem = (item: { _id: any }) => {
   router.push(`/productList/${item._id}/edit`);
 };
 
 const filteredProduct = computed(() => {
+  console.log(products.value);
   if (!products.value || products.value.length === 0) {
     return [];
   }
@@ -251,7 +235,7 @@ const exportToCsv = () => {
         </tr>
       </thead>
       <tbody>
-        <tr v-for="item in filteredProduct" :key="item._id">
+        <tr v-for="item in products" :key="item._id">
           <td>{{ item.title }}</td>
           <td>{{ item.description }}</td>
 
@@ -292,12 +276,8 @@ const exportToCsv = () => {
             />
           </td>
           <td>
-            <button
-              @click="deleteItem(item)"
-              class="btn btn-sm btn-outline-danger me-3"
-            >
-              Supprimer
-            </button>
+            <DeleteBoutton :tableDelete="'products'" :idToDelete="item._id" :onSuccess="fetchProducts" />
+
             <button @click="editItem(item)" class="btn btn-sm btn-outline-info">
               Modifier
             </button>

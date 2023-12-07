@@ -2,7 +2,7 @@
 //@ts-nocheck
 import { router } from '@/main';
 import { ref, onMounted, computed } from 'vue';
-import axios from 'axios';
+import  DeleteBoutton  from "../../../components/DeleteButton.vue";
 
 const baseUrl = import.meta.env.VITE_BACKEND_URL || 'http://localhost:3000';
 
@@ -17,7 +17,7 @@ const searchData = ref({
 });
 const noSizeLabel = 'No size found';
 
-onMounted(async () => {
+const fetchSize = async () => {
   try {
     const response = await fetch(baseUrl + endpoint, {
       method: method,
@@ -32,6 +32,10 @@ onMounted(async () => {
   } catch (error) {
     console.error(error);
   }
+};
+
+onMounted(async () => {
+fetchSize();
 });
 
 const openForm = () => {
@@ -138,12 +142,8 @@ const exportToCsv = () => {
           <td>{{ item.name }}</td>
           <td>{{ new Date(item.createdAt).toLocaleDateString('fr-FR') }}</td>
           <td>
-            <button
-              @click="deleteItem(item)"
-              class="btn btn-sm btn-outline-danger me-3"
-            >
-              Supprimer
-            </button>
+            <DeleteBoutton :tableDelete="'sizes'" :idToDelete="item._id" :onSuccess="fetchSize"/>
+
             <button @click="editItem(item)" class="btn btn-sm btn-outline-info">
               Modifier
             </button>
