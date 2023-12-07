@@ -311,13 +311,19 @@ watch(serverResponse, () => {
       <div class="text-center">
         <small>
           En créant votre compte, vous acceptez nos
-          <a href="#" class="underline hover:opacity-50 py-3">
-            termes et conditions</a
+          <router-link
+            :to="{ name: 'cgv' }"
+            class="underline hover:opacity-50 py-3"
+          >
+            termes et conditions</router-link
           >
           et
-          <a href="#" class="underline hover:opacity-50 py-3">
+          <router-link
+            :to="{ name: 'data-protection-policy' }"
+            class="underline hover:opacity-50 py-3"
+          >
             politique&nbsp;de&nbsp;confidentialité
-          </a>
+          </router-link>
         </small>
       </div>
       <div class="self-center">

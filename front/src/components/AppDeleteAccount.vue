@@ -6,6 +6,7 @@ import { z } from 'zod';
 import { useToast } from '@/components/ui/toast';
 import { storeToRefs } from 'pinia';
 import { useUserStore } from '@/stores/user-store';
+import DeleteButton from './DeleteButton.vue';
 
 // const { toast } = useToast();
 
@@ -37,10 +38,7 @@ const { deleteAccount } = useUserStore();
     <form class="flex flex-col pt-8 space-y-6" @submit.prevent="deleteAccount">
       <div class="flex flex-col">
         <div class="flex justify-center">
-          <button type="submit"
-            class="bg-black text-white px-16 py-3 hover:bg-white hover:border hover:border-black hover:text-black transition duration-300 uppercase tracking-wider font-bold">
-            Supprimer
-          </button>
+          <DeleteButton />
         </div>
       </div>
     </form>

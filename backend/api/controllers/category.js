@@ -91,19 +91,16 @@ exports.update = async (req, res, next) => {
       error.statusCode = 422;
       throw error;
     }
-    const [nbUpdated, categories] = await Category.update(req.body, {
+    const [nbUpdated] = await Category.update(req.body, {
       where: {
         id: categoryId,
       },
       returning: true,
     });
-    const categoryMongo = await CategoryMongo.updateOne(req.body);
 
-    if (categories[0]) {
-      res.status(200).json(categories[0]);
-    } else {
-      res.sendStatus(404);
-    }
+    await CategoryMongo.updateOne(req.body);
+
+    res.sendStatus(200);
   } catch (err) {
     if (!err.statusCode) {
       err.statusCode = 500;
