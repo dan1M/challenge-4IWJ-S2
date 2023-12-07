@@ -5,11 +5,13 @@ exports.create = async (req, res, next) => {
     const alert_type_id = req.body.alert_type_id;
     const user_id = req.body.user_id;
     const category_id = req.body.category_id;
+    const label = req.body.label;
 
     await Alerts.create({
       alert_type_id: alert_type_id,
       user_id: user_id,
       category_id: category_id,
+      label: label,
     });
 
     res.sendStatus(201);
@@ -46,6 +48,7 @@ exports.updateUserAlerts = async (req, res, next) => {
       {
         status: req.body.status,
         category_id: req.body.categoryId,
+        label: req.body.label,
       },
       {
         where: {

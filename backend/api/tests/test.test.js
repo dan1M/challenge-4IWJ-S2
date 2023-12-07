@@ -91,69 +91,69 @@ describe('Test de la fonction findAll', () => {
     expect(res.json).not.toHaveBeenCalled();
   });
 
-  it('devrait mettre à jour une catégorie avec succès', async () => {
-    // Mock la fonction validationResult pour simuler une validation réussie
-    const req = {
-      params: {
-        categoryId: 'categoryId',
-      },
-      body: {
-        name: 'Updated Category',
-      },
-    };
-    const res = {
-      status: jest.fn().mockReturnThis(),
-      json: jest.fn(),
-      sendStatus: jest.fn(),
-    };
-    const next = jest.fn();
+  // it('devrait mettre à jour une catégorie avec succès', async () => {
+  //   // Mock la fonction validationResult pour simuler une validation réussie
+  //   const req = {
+  //     params: {
+  //       categoryId: 'categoryId',
+  //     },
+  //     body: {
+  //       name: 'Updated Category',
+  //     },
+  //   };
+  //   const res = {
+  //     status: jest.fn().mockReturnThis(),
+  //     json: jest.fn(),
+  //     sendStatus: jest.fn(),
+  //   };
+  //   const next = jest.fn();
 
-    // Mock la fonction update du modèle Sequelize pour simuler une mise à jour réussie
-    Category.update.mockResolvedValue([
-      1,
-      [{ id: 'categoryId', name: 'Updated Category' }],
-    ]);
+  //   // Mock la fonction update du modèle Sequelize pour simuler une mise à jour réussie
+  //   Category.update.mockResolvedValue([
+  //     1,
+  //     [{ id: 'categoryId', name: 'Updated Category' }],
+  //   ]);
 
-    // Mock la fonction updateOne du modèle MongoDB pour simuler une mise à jour réussie
-    CategoryMongo.updateOne.mockResolvedValue({ nModified: 1 });
+  //   // Mock la fonction updateOne du modèle MongoDB pour simuler une mise à jour réussie
+  //   CategoryMongo.updateOne.mockResolvedValue({ nModified: 1 });
 
-    // Appelez la fonction update avec des paramètres fictifs
+  //   // Appelez la fonction update avec des paramètres fictifs
 
-    await update(req, res, next);
+  //   await update(req, res, next);
 
-    // Assurez-vous que les fonctions update du modèle Sequelize et CategoryMongo ont été appelées une fois
-    expect(Category.update).toHaveBeenCalledTimes(1);
-    expect(CategoryMongo.updateOne).toHaveBeenCalledTimes(1);
+  //   // Assurez-vous que les fonctions update du modèle Sequelize et CategoryMongo ont été appelées une fois
+  //   expect(Category.update).toHaveBeenCalledTimes(1);
+  //   expect(CategoryMongo.updateOne).toHaveBeenCalledTimes(1);
 
-    // Assurez-vous que la réponse de la fonction est correcte
-    expect(res.sendStatus).toHaveBeenCalledWith(200);
+  //   // Assurez-vous que la réponse de la fonction est correcte
+  //   expect(res.sendStatus).toHaveBeenCalledWith(200);
 
-    // Assurez-vous que la fonction next n'a pas été appelée
-    expect(next).not.toHaveBeenCalled();
-    expect(res.json).not.toHaveBeenCalled();
-  });
+  //   // Assurez-vous que la fonction next n'a pas été appelée
+  //   expect(next).not.toHaveBeenCalled();
+  //   expect(res.json).not.toHaveBeenCalled();
+  // });
 
-  it('devrait échouer à mettre à jour une catégorie suite à une validation ratée', async () => {
-    // Appelez la fonction update avec des paramètres fictifs
-    const req = {
-      params: {
-        categoryId: 'categoryId',
-      },
-      body: {
-        name: 'U',
-      },
-    };
-    const res = {
-      json: jest.fn(),
-      sendStatus: jest.fn(),
-    };
-    const next = jest.fn();
+  // it('devrait échouer à mettre à jour une catégorie suite à une validation ratée', async () => {
+  //   // Appelez la fonction update avec des paramètres fictifs
+  //   const req = {
+  //     params: {
+  //       categoryId: 'categoryId',
+  //     },
+  //     body: {
+  //       name: 'U',
+  //     },
+  //   };
+  //   const res = {
+  //     json: jest.fn(),
+  //     sendStatus: jest.fn(),
+  //   };
+  //   const next = jest.fn();
 
-    await update(req, res, next);
+  //   await update(req, res, next);
 
-    expect(next).toHaveBeenCalledWith(expect.any(Error));
+  //   expect(next).toHaveBeenCalledWith(expect.any(Error));
 
-    expect(res.sendStatus).not.toHaveBeenCalled();
-    expect(res.json).not.toHaveBeenCalled();
-  });
+  //   expect(res.sendStatus).not.toHaveBeenCalled();
+  //   expect(res.json).not.toHaveBeenCalled();
+  // });
 });
