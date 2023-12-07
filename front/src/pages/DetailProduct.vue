@@ -11,7 +11,7 @@ const { product } = useProductStore();
 const selectedColor = ref('');
 const selectedSize = ref('');
 
-const selectedPrice = ref(product.variants[0].price);
+const selectedPrice = ref('');
 
 const selectColor = (color: string) => {
   selectedColor.value = color;
@@ -182,7 +182,9 @@ const addToCart = () => {
                 </div>
                 <div class="mb-4">
                   <span className="text-xl text-pink-500 "
-                    >{{ selectedPrice }}€</span
+                    >
+                    {{ selectedPrice? `${selectedPrice} €` : ''}}
+                    </span
                   >
                 </div>
               </div>

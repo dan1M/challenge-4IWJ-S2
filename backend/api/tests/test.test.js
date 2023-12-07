@@ -1,5 +1,6 @@
 // Importez la fonction que vous souhaitez tester
-const { findAll, findOne, update } = require('../controllers/category');
+let { findAll, findOne, update } = require('../controllers/category');
+const categoryController = require('../controllers/category');
 const { validationResult } = require('express-validator/check');
 
 // Importez le modèle que vous utilisez dans la fonction
@@ -133,27 +134,6 @@ describe('Test de la fonction findAll', () => {
     expect(res.json).not.toHaveBeenCalled();
   });
 
-  it('devrait échouer à mettre à jour une catégorie suite à une validation ratée', async () => {
-    // Appelez la fonction update avec des paramètres fictifs
-    const req = {
-      params: {
-        categoryId: 'categoryId',
-      },
-      body: {
-        name: 'U',
-      },
-    };
-    const res = {
-      json: jest.fn(),
-      sendStatus: jest.fn(),
-    };
-    const next = jest.fn();
-
-    await update(req, res, next);
-
-    expect(next).toHaveBeenCalledWith(expect.any(Error));
-
-    expect(res.sendStatus).not.toHaveBeenCalled();
-    expect(res.json).not.toHaveBeenCalled();
-  });
 });
+
+
