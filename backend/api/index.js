@@ -80,7 +80,6 @@ cronDeleteExpiredCart();
 app.use('/alert-type', alertTypeRoutes);
 app.use('/alerts', alertsRoutes);
 
-
 app.use('/images', express.static(path.join(__dirname, 'images')));
 
 app.use((error, req, res, next) => {

@@ -62,7 +62,9 @@ exports.findAll = async (req, res, next) => {
       }
     });
 
-    const products = await ProductMongo.find(filter);
+    const products = await ProductMongo.find(filter)
+      .limit(req.query._limit)
+      .sort({ createdAt: -1 });
     res.status(200).json(products);
   } catch (err) {
     if (!err.statusCode) {
@@ -124,7 +126,6 @@ console.log(req.body, req.file, "req file");
         color_id: variant.color,
         price: variant.price,
       });
-
     }
 
     // insert product and variants in mongo

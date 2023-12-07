@@ -12,6 +12,8 @@ const router = express.Router();
 
 router.get('/me', isAuth, userController.getUserInfo);
 
+router.get('/download', isAuth, userController.download);
+
 router.patch(
   '/password',
   isAuth,
@@ -54,6 +56,6 @@ router.get('/:userId', userController.getUser);
 
 router.patch('/:id', isAuth, userController.update);
 
-router.delete('/:id', isAuth, userController.delete);
+router.delete('/:id', userController.delete);
 
 module.exports = router;

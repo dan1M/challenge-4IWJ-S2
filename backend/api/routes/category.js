@@ -32,7 +32,26 @@ router.post(
   categoryController.create,
 );
 
-router.patch('/:categoryId', isAdmin, categoryController.update);
+router.patch(
+  '/:categoryId',
+  isAdmin,
+  [
+    body('name')
+      .trim()
+      .isLength({ min: 5 })
+      .custom(async value => {
+        const existingCategory = await Category.findOne({
+          where: { name: value },
+        });
+        if (existingCategory) {
+          throw new Error(
+            `Category '${existingCategory.name}' already exists.`,
+          );
+        }
+      }),
+  ],
+  categoryController.update,
+);
 
 router.get('/:categoryId', categoryController.findOne);
 

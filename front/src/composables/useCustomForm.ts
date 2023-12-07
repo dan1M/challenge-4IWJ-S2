@@ -73,16 +73,17 @@ export default function useCustomForm({
       signal: abortController.signal,
       credentials: 'include',
     })
-      .then(response => {
+      .then(async response => {
         if (!response.ok) {
-          throw new Error('Something went wrong, request failed!');
+          const res = await response.json();
+          throw new Error(res.message);
         }
 
         serverError.value = null;
         serverResponse.value = true;
       })
       .catch(error => {
-        toast({ title: 'Une erreur est survenue!', variant: 'destructive' });
+        toast({ title: error.message, variant: 'destructive' });
         if (error.name === 'AbortError') {
           throw new Error('Request canceled by user!');
         } else {

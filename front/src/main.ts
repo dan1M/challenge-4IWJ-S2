@@ -13,7 +13,6 @@ import { storeToRefs } from 'pinia';
 import { useUserStore } from './stores/user-store';
 import { useCartStore } from './stores/cart-store';
 import { useProductStore } from './stores/product-store';
-
 import { RouteRecordRaw, createRouter, createWebHistory } from 'vue-router';
 import VueCookies from 'vue-cookies';
 import VueNumberInput from '@chenfengyuan/vue-number-input';
@@ -23,7 +22,12 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import DefaultLayout from './layouts/DefaultLayout.vue';
 import DashboardLayout from './layouts/DashboardLayout.vue';
 import DashboardContent from './components/DashboardContent.vue';
+
+
 import NotFound from './pages/NotFound.vue';
+import Cgv from './pages/Cgv.vue';
+import LegalNotice from './pages/LegalNotice.vue';
+import DataProtectionPolicy from './pages/DataProtectionPolicy.vue';
 import Verify from './pages/Verify.vue';
 import HomePage from './pages/Home.vue';
 import ProductsPage from './pages/Products.vue';
@@ -151,6 +155,21 @@ const routes: RouteRecordRaw[] = [
         path: 'reset-password',
         name: 'reset-password',
         component: ResetPasswordPage
+      },
+      {
+        path: 'cgv',
+        name: 'cgv',
+        component: Cgv
+      },
+      {
+        path: 'legal-notice',
+        name: 'legal-notice',
+        component: LegalNotice
+      },
+      {
+        path: 'data-protection-policy',
+        name: 'data-protection-policy',
+        component: DataProtectionPolicy
       },
       {
         path: '/profile',
