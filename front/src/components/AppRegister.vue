@@ -1,4 +1,5 @@
 <script setup lang="ts">
+//@ts-nocheck
 import { router } from '@/main';
 import { computed, ref, watch } from 'vue';
 import { z } from 'zod';

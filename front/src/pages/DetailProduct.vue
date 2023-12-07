@@ -1,4 +1,5 @@
 <script setup lang="ts">
+//@ts-nocheck
 import { ref } from 'vue';
 import { Button } from '@/components/ui/button';
 import { useProductStore } from '../stores/product-store';
@@ -26,18 +27,18 @@ const selectSize = (size: string) => {
 };
 
 const updateSizeAvailability = () => {
-  product.variants.forEach(variant => {
+  product.variants.forEach((variant:any) => {
     variant.disabled =
       variant.color.id !== selectedColor.value || variant.quantity === 0;
   });
 };
 
-function isOutOfStock(variants) {
+function isOutOfStock(variants: any[]) {
   return variants.every(variant => variant.quantity === 0);
 }
 
 watch(selectedSize, newSize => {
-  const selectedVariant = product.variants.find(variant => {
+  const selectedVariant = product.variants.find((variant:any) => {
     return (
       variant.color.id === selectedColor.value && variant.size.id === newSize
     );

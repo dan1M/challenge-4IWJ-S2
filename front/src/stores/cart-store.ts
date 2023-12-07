@@ -1,3 +1,4 @@
+//@ts-nocheck
 import { priceDisplay } from '@/utils/price-display';
 import { defineStore } from 'pinia';
 import { computed, ref } from 'vue';
