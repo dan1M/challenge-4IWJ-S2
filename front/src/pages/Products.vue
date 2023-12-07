@@ -1,5 +1,5 @@
 <script setup lang="ts">
-//@ts-nocheck
+// @ts-nocheck
 import { ref, onMounted, Ref } from 'vue';
 import { Button } from '@/components/ui/button';
 import { router } from '@/main';
@@ -411,7 +411,7 @@ const clearFilter = () => {
 
       <div class="mt-10 grid gap-10 md:grid-cols-2 lg:gap-10 xl:grid-cols-3">
         <div
-          :class="{ 'group cursor-pointer': true }"
+          class="group cursor-pointer"
           v-for="product in products"
           :key="product._id"
         >
@@ -485,7 +485,7 @@ const clearFilter = () => {
 
             <div>
               <Button
-                @click="addProductToCart(product._id)"
+                @click="addProductToCart(product.variants[0].id)"
                 :disabled="isOutOfStock(product.variants)"
               >
                 {{

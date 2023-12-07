@@ -52,7 +52,7 @@ const fileFilter = (req, file, cb) => {
 app.use(express.urlencoded({ extended: true, limit: '16mb' })); // Adjust the limit as needed
 app.use(express.json()); // application/json
 const corsOptions = {
-  origin: 'http://localhost:5173', // Remplacez par l'URL de votre frontend
+  origin: process.env.FRONT_URL, // Remplacez par l'URL de votre frontend
   credentials: true,
 };
 app.use(
