@@ -1,3 +1,4 @@
+//@ts-nocheck
 import { router } from '@/main';
 import { defineStore } from 'pinia';
 import { ref } from 'vue';
@@ -10,6 +11,7 @@ export const LANGUAGES = [
 export const useUserStore = defineStore('user', () => {
   const user = ref(null);
   const userInfo = ref(null);
+  const verifyAccount = ref(false);
   const isLoggedIn = ref(false);
   const canAccessDashboard = ref(false);
   const actualLanguage = ref(LANGUAGES[0]);
@@ -22,7 +24,7 @@ export const useUserStore = defineStore('user', () => {
   const getUser = async () => {
     try {
       const response = await fetch(
-        'http://localhost:3000/users/' + userInfo.value.id,
+        `${import.meta.env.VITE_BACKEND_URL}/users/${userInfo.value.id}`,
         {
           credentials: 'include',
         },
@@ -39,7 +41,7 @@ export const useUserStore = defineStore('user', () => {
   };
   const getUserInfo = async () => {
     try {
-      const response = await fetch('http://localhost:3000/users/me', {
+      const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/users/me`, {
         credentials: 'include',
       });
       if (!response.ok) {
@@ -56,7 +58,7 @@ export const useUserStore = defineStore('user', () => {
 
   const logout = async () => {
     try {
-      const response = await fetch('http://localhost:3000/auth/logout', {
+      const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/auth/logout`, {
         method: 'POST',
         credentials: 'include',
       });
@@ -67,6 +69,41 @@ export const useUserStore = defineStore('user', () => {
       isLoggedIn.value = false;
       canAccessDashboard.value = false;
       router.go();
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+  const resetPassword = async () => {
+    try {
+      const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/auth/reset-password`, {
+        credentials: 'include',
+      });
+
+      if (!response.ok) {
+        throw new Error('Something went wrong, request failed!');
+      }
+
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+  const checkToken = async (token: string) => {
+    try {
+      const response = await fetch(
+        `${import.meta.env.VITE_BACKEND_URL}/auth/check-token/${token}`,
+        {
+          method: 'GET',
+          credentials: 'include',
+        },
+      );
+
+      if (!response.ok) {
+        router.push({ name: 'home' })
+        throw new Error('Something went wrong, request failed!');
+      }
+      verifyAccount.value = true;
     } catch (err) {
       console.log(err);
     }
@@ -95,6 +132,7 @@ export const useUserStore = defineStore('user', () => {
     user,
     userInfo,
     isLoggedIn,
+    verifyAccount,
     canAccessDashboard,
     actualLanguage,
     updateLanguage,
@@ -102,5 +140,7 @@ export const useUserStore = defineStore('user', () => {
     getUser,
     logout,
     deleteAccount,
+    resetPassword,
+    checkToken
   };
 });

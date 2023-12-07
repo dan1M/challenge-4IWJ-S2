@@ -1,5 +1,5 @@
 <script setup lang="ts">
-// @ts-ignore
+//@ts-nocheck
 import { Carousel, Navigation, Slide, Pagination } from 'vue3-carousel';
 import { onMounted, ref } from 'vue';
 import { Button } from '@/components/ui/button';

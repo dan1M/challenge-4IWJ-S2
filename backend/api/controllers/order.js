@@ -168,7 +168,7 @@ exports.delete = async (req, res, next) => {
       throw error;
     }
     await order.deleteOne({ _id: orderId });
-    res.status(204).json();
+    res.sendStatus(204);
   } catch (err) {
     if (!err.statusCode) {
       err.statusCode = 500;

@@ -4,27 +4,57 @@ import useCustomForm from '../composables/useCustomForm';
 import { watch, computed } from 'vue';
 import { z } from 'zod';
 import { useToast } from '@/components/ui/toast';
+import { router } from '@/main';
 
 const { toast } = useToast();
 
 const formData = {
-  oldPassword: '',
   newPassword: '',
   confirmPassword: '',
 };
 
 const validationSchema = z.object({
-  oldPassword: z.string().min(3),
-  newPassword: z.string().min(3),
-  confirmPassword: z.string().min(3),
+  newPassword: z
+    .string()
+    .regex(/[a-z]/, {
+      message: 'Il manque une minuscule',
+    })
+    .regex(/[A-Z]/, {
+      message: 'Il manque une majuscule',
+    })
+    .regex(/\d/, {
+      message: 'Il manque un chiffre',
+    })
+    .regex(/[^a-zA-Z0-9]/, {
+      message: 'Il manque un caractère spécial',
+    })
+    .min(12, {
+      message: '12 caractères minimum',
+    }),
+  confirmPassword: z
+    .string()
+    .regex(/[a-z]/, {
+      message: 'Il manque une minuscule',
+    })
+    .regex(/[A-Z]/, {
+      message: 'Il manque une majuscule',
+    })
+    .regex(/\d/, {
+      message: 'Il manque un chiffre',
+    })
+    .regex(/[^a-zA-Z0-9]/, {
+      message: 'Il manque un caractère spécial',
+    })
+    .min(12, {
+      message: '12 caractères minimum',
+    }),
 });
 
-const endpoint = '/users/password';
+const endpoint = '/auth/reset-password';
 
 const method = 'PATCH';
 
 const {
-  oldPassword,
   newPassword,
   confirmPassword,
   validationErrors,
@@ -55,11 +85,12 @@ watch(serverResponse, () => {
     title: 'Votre mot de passe a été mis à jour.',
     variant: 'default',
   });
+  router.push({ name: 'auth' });
 });
 </script>
 
 <template>
-  <main class="m-auto border p-6">
+  <main class="m-auto border p-6 w-1/3 my-28">
     <h1 class="uppercase font-bold text-lg tracking-wider text-center">
       Changer le mot de passe
     </h1>
@@ -69,26 +100,6 @@ watch(serverResponse, () => {
       Womeny soit parfaitement à jour.
     </p>
     <form class="flex flex-col pt-8 space-y-6" @submit.prevent="submitForm">
-      <div class="flex flex-col">
-        <label
-          for="email"
-          class="uppercase text-sm tracking-wider text-zinc-500 font-bold"
-        >
-          Ancien mot de passe
-        </label>
-        <input
-          id="old-password"
-          type="password"
-          v-model="oldPassword"
-          required
-          autofocus
-          class="border p-2"
-          size="30"
-        />
-        <small class="error" v-if="validationErrors.oldPassword && oldPassword">
-          {{ validationErrors.oldPassword }}
-        </small>
-      </div>
       <div class="flex flex-col">
         <label
           for="email"
@@ -134,7 +145,7 @@ watch(serverResponse, () => {
           {{ passwordConfirmationError }}
         </small>
       </div>
-      <div>
+      <div class="m-auto">
         <button
           type="submit"
           :disabled="!isFormValid"

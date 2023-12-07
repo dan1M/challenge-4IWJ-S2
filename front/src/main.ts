@@ -1,28 +1,34 @@
+//@ts-nocheck
 import './style.css';
 import 'vue3-carousel/dist/carousel.css';
 
 import { createApp } from 'vue';
+import posthogPlugin from "./plugins/posthog"; //import the plugin. 
+
 import App from './App.vue';
 import { createPinia } from 'pinia';
 import VueDatePicker from '@vuepic/vue-datepicker';
 import '@vuepic/vue-datepicker/dist/main.css';
+import { storeToRefs } from 'pinia';
 import { useUserStore } from './stores/user-store';
 import { useCartStore } from './stores/cart-store';
 import { useProductStore } from './stores/product-store';
-
 import { RouteRecordRaw, createRouter, createWebHistory } from 'vue-router';
 import VueCookies from 'vue-cookies';
 import VueNumberInput from '@chenfengyuan/vue-number-input';
-
 import DefaultLayout from './layouts/DefaultLayout.vue';
 import DashboardLayout from './layouts/DashboardLayout.vue';
-
 import NotFound from './pages/NotFound.vue';
+import Cgv from './pages/Cgv.vue';
+import LegalNotice from './pages/LegalNotice.vue';
+import DataProtectionPolicy from './pages/DataProtectionPolicy.vue';
+import Verify from './pages/Verify.vue';
 import HomePage from './pages/Home.vue';
 import ProductsPage from './pages/Products.vue';
 import DetailProductPage from './pages/DetailProduct.vue';
 import CartPage from './pages/Cart.vue';
 import AuthPage from './pages/Auth.vue';
+import ResetPasswordPage from './pages/ResetPassword.vue';
 import ProfilePage from './pages/Profile.vue';
 import AppCredentials from './components/AppCredentials.vue';
 import AppUpdatePassword from './components/AppUpdatePassword.vue';
@@ -30,6 +36,8 @@ import AppOrders from './components/AppOrders.vue';
 import CheckoutReturn from './pages/CheckoutReturn.vue';
 import AppAlerts from './components/AppAlerts.vue';
 import AppDeleteAccount from './components/AppDeleteAccount.vue';
+import AppForgotPassword from './components/AppForgotPassword.vue';
+
 import { useAlertStore } from './stores/alert-store';
 import { useCategoryStore } from './stores/category-store';
 import AppOrderDetails from './components/AppOrderDetails.vue';
@@ -101,7 +109,49 @@ const routes: RouteRecordRaw[] = [
             next({ name: 'home', replace: true });
           }
         },
-        component: AuthPage,
+        component: AuthPage
+      },
+      {
+        path: 'verify/:token',
+        name: 'verify',
+        beforeEnter: async (to, from, next) => {
+          console.log(to.params.token);
+          const { checkToken } = useUserStore();
+          const { verifyAccount } = storeToRefs(useUserStore());
+
+          await checkToken(to.params.token);
+          if (!verifyAccount.value) {
+            next({ name: 'home', replace: true });
+          } else {
+            next()
+          }
+        },
+        component: Verify
+      },
+      {
+        path: 'forgot-password',
+        name: 'forgot-password',
+        component: AppForgotPassword
+      },
+      {
+        path: 'reset-password',
+        name: 'reset-password',
+        component: ResetPasswordPage
+      },
+      {
+        path: 'cgv',
+        name: 'cgv',
+        component: Cgv
+      },
+      {
+        path: 'legal-notice',
+        name: 'legal-notice',
+        component: LegalNotice
+      },
+      {
+        path: 'data-protection-policy',
+        name: 'data-protection-policy',
+        component: DataProtectionPolicy
       },
       {
         path: '/profile',
@@ -188,6 +238,8 @@ export const router = createRouter({
 // });
 
 const app = createApp(App);
+
+
 app.component('VueDatePicker', VueDatePicker);
 
 const pinia = createPinia();
@@ -196,5 +248,7 @@ app.use(pinia);
 app.use(VueCookies);
 
 app.component(VueNumberInput.name, VueNumberInput);
+
+app.use(posthogPlugin); //install the plugin
 
 app.mount('#app');

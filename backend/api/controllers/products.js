@@ -61,7 +61,7 @@ exports.findAll = async (req, res, next) => {
       }
     });
 
-    const products = await ProductMongo.find(filter);
+    const products = await ProductMongo.find(filter).sort({ createdAt: -1 });
     res.status(200).json(products);
   } catch (err) {
     if (!err.statusCode) {
@@ -115,19 +115,18 @@ exports.create = async (req, res, next) => {
 
     //create variants for a product
     for (const variant of variantsBody) {
-      for (const color of variant.colors) {
-        const stock = await Stock.create({
-          quantity: color.quantity,
-          product_id: product.id,
-          size_id: variant.size,
-          color_id: color.color,
-          price: color.price,
-        });
-      }
+      const stock = await Stock.create({
+        quantity: variant.quantity,
+        product_id: product.id,
+        size_id: variant.size,
+        color_id: variant.color,
+        price: variant.price,
+      });
+
     }
 
     // insert product and variants in mongo
-    // await updateOrCreateMongoProduct(product.id);
+    await updateOrCreateMongoProduct(product.id);
 
     res.sendStatus(201);
   } catch (err) {

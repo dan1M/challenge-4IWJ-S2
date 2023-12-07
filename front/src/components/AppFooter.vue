@@ -1,4 +1,5 @@
 <script setup lang="ts">
+//@ts-nocheck
 import {
   DropdownMenu,
   DropdownMenuTrigger,
@@ -58,17 +59,23 @@ const { email, submitForm } = useCustomForm({
             </h2>
             <ul class="text-gray-600">
               <li class="mb-4">
-                <router-link to="#" class="hover:underline">
+                <router-link
+                  :to="{ name: 'data-protection-policy' }"
+                  class="hover:underline"
+                >
                   Politique de confidentialité
                 </router-link>
               </li>
               <li class="mb-4">
-                <router-link to="#" class="hover:underline">
-                  Termes &amp; Conditions de ventes
+                <router-link :to="{ name: 'cgv' }" class="hover:underline">
+                  Conditions générales de ventes
                 </router-link>
               </li>
               <li>
-                <router-link to="#" class="hover:underline">
+                <router-link
+                  :to="{ name: 'legal-notice' }"
+                  class="hover:underline"
+                >
                   Mentions légales
                 </router-link>
               </li>
