@@ -47,7 +47,7 @@ const fetchFilter = async (newQuery: any) => {
 
     await fetchProduct(baseUrl + endpoint + '?' + queryString);
     filterProductWithOnlyVariantInStock();
-    
+     
   } catch (error) {
     console.error(error);
   }
@@ -74,9 +74,7 @@ const fetchProduct = async (url: any) => {
     });
 
     const json = await response.json();
-    //const formattedProduct: Product = convertJsonToProduct(json);
-
-    //products.value = [formattedProduct];
+    
     products.value = json;
   } catch (error) {
     console.error(error);
@@ -148,15 +146,9 @@ onMounted(async () => {
   fixProducts.value = products.value;
   filterProductWithOnlyVariantInStock();
 
-  console.log(products.value, 'product with stock');
 
 });
 
-
-
-/*const isOutOfStock = (variants: any) => {
-  return variants.every((variant: any) => variant.quantity === 0);
-};*/
 
 const isOutOfStock = (variants: any) => {
   return variants.length === 0;
@@ -173,7 +165,6 @@ const filterProductWithOnlyVariantInStock = () => {
 
 
 const addToCart = () => {
-  console.log('add to cart');
 
 };
 
@@ -298,6 +289,8 @@ const clearFilter = () => {
   searchInput.value = '';
   router.push({ query: {} });
   fetchProduct(baseUrl + endpoint);
+  filterProductWithOnlyVariantInStock();
+
 };
 
 </script>
