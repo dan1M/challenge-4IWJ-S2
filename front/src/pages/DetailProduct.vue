@@ -14,7 +14,7 @@ const { addProductToCart } = useCartStore();
 const selectedColor = ref('');
 const selectedSize = ref('');
 
-const selectedPrice = ref(product.variants[0].price);
+const selectedPrice = ref('');
 
 const selectColor = (color: string) => {
   selectedColor.value = color;
@@ -27,7 +27,7 @@ const selectSize = (size: string) => {
 };
 
 const updateSizeAvailability = () => {
-  product.variants.forEach((variant:any) => {
+  product.variants.forEach((variant: any) => {
     variant.disabled =
       variant.color.id !== selectedColor.value || variant.quantity === 0;
   });
@@ -38,7 +38,7 @@ function isOutOfStock(variants: any[]) {
 }
 
 watch(selectedSize, newSize => {
-  const selectedVariant = product.variants.find((variant:any) => {
+  const selectedVariant = product.variants.find((variant: any) => {
     return (
       variant.color.id === selectedColor.value && variant.size.id === newSize
     );
@@ -175,9 +175,9 @@ const addToCart = () => {
                   </RadioGroup>
                 </div>
                 <div class="mb-4">
-                  <span className="text-xl text-pink-500 "
-                    >{{ selectedPrice }}€</span
-                  >
+                  <span className="text-xl text-pink-500 ">
+                    {{ selectedPrice ? `${selectedPrice} €` : '' }}
+                  </span>
                 </div>
               </div>
               <div class="mb-6 mt-6">

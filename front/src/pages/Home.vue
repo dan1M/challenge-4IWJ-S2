@@ -36,7 +36,9 @@ const getProducts = () => {
     .then(data => {
       const allProducts = data.map((item: any) => ({
         id: item._id,
-        src: item.img,
+        src:
+          item.img ??
+          import.meta.env.VITE_BACKEND_URL + '/images/home_img3.jpg',
         title: item.title,
         stock_id: item.variants[0].id,
         price: item.variants[0].price,
