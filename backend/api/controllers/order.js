@@ -122,6 +122,12 @@ exports.create = async (req, res, next) => {
     // Creating parcel with Sendcloud
     const deliveryData = await deliveryController.createPackage(req, res, next);
 
+    // Send the invoice
+    await stripe.invoices.sendInvoice(session.invoice);
+
+    // Get the session invoice
+    const invoice = await stripe.invoices.retrieve(session.invoice);
+
     // Creating order
     const order = await Order.create({
       user_id: req.user.id,
@@ -129,6 +135,8 @@ exports.create = async (req, res, next) => {
       payment_id: sessionId,
       tracking_id: deliveryData.parcel.tracking_number,
       tracking_url: deliveryData.parcel.tracking_url,
+      invoice_pdf_url: invoice.invoice_pdf,
+      hosted_invoice_url: invoice.hosted_invoice_url,
       parcel_id: deliveryData.parcel.id,
       total: session.amount_total / 100,
     });
@@ -144,6 +152,7 @@ exports.create = async (req, res, next) => {
         link: process.env.FRONT_URL + '/profile/my-orders/' + order._id,
         products: order.products,
         total: session.amount_total / 100,
+        hosted_invoice_url: invoice.hosted_invoice_url,
       },
       user.email,
       `Confirmation de commande`,
