@@ -15,6 +15,7 @@ export const useUserStore = defineStore('user', () => {
   const isLoggedIn = ref(false);
   const canAccessDashboard = ref(false);
   const actualLanguage = ref(LANGUAGES[0]);
+  const urlDownload = ref(`${import.meta.env.VITE_BACKEND_URL}/users/download`)
 
   const updateLanguage = (language: string) => {
     actualLanguage.value =
@@ -74,6 +75,7 @@ export const useUserStore = defineStore('user', () => {
       console.log(err);
     }
   };
+
 
   const resetPassword = async () => {
     try {
@@ -136,12 +138,13 @@ export const useUserStore = defineStore('user', () => {
     verifyAccount,
     canAccessDashboard,
     actualLanguage,
+    urlDownload,
     updateLanguage,
     getUserInfo,
     getUser,
     logout,
     deleteAccount,
     resetPassword,
-    checkToken
+    checkToken,
   };
 });

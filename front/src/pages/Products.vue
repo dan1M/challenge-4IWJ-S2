@@ -1,6 +1,6 @@
 <script setup lang="ts">
-//@ts-nocheck
-import { ref, onMounted, Ref } from 'vue';
+// @ts-nocheck
+import { ref, onMounted, Ref, computed } from 'vue';
 import { Button } from '@/components/ui/button';
 import { router } from '@/main';
 import { useRoute } from 'vue-router';
@@ -16,6 +16,8 @@ import {
 } from '@/components/ui/select';
 import DropdownFilter from '../components/DropdownFilter.vue';
 import { Checkbox } from '@/components/ui/checkbox';
+import { useCartStore } from '@/stores/cart-store';
+
 const currentPage = ref(1);
 const baseUrl = import.meta.env.VITE_BACKEND_URL || 'http://localhost:3000';
 const endpoint = '/products';
@@ -37,7 +39,9 @@ const maxPrice = ref<any>(100);
 
 const route = useRoute();
 
-const fetchFilter = async (newQuery: any) => {
+const { addProductToCart } = useCartStore();
+
+const fetchFilter = async newQuery => {
   try {
     const queryString = Object.entries(newQuery)
       .map(([key, value]) => `${key}=${value}`)
@@ -62,12 +66,19 @@ const performSearch = async () => {
 };
 
 const fetchProduct = async (url: any) => {
-  const filterExist = route.query;
+  //const filterExist = route.query;
   let filterPage = '';
   let pageQuery = '?';
-  if (Object.keys(filterExist).length !== 0) {
+
+  const urlFetch = new URL(url);
+
+  const queryParams = urlFetch.searchParams;
+  if (queryParams && queryParams.keys().next().done === false) {
     pageQuery = '&';
   }
+
+  
+ 
   if (!route.query.page) {
     filterPage = pageQuery + 'page=' + currentPage.value;
   }
@@ -129,6 +140,7 @@ const fetchSizes = async () => {
     });
 
     const json = await response.json();
+
     sizes.value = json;
   } catch (error) {
     console.error(error);
@@ -142,7 +154,6 @@ onMounted(async () => {
       queryString += `${key}=${route.query[key]}&`;
     }
   }
-  console.log(endpoint);
 
   const generalUrl = `${baseUrl + endpoint}?${queryString}`;
   await fetchProduct(generalUrl);
@@ -167,8 +178,6 @@ const filterProductWithOnlyVariantInStock = () => {
   });
 };
 
-const addToCart = () => {};
-
 watch(selectedCategories.value, async newCategories => {
   const newQuery = { ...route.query };
 
@@ -178,7 +187,7 @@ watch(selectedCategories.value, async newCategories => {
     delete newQuery.categories;
   }
 
-  router.push({ query: newQuery });
+  router.push({ query: newQuery});
 
   await fetchFilter(newQuery);
 });
@@ -424,7 +433,7 @@ const clearFilter = () => {
 
       <div class="mt-10 grid gap-10 md:grid-cols-2 lg:gap-10 xl:grid-cols-3">
         <div
-          :class="{ 'group cursor-pointer': true }"
+          class="group cursor-pointer"
           v-for="product in products"
           :key="product._id"
         >
@@ -498,7 +507,7 @@ const clearFilter = () => {
 
             <div>
               <Button
-                @click="addToCart()"
+                @click="addProductToCart(product.variants[0].id)"
                 :disabled="isOutOfStock(product.variants)"
               >
                 {{

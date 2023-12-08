@@ -156,20 +156,19 @@ exports.update = async (req, res, next) => {
       throw error;
     }
 
-    const [nbUpdated, products] = await Product.update(req.body, {
+    const [nbUpdated] = await Product.update(req.body, {
       where: {
         id: productId,
       },
       returning: true,
     });
 
-    if (products[0]) {
-      await updateOrCreateMongoProduct(productId);
+   
+    await updateOrCreateMongoProduct(productId);
 
-      res.status(200).json(products[0]);
-    } else {
-      res.sendStatus(404);
-    }
+    res.sendStatus(200);
+      
+    
   } catch (err) {
     if (!err.statusCode) {
       err.statusCode = 500;

@@ -12,7 +12,7 @@ const router = express.Router();
 
 router.get('/me', isAuth, userController.getUserInfo);
 
-router.get('/download', isAuth, userController.download);
+router.get('/download', isAuth, userController.downloadUserData);
 
 router.patch(
   '/password',
