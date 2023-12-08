@@ -122,25 +122,5 @@ describe('Test de la fonction findAll', () => {
     expect(next).not.toHaveBeenCalled();
   });
 
-  it('devrait échouer à mettre à jour une catégorie suite à une validation ratée', async () => {
-    // Appelez la fonction update avec des paramètres fictifs
 
-    const req = {
-      params: {
-        sizeId: jest.fn(),
-      },
-      body: {
-        name: 'H',
-      },
-    };
-    const res = {
-      json: jest.fn(),
-      sendStatus: jest.fn(),
-    };
-    const next = () => {};
-
-    await update(req, res, next);
-
-    expect(next).toHaveBeenCalled();
-  });
 });

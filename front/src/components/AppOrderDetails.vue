@@ -106,6 +106,18 @@ const getOrderDetails = async () => {
         <div><b>Total:</b>&nbsp;{{ order && priceDisplay(order.total) }}€</div>
         <div></div>
       </div>
+      <div class="flex justify-between my-4">
+        <div>
+          <b>Information sur le paiement:</b>&nbsp;
+          <a
+            :href="order && order.hosted_invoice_url"
+            target="_blank"
+            class="hover:underline whitespace-pre-wrap break-all"
+            >{{ order && order.hosted_invoice_url }}</a
+          >
+        </div>
+        <div></div>
+      </div>
     </div>
   </main>
 </template>

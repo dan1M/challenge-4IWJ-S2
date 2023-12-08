@@ -1,6 +1,6 @@
 <script setup lang="ts">
 // @ts-nocheck
-import { ref, onMounted, Ref } from 'vue';
+import { ref, onMounted, Ref, computed } from 'vue';
 import { Button } from '@/components/ui/button';
 import { router } from '@/main';
 import { useRoute } from 'vue-router';
@@ -66,12 +66,19 @@ const performSearch = async () => {
 };
 
 const fetchProduct = async (url: any) => {
-  const filterExist = route.query;
+  //const filterExist = route.query;
   let filterPage = '';
   let pageQuery = '?';
-  if (Object.keys(filterExist).length !== 0) {
+
+  const urlFetch = new URL(url);
+
+  const queryParams = urlFetch.searchParams;
+  if (queryParams && queryParams.keys().next().done === false) {
     pageQuery = '&';
   }
+
+  
+ 
   if (!route.query.page) {
     filterPage = pageQuery + 'page=' + currentPage.value;
   }
@@ -147,7 +154,6 @@ onMounted(async () => {
       queryString += `${key}=${route.query[key]}&`;
     }
   }
-  console.log(endpoint);
 
   const generalUrl = `${baseUrl + endpoint}?${queryString}`;
   await fetchProduct(generalUrl);
@@ -181,7 +187,7 @@ watch(selectedCategories.value, async newCategories => {
     delete newQuery.categories;
   }
 
-  router.push({ query: newQuery });
+  router.push({ query: newQuery});
 
   await fetchFilter(newQuery);
 });
