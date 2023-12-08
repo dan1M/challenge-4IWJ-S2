@@ -52,6 +52,8 @@ router.patch(
   userController.updatePassword,
 );
 
+router.post('/getUserByEmail', userController.getUserByEmail);
+
 router.get('/:userId', userController.getUser);
 
 router.patch('/:id', isAuth, userController.update);

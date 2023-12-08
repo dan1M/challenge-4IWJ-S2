@@ -14,6 +14,8 @@ exports.getUserInfo = async (req, res, next) => {
   }
 };
 
+
+
 exports.download = async (req, res, next) => {
   try {
     const fields = [
@@ -50,7 +52,7 @@ exports.getUser = async (req, res, next) => {
   try {
     const user = await User.findByPk(userId, {
       attributes: {
-        exclude: ['roles', 'password', 'createdAt', 'updatedAt', 'active'],
+        exclude: [ 'password', 'createdAt', 'updatedAt', 'active'],
       },
     });
     if (!user) {
@@ -175,4 +177,30 @@ exports.delete = async (req, res, next) => {
     }
     next(err);
   }
+
 };
+
+exports.getUserByEmail = async (req, res, next) => {
+  try {
+    const user = await User.findOne({
+      where: {
+        email: req.body.email,
+      },
+   
+    });
+    if (!user) {
+      const error = new Error('Could not find user.');
+      error.statusCode = 404;
+      throw error;
+    }
+    res.status(200).json(user);
+  } catch (err) {
+    if (!err.statusCode) {
+      err.statusCode = 500;
+    }
+    next(err);
+  }
+
+  
+};
+

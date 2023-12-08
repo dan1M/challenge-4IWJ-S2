@@ -14,6 +14,11 @@ const {
 } = require('../util/updateOrCreateMongoProduct');
 
 exports.findAll = async (req, res, next) => {
+  const currentPage = req.query.page || 1;
+  if (req.query.page < 1) {
+    req.query.page = 1;
+  }
+  const perPage = 12;
   try {
     const filter = {};
     const queryParameters = Object.keys(req.query);
@@ -63,7 +68,7 @@ exports.findAll = async (req, res, next) => {
     });
 
     const products = await ProductMongo.find(filter)
-      .limit(req.query._limit)
+      .limit(req.query._limit || currentPage * perPage)
       .sort({ createdAt: -1 });
     res.status(200).json(products);
   } catch (err) {

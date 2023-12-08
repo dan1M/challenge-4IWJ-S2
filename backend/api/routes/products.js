@@ -19,7 +19,7 @@ router.get('/:productId', productsController.findOne);
 
 router.post(
   '/',
-  // isAdmin,
+  isAdmin,
   [
     body('title')
       .trim()

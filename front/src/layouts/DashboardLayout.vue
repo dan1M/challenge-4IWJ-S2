@@ -14,7 +14,7 @@
         >
           <div class="flex flex-col justify-between space-y-[10px]">
             <router-link
-              to="/dashboard-content"
+              to="/dashboard"
               class="inline-flex relative items-center py-[10px] px-[10px] w-full text-sm font-medium rounded-md border-gray-200 hover:bg-gray-500 hover:text-gray-800 text-white transition duration-400 ease-in-out"
             >
               <svg
@@ -33,7 +33,7 @@
             </router-link>
 
             <router-link
-              to="/productList"
+              to="/dashboard/products"
               class="inline-flex relative items-center py-[10px] px-[10px] w-full text-sm font-medium rounded-md border-gray-200 hover:bg-gray-500 hover:text-gray-800 text-white transition duration-400 ease-in-out"
             >
               <svg
@@ -52,7 +52,7 @@
             </router-link>
 
             <router-link
-              to="/colors"
+              to="/dashboard/colors"
               class="inline-flex relative items-center py-[10px] px-[10px] w-full text-sm font-medium rounded-md rounded-b-lg hover:bg-gray-500 hover:text-gray-800 text-white transition duration-400 ease-in-out"
             >
               <svg
@@ -72,7 +72,7 @@
             </router-link>
 
             <router-link
-              to="/categories"
+              to="/dashboard/categories"
               class="inline-flex relative items-center py-[10px] px-[10px] w-full text-sm font-medium rounded-md border-gray-200 hover:bg-gray-500 hover:text-gray-800 text-white transition duration-400 ease-in-out"
             >
               <svg
@@ -93,7 +93,7 @@
             </router-link>
 
             <router-link
-              to="/sizes"
+              to="/dashboard/sizes"
               class="inline-flex relative items-center py-[10px] px-[10px] w-full text-sm font-medium rounded-md rounded-b-lg hover:bg-gray-500 hover:text-gray-800 text-white transition duration-400 ease-in-out"
             >
               <svg
@@ -112,13 +112,42 @@
 
               Tailles
             </router-link>
+
+
+            <router-link
+              to="/dashboard/users"
+              class="inline-flex relative items-center py-[10px] px-[10px] w-full text-sm font-medium rounded-md rounded-b-lg hover:bg-gray-500 hover:text-gray-800 text-white transition duration-400 ease-in-out"
+            >
+              <svg
+                aria-hidden="true"
+                class="mr-2 w-[25px] h-[25px] fill-current"
+                fill="currentColor"
+                viewBox="0 0 20 20"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  fill-rule="evenodd"
+                  d="M2 9.5A3.5 3.5 0 005.5 13H9v2.586l-1.293-1.293a1 1 0 00-1.414 1.414l3 3a1 1 0 001.414 0l3-3a1 1 0 00-1.414-1.414L11 15.586V13h2.5a4.5 4.5 0 10-.616-8.958 4.002 4.002 0 10-7.753 1.977A3.5 3.5 0 002 9.5zm9 3.5H9V8a1 1 0 012 0v5z"
+                  clip-rule="evenodd"
+                ></path>
+              </svg>
+
+              Utilisateurs
+            </router-link>
+
           </div>
           <div class="h-[50px]">
+
+            <div>
+              <LogOut class="mr-2 h-4 w-4 text-red-500" />
+                <span class="text-red-500" >Se déconnecter</span>
+            </div>
+<!-- 
             <div>
               <router-link
-                to="/profile"
+                to=""
                 class="inline-flex relative items-center py-[10px] px-[10px] w-full text-sm font-medium rounded-md border-gray-200 hover:bg-gray-500 hover:text-gray-800 text-white transition duration-400 ease-in-out"
-              >
+                @click="logout" >
                 <svg
                   aria-hidden="true"
                   class="mr-2 w-[25px] h-[25px] fill-current"
@@ -132,9 +161,9 @@
                     clip-rule="evenodd"
                   ></path>
                 </svg>
-                Paramètre du compte
+                Déconnexion
               </router-link>
-            </div>
+            </div> -->
           </div>
         </div>
       </div>
@@ -185,7 +214,7 @@
                   type="text"
                   id="voice-search"
                   class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full pl-10 p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                  placeholder="Search..."
+                  placeholder="Recherche..."
                   required
                 />
                 <router-link
@@ -207,10 +236,10 @@
                 src="/public/person-icon.png"
               />
               <div class="font-semibold dark:text-white text-left">
-                <div>ADMINISTRATEUR</div>
+                <div> Admin</div>
               </div>
             </div>
-            <!-- Drop down -->
+            <!-- Drop down 
             <div
               v-show="showDropDown"
               class="absolute right-[10px] z-10 mt-2 w-56 origin-top-right rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none"
@@ -220,7 +249,7 @@
               tabindex="-1"
             >
               <div class="py-1 text-left" role="none">
-                <!-- Active: "bg-gray-100 text-gray-900", Not Active: "text-gray-700" -->
+                 Active: "bg-gray-100 text-gray-900", Not Active: "text-gray-700" 
                 <a
                   href="#"
                   class="text-gray-700 block px-4 py-2 text-sm"
@@ -241,7 +270,7 @@
                   </button>
                 </form>
               </div>
-            </div>
+            </div> -->
           </div>
         </div>
       </div>
@@ -256,6 +285,7 @@
 </template>
 
 <script>
+
 export default {
   data() {
     return {
@@ -264,6 +294,26 @@ export default {
     };
   },
   methods: {
+
+  //   logout (){
+  //   try {
+  //     const response =  fetch(`${import.meta.env.VITE_BACKEND_URL}/auth/logout`, {
+  //       method: 'POST',
+  //       credentials: 'include',
+  //     });
+
+  //     if (!response.ok) {
+  //       throw new Error('Something went wrong, request failed!');
+  //     }
+  //     isLoggedIn.value = false;
+  //     canAccessDashboard.value = false;
+  //     router.go();
+  //     window.location.reload();
+
+  //   } catch (err) {
+  //     console.log(err);
+  //   }
+  // },
     // hide show side bar
     toggleSideBar() {
       this.showSide = !this.showSide;
@@ -274,6 +324,9 @@ export default {
     },
   },
 };
+
+
+
 </script>
 
 <style>

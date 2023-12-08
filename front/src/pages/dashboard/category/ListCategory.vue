@@ -2,7 +2,8 @@
 //@ts-nocheck
 import { router } from '@/main';
 import { ref, onMounted, computed } from 'vue';
-import  DeleteBoutton  from "../../../components/DeleteButton.vue";
+import DeleteBoutton from '../../../components/DeleteButton.vue';
+import UpdateBoutton from '../../../components/UpdateButton.vue';
 
 const baseUrl = import.meta.env.VITE_BACKEND_URL || 'http://localhost:3000';
 
@@ -39,35 +40,11 @@ onMounted(async () => {
 });
 
 const openForm = () => {
-  router.push('/categories/add');
-};
-
-const deleteItem = async (item: any) => {
-  try {
-    const response = await fetch(baseUrl + endpoint + '/' + item._id, {
-      method: 'DELETE',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-    });
-    if (response.ok) {
-      categories.value = categories.value.filter(
-        (categories: any) => categories._id !== item._id,
-      );
-    } else {
-      console.error(
-        'Failed to delete item:',
-        response.status,
-        response.statusText,
-      );
-    }
-  } catch (error) {
-    console.error(error);
-  }
+  router.push('/dashboard/categories/add');
 };
 
 const editItem = (item: { _id: any }) => {
-  router.push(`/categories/${item._id}/edit`);
+  router.push(`/dashboard/categories/${item._id}/edit`);
 };
 
 const filteredCategory = computed(() => {
@@ -88,19 +65,26 @@ const filteredCategory = computed(() => {
 });
 
 const exportToCsv = () => {
-  const csvContent = "data:text/csv;charset=utf-8," + 
-    "Name,Date\n" +
-    filteredCategory.value.map(item => `${item.name},${new Date(item.createdAt).toLocaleDateString('fr-FR')}`).join("\n");
+  const csvContent =
+    'data:text/csv;charset=utf-8,' +
+    'Name,Date\n' +
+    filteredCategory.value
+      .map(
+        item =>
+          `${item.name},${new Date(item.createdAt).toLocaleDateString(
+            'fr-FR',
+          )}`,
+      )
+      .join('\n');
 
   const encodedUri = encodeURI(csvContent);
-  const link = document.createElement("a");
-  link.setAttribute("href", encodedUri);
-  link.setAttribute("download", "categories.csv");
+  const link = document.createElement('a');
+  link.setAttribute('href', encodedUri);
+  link.setAttribute('download', 'categories.csv');
   document.body.appendChild(link); // Required for FF
 
   link.click();
 };
-
 </script>
 
 <template>
@@ -110,9 +94,7 @@ const exportToCsv = () => {
       <button class="btn btn-primary ps-3 pe-3" @click="openForm">
         Ajouter une catégorie
       </button>
-      <button class="btn btn-primary " @click="exportToCsv">
-      Exporter CSV
-    </button>
+      <button class="btn btn-primary" @click="exportToCsv">Exporter CSV</button>
     </div>
 
     <table class="table color-table">
@@ -144,10 +126,39 @@ const exportToCsv = () => {
           <td>{{ item.name }}</td>
           <td>{{ new Date(item.createdAt).toLocaleDateString('fr-FR') }}</td>
           <td>
-            <DeleteBoutton :tableDelete="'categories'" :idToDelete="item._id" :onSuccess="fetchCategories" />
+            <DeleteBoutton
+              :tableDelete="'categories'"
+              :idToDelete="item._id"
+              :onSuccess="fetchCategories"
+            />
 
-            <button @click="editItem(item)" class="btn btn-sm btn-outline-info">
-              Modifier
+            <button @click="editItem(item)">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+                class="w-6 h-6"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
+                ></path>
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M2 17.997L2 20.997L5 20.997"
+                ></path>
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M8.997 20.997L8.997 17.997L20 6L17 3L8.997 11.003"
+                ></path>
+              </svg>
             </button>
           </td>
         </tr>

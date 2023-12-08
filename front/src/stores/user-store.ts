@@ -48,8 +48,9 @@ export const useUserStore = defineStore('user', () => {
         throw new Error('Something went wrong, request failed!');
       }
       isLoggedIn.value = true;
-
-      userInfo.value = await response.json();
+      const data = await response.json();
+      canAccessDashboard.value = data.canAccessDashboard
+      userInfo.value = data
     } catch (err) {
       isLoggedIn.value = false;
       console.log(err);

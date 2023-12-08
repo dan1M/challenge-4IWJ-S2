@@ -55,6 +55,8 @@ import CheckoutReturn from './pages/CheckoutReturn.vue';
 import AppAlerts from './components/AppAlerts.vue';
 import AppDeleteAccount from './components/AppDeleteAccount.vue';
 import AppForgotPassword from './components/AppForgotPassword.vue';
+import ListUserVue from './pages/dashboard/user/ListUser.vue';
+import EditUserVue from './pages/dashboard/user/EditUser.vue';
 
 import { useAlertStore } from './stores/alert-store';
 import { useCategoryStore } from './stores/category-store';
@@ -228,92 +230,102 @@ const routes: RouteRecordRaw[] = [
   },
 
   {
-    path: '/dashboard-content',
+    path: '/dashboard',
     component: DashboardLayout,
     beforeEnter: async (to, from, next) => {
-      const { isLoggedIn , canAccessDashboard} = useUserStore();
-      if (!isLoggedIn || !canAccessDashboard) {
-        next();
-      } else {
+      const { canAccessDashboard} = useUserStore();
+      if (!canAccessDashboard) {
         next({ name: 'home', replace: true });
+       
+      } else {
+        next();
       }
     },
-    name: 'dashboard-layout',
+    name: 'dashboard',
 
     children: [
       {
-        path: '/dashboard-content',
+        path: 'dashboard',
         name: 'homedashboard',
         component: DashboardContent,
       },
+      
       {
-        path: '/products',
-        name: 'productsdashboard',
-        component: ProductsPage,
-      },
-      {
-        path: '/colors',
+        path: 'colors',
         name: 'colors',
         component: ColorPage,
       },
       {
-        path: '/colors/add',
+        path: 'colors/add',
         name: 'addColor',
         component: AddColorVue,
       },
       {
-        path: '/colors/:id/edit',
+        path: 'colors/:id/edit',
         name: 'editColor',
         component: EditColorVue,
       },
 
       {
-        path: '/categories',
+        path: 'categories',
         name: 'categories',
         component: CategoryPage,
       },
       {
-        path: '/categories/add',
+        path: 'categories/add',
         name: 'addCategories',
         component: AddCategoryVue,
       },
       {
-        path: '/categories/:id/edit',
+        path: 'categories/:id/edit',
         name: 'editCategories',
         component: EditCategoryVue,
       },
 
       {
-        path: '/productList',
+        path: 'products',
         name: 'productList',
         component: ListProductVue,
       },
       {
-        path: '/productList/add',
+        path: 'products/add',
         name: 'addProduct',
         component: AddProductVue
       },
       {
-        path: '/productList/:id/edit',
+        path: 'products/:id/edit',
         name: 'editProduct',
         component: EditProductVue
       },
 
       {
-        path: '/sizes',
+        path: 'sizes',
         name: 'sizes',
         component: ListSizeVue,
       },
       {
-        path: '/sizes/add',
+        path: 'sizes/add',
         name: 'addSize',
         component: AddSizeVue,
       },
       {
-        path: '/sizes/:id/edit',
+        path: 'sizes/:id/edit',
         name: 'editSize',
         component: EditSizeVue,
       },
+
+
+      {
+        path: 'users',
+        name: 'users',
+        component: ListUserVue,
+      },
+      {
+        path: 'users/:id/edit',
+        name: 'editUser',
+        component: EditUserVue,
+      },
+      
     ],
   },
   

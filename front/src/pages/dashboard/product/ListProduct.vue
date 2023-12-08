@@ -2,7 +2,7 @@
 //@ts-nocheck
 import { router } from '@/main';
 import { ref, onMounted, computed } from 'vue';
-import  DeleteBoutton  from "../../../components/DeleteButton.vue";
+import DeleteBoutton from '../../../components/DeleteButton.vue';
 
 const baseUrl = import.meta.env.VITE_BACKEND_URL || 'http://localhost:3000';
 
@@ -44,14 +44,12 @@ onMounted(async () => {
   fetchProducts();
 });
 
-
 const openForm = () => {
-  router.push('/productList/add');
+  router.push('/dashboard/products/add');
 };
 
-
 const editItem = (item: { _id: any }) => {
-  router.push(`/productList/${item._id}/edit`);
+  router.push(`/dashboard/products/${item._id}/edit`);
 };
 
 const filteredProduct = computed(() => {
@@ -134,8 +132,6 @@ const filteredProduct = computed(() => {
   });
 });
 
-
-
 const exportToCsv = () => {
   const csv = [
     [
@@ -165,7 +161,8 @@ const exportToCsv = () => {
     });
   });
 
-  const csvContent = 'data:text/csv;charset=utf-8,' + csv.map(e => e.join(',')).join('\n');
+  const csvContent =
+    'data:text/csv;charset=utf-8,' + csv.map(e => e.join(',')).join('\n');
 
   const encodedUri = encodeURI(csvContent);
   const link = document.createElement('a');
@@ -175,7 +172,6 @@ const exportToCsv = () => {
 
   link.click();
 };
-
 </script>
 
 <template>
@@ -185,9 +181,7 @@ const exportToCsv = () => {
       <button class="btn btn-primary ps-3 pe-3" @click="openForm">
         Ajouter une chaussure
       </button>
-      <button class="btn btn-primary " @click="exportToCsv">
-      Exporter CSV
-    </button>
+      <button class="btn btn-primary" @click="exportToCsv">Exporter CSV</button>
     </div>
     <table class="table product-table">
       <thead>
@@ -222,7 +216,7 @@ const exportToCsv = () => {
           <th>
             <div>
               <label>Variantes:</label>
-             
+
               <input
                 v-model="searchData.color"
                 placeholder="Rechercher par couleur..."
@@ -276,10 +270,39 @@ const exportToCsv = () => {
             />
           </td>
           <td>
-            <DeleteBoutton :tableDelete="'products'" :idToDelete="item._id" :onSuccess="fetchProducts" />
+            <DeleteBoutton
+              :tableDelete="'products'"
+              :idToDelete="item._id"
+              :onSuccess="fetchProducts"
+            />
 
-            <button @click="editItem(item)" class="btn btn-sm btn-outline-info">
-              Modifier
+            <button @click="editItem(item)">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+                class="w-6 h-6"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
+                ></path>
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M2 17.997L2 20.997L5 20.997"
+                ></path>
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M8.997 20.997L8.997 17.997L20 6L17 3L8.997 11.003"
+                ></path>
+              </svg>
             </button>
           </td>
         </tr>

@@ -98,7 +98,6 @@ exports.login = async (req, res, next) => {
   const email = req.body.email;
   const password = req.body.password;
   let loadedUser;
-  let canAccessDashboard = false;
   try {
     // Vérifiez si le compte est verrouillé
     const lockoutInfo = await Lockout.findOne({ where: { email: email } });
@@ -128,9 +127,7 @@ exports.login = async (req, res, next) => {
       error.statusCode = 401;
       throw error;
     }
-    if (loadedUser.roles.includes('ROLE_ADMIN')) {
-      canAccessDashboard = true;
-    }
+
     const isEqual = await bcrypt.compare(password, user.password);
     if (!isEqual) {
       // Enregistrez la tentative infructueuse
@@ -162,7 +159,7 @@ exports.login = async (req, res, next) => {
     const token = jwt.sign(
       {
         name: `${loadedUser.firstname} ${loadedUser.lastname}`,
-        roles: loadedUser.roles,
+        canAccessDashboard: loadedUser.roles.includes('ROLE_ADMIN'),
         id: loadedUser.id.toString(),
       },
       process.env.JWT_SECRET,
@@ -173,10 +170,8 @@ exports.login = async (req, res, next) => {
       signed: true,
       httpOnly: true,
     });
-    const response = {
-      canAccessDashboard: canAccessDashboard,
-    };
-    res.status(200).json(response);
+
+    res.sendStatus(200);
   } catch (err) {
     if (!err.statusCode) {
       err.statusCode = 500;
