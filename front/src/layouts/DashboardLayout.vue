@@ -4,7 +4,7 @@
     <div class="sidebar h-full bg-gray-200 text-white" v-show="showSide">
       <div class="h-[90px] bg-gray-900 flex items-center justify-between">
         <div class="px-90px] flex items-center">
-          <img src="/public/2.svg" class="w-[100px]" alt="" />
+          <img src="/vite.svg" class="w-[100px]" alt="" />
           <h3 class="font-bold text-xl text-white">WOMENY</h3>
         </div>
       </div>
@@ -113,7 +113,6 @@
               Tailles
             </router-link>
 
-
             <router-link
               to="/dashboard/users"
               class="inline-flex relative items-center py-[10px] px-[10px] w-full text-sm font-medium rounded-md rounded-b-lg hover:bg-gray-500 hover:text-gray-800 text-white transition duration-400 ease-in-out"
@@ -134,15 +133,13 @@
 
               Utilisateurs
             </router-link>
-
           </div>
           <div class="h-[50px]">
-
             <div>
               <LogOut class="mr-2 h-4 w-4 text-red-500" />
-                <span class="text-red-500" >Se déconnecter</span>
+              <span class="text-red-500">Se déconnecter</span>
             </div>
-<!-- 
+            <!-- 
             <div>
               <router-link
                 to=""
@@ -233,10 +230,10 @@
             >
               <img
                 class="w-10 h-10 rounded-full border-2 border-gray-50"
-                src="/public/person-icon.png"
+                src="/vite.svg"
               />
               <div class="font-semibold dark:text-white text-left">
-                <div> Admin</div>
+                <div>Admin</div>
               </div>
             </div>
             <!-- Drop down 
@@ -285,7 +282,6 @@
 </template>
 
 <script>
-
 export default {
   data() {
     return {
@@ -294,26 +290,25 @@ export default {
     };
   },
   methods: {
+    //   logout (){
+    //   try {
+    //     const response =  fetch(`${import.meta.env.VITE_BACKEND_URL}/auth/logout`, {
+    //       method: 'POST',
+    //       credentials: 'include',
+    //     });
 
-  //   logout (){
-  //   try {
-  //     const response =  fetch(`${import.meta.env.VITE_BACKEND_URL}/auth/logout`, {
-  //       method: 'POST',
-  //       credentials: 'include',
-  //     });
+    //     if (!response.ok) {
+    //       throw new Error('Something went wrong, request failed!');
+    //     }
+    //     isLoggedIn.value = false;
+    //     canAccessDashboard.value = false;
+    //     router.go();
+    //     window.location.reload();
 
-  //     if (!response.ok) {
-  //       throw new Error('Something went wrong, request failed!');
-  //     }
-  //     isLoggedIn.value = false;
-  //     canAccessDashboard.value = false;
-  //     router.go();
-  //     window.location.reload();
-
-  //   } catch (err) {
-  //     console.log(err);
-  //   }
-  // },
+    //   } catch (err) {
+    //     console.log(err);
+    //   }
+    // },
     // hide show side bar
     toggleSideBar() {
       this.showSide = !this.showSide;
@@ -324,9 +319,6 @@ export default {
     },
   },
 };
-
-
-
 </script>
 
 <style>
