@@ -4,7 +4,7 @@
     <div class="sidebar h-full bg-gray-200 text-white" v-show="showSide">
       <div class="h-[90px] bg-gray-900 flex items-center justify-between">
         <div class="px-90px] flex items-center">
-          <img src="/vite.svg" class="w-[100px]" alt="" />
+          <img src="/logo.png" class="w-[100px]" alt="" />
           <h3 class="font-bold text-xl text-white">WOMENY</h3>
         </div>
       </div>
@@ -230,7 +230,7 @@
             >
               <img
                 class="w-10 h-10 rounded-full border-2 border-gray-50"
-                src="/vite.svg"
+                src="/logo.png"
               />
               <div class="font-semibold dark:text-white text-left">
                 <div>Admin</div>
