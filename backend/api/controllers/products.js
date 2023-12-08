@@ -99,7 +99,7 @@ exports.findOne = async (req, res, next) => {
 
 exports.create = async (req, res, next) => {
   const errors = validationResult(req);
-console.log(req.body, req.file, "req file");
+  // console.log(req.body, req.file, "req file");
 
   try {
     if (!errors.isEmpty()) {
@@ -111,13 +111,13 @@ console.log(req.body, req.file, "req file");
     const title = req.body.title;
     const description = req.body.description;
     const category = req.body.category;
-    const imageUrl = req.file.path;
+    // const imageUrl = req.file.path;
 
     const variantsBody = req.body.variants;
 
     const product = await Product.create({
       title: title,
-      imageUrl: imageUrl,
+      // imageUrl: imageUrl,
       description: description,
       category_id: category,
     });
@@ -163,12 +163,9 @@ exports.update = async (req, res, next) => {
       returning: true,
     });
 
-   
     await updateOrCreateMongoProduct(productId);
 
     res.sendStatus(200);
-      
-    
   } catch (err) {
     if (!err.statusCode) {
       err.statusCode = 500;

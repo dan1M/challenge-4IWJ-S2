@@ -20,7 +20,4 @@ const fileFilter = (req, file, cb) => {
     cb(null, false);
   }
 };
-
-module.exports = (req, res, next) => {
-  multer({ storage: fileStorage, fileFilter: fileFilter }).single('image');
-};
+multer({ storage: fileStorage, fileFilter: fileFilter }).single('image');

@@ -20,8 +20,6 @@ router.get('/:productId', productsController.findOne);
 
 router.post(
   '/',
-  useMulter,
-  isAdmin,
   [
     body('title')
       .trim()
