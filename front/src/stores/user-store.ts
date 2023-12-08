@@ -48,8 +48,9 @@ export const useUserStore = defineStore('user', () => {
         throw new Error('Something went wrong, request failed!');
       }
       isLoggedIn.value = true;
-
-      userInfo.value = await response.json();
+      const data = await response.json();
+      canAccessDashboard.value = data.canAccessDashboard
+      userInfo.value = data
     } catch (err) {
       isLoggedIn.value = false;
       console.log(err);
@@ -69,6 +70,21 @@ export const useUserStore = defineStore('user', () => {
       isLoggedIn.value = false;
       canAccessDashboard.value = false;
       router.go();
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+  const download = async () => {
+    try {
+      const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/users/download`, {
+        credentials: 'include',
+      });
+
+      if (!response.ok) {
+        throw new Error('Something went wrong, request failed!');
+      }
+
     } catch (err) {
       console.log(err);
     }
@@ -141,6 +157,7 @@ export const useUserStore = defineStore('user', () => {
     logout,
     deleteAccount,
     resetPassword,
-    checkToken
+    checkToken,
+    download
   };
 });

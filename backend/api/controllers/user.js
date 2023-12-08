@@ -13,6 +13,8 @@ exports.getUserInfo = async (req, res, next) => {
   }
 };
 
+
+
 exports.getUser = async (req, res, next) => {
   const userId = req.params.userId;
   try {
@@ -135,6 +137,7 @@ exports.delete = async (req, res, next) => {
     user.firstname = 'Compte';
     user.lastname = 'Supprimé';
     user.save();
+    res.clearCookie(process.env.JWT_NAME);
     res.sendStatus(204);
   } catch (err) {
     if (!err.statusCode) {

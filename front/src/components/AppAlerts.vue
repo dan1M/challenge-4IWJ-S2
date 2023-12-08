@@ -53,7 +53,7 @@ const {
   method,
 });
 
-const selectedCategory = ref({}); 
+const selectedCategory = ref({});
 
 onMounted(() => {
   alerts.value.forEach(alert => {
@@ -80,12 +80,21 @@ const onSubmit = () => {
         categoryId: selectedCategory.value[0]?._id,
         status: alertType.status,
         alert_type_id: alertType.id,
+        label: 'new-product',
+      };
+      updateAlerts(userInfo.value.id, body);
+    } else if (alertType.type === "Restock d'un produit") {
+      const body = {
+        status: alertType.status,
+        alert_type_id: alertType.id,
+        label: 'restock-product',
       };
       updateAlerts(userInfo.value.id, body);
     } else {
       const body = {
         status: alertType.status,
         alert_type_id: alertType.id,
+        label: 'price-change',
       };
       updateAlerts(userInfo.value.id, body);
     }

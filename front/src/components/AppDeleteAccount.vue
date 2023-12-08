@@ -1,16 +1,18 @@
 <script setup lang="ts">
 //@ts-nocheck
 import useCustomForm from '../composables/useCustomForm';
-import { watch, computed } from 'vue';
+import { watch, computed, onMounted } from 'vue';
 import { z } from 'zod';
 import { useToast } from '@/components/ui/toast';
-import { storeToRefs } from 'pinia';
 import { useUserStore } from '@/stores/user-store';
+import { storeToRefs } from 'pinia';
+
 import DeleteButton from './DeleteButton.vue';
 
+const { userInfo } = storeToRefs(useUserStore());
 // const { toast } = useToast();
 
-const { deleteAccount } = useUserStore();
+const { deleteAccount, logout, download } = useUserStore();
 </script>
 
 <template>
@@ -38,9 +40,10 @@ const { deleteAccount } = useUserStore();
     <form class="flex flex-col pt-8 space-y-6" @submit.prevent="deleteAccount">
       <div class="flex flex-col">
         <div class="flex justify-center">
-          <DeleteButton />
+          <DeleteButton :tableDelete="'users'" :idToDelete="userInfo.id" />
         </div>
       </div>
     </form>
   </main>
+  <button @click="download">Download</button>
 </template>

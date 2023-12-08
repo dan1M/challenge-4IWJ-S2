@@ -4,8 +4,6 @@ const path = require('node:path');
 const cors = require('cors');
 const express = require('express');
 const cookieParser = require('cookie-parser');
-const multer = require('multer');
-const mailer = require('./util/mailer');
 const authRoutes = require('./routes/auth');
 const userRoutes = require('./routes/user');
 const productsRoutes = require('./routes/products');
@@ -18,6 +16,7 @@ const cartRoutes = require('./routes/cart');
 const deliveryRoutes = require('./routes/delivery');
 const paymentRoutes = require('./routes/payment');
 const cronDeleteExpiredCart = require('./crons/deleteExpiredCarts');
+const cronAskForPasswordRenew = require('./crons/askForPasswordRenew');
 const alertTypeRoutes = require('./routes/alert-type');
 const alertsRoutes = require('./routes/alerts');
 const port = process.env.PORT;
@@ -28,36 +27,12 @@ app.listen(port || 3000, () => {
   console.log(`Challenge S2 app listening on port ${port}`);
 });
 
-const fileStorage = multer.diskStorage({
-  destination: (req, file, cb) => {
-    cb(null, 'images');
-  },
-  filename: (req, file, cb) => {
-    cb(null, new Date().toISOString() + '-' + file.originalname);
-  },
-});
-
-const fileFilter = (req, file, cb) => {
-  if (
-    file.mimetype === 'image/png' ||
-    file.mimetype === 'image/jpg' ||
-    file.mimetype === 'image/jpeg'
-  ) {
-    cb(null, true);
-  } else {
-    cb(null, false);
-  }
-};
-
 app.use(express.urlencoded({ extended: true, limit: '16mb' })); // Adjust the limit as needed
 app.use(express.json()); // application/json
 const corsOptions = {
   origin: process.env.FRONT_URL,
   credentials: true,
 };
-app.use(
-  multer({ storage: fileStorage, fileFilter: fileFilter }).single('image'),
-);
 app.use(cors(corsOptions));
 
 app.use(cookieParser(process.env.JWT_SECRET));
@@ -76,7 +51,10 @@ app.use('/payment', paymentRoutes);
 app.use('/alert-type', alertTypeRoutes);
 app.use('/alerts', alertsRoutes);
 
+// CRONS TASKS
 cronDeleteExpiredCart();
+cronAskForPasswordRenew();
+
 app.use('/alert-type', alertTypeRoutes);
 app.use('/alerts', alertsRoutes);
 

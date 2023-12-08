@@ -13,6 +13,11 @@ const {
 } = require('../util/updateOrCreateMongoProduct');
 
 exports.findAll = async (req, res, next) => {
+  const currentPage = req.query.page || 1;
+  if (req.query.page < 1) {
+    req.query.page = 1;
+  }
+  const perPage = 12;
   try {
     const filter = {};
     const queryParameters = Object.keys(req.query);
@@ -61,7 +66,9 @@ exports.findAll = async (req, res, next) => {
       }
     });
 
-    const products = await ProductMongo.find(filter).sort({ createdAt: -1 });
+    const products = await ProductMongo.find(filter)
+      .limit(req.query._limit || currentPage * perPage)
+      .sort({ createdAt: -1 });
     res.status(200).json(products);
   } catch (err) {
     if (!err.statusCode) {
@@ -122,7 +129,6 @@ exports.create = async (req, res, next) => {
         color_id: variant.color,
         price: variant.price,
       });
-
     }
 
     // insert product and variants in mongo
@@ -148,20 +154,19 @@ exports.update = async (req, res, next) => {
       throw error;
     }
 
-    const [nbUpdated, products] = await Product.update(req.body, {
+    const [nbUpdated] = await Product.update(req.body, {
       where: {
         id: productId,
       },
       returning: true,
     });
 
-    if (products[0]) {
-      await updateOrCreateMongoProduct(productId);
+   
+    await updateOrCreateMongoProduct(productId);
 
-      res.status(200).json(products[0]);
-    } else {
-      res.sendStatus(404);
-    }
+    res.sendStatus(200);
+      
+    
   } catch (err) {
     if (!err.statusCode) {
       err.statusCode = 500;
