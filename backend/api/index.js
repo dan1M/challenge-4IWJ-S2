@@ -16,6 +16,7 @@ const cartRoutes = require('./routes/cart');
 const deliveryRoutes = require('./routes/delivery');
 const paymentRoutes = require('./routes/payment');
 const cronDeleteExpiredCart = require('./crons/deleteExpiredCarts');
+const cronAskForPasswordRenew = require('./crons/askForPasswordRenew');
 const alertTypeRoutes = require('./routes/alert-type');
 const alertsRoutes = require('./routes/alerts');
 const port = process.env.PORT;
@@ -50,7 +51,10 @@ app.use('/payment', paymentRoutes);
 app.use('/alert-type', alertTypeRoutes);
 app.use('/alerts', alertsRoutes);
 
+// CRONS TASKS
 cronDeleteExpiredCart();
+cronAskForPasswordRenew();
+
 app.use('/alert-type', alertTypeRoutes);
 app.use('/alerts', alertsRoutes);
 

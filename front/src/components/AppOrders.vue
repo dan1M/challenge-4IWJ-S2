@@ -48,6 +48,7 @@ const getUserOrders = async () => {
           <TableHead>Total</TableHead>
           <TableHead>N° suivi livraison</TableHead>
           <TableHead></TableHead>
+          <TableHead></TableHead>
         </TableRow>
       </TableHeader>
       <TableBody>
@@ -80,6 +81,14 @@ const getUserOrders = async () => {
             >
               Détails
             </router-link>
+          </TableCell>
+          <TableCell>
+            <a
+              :href="order.invoice_pdf_url"
+              class="text-primary-500 hover:underline"
+            >
+              Télécharger la facture
+            </a>
           </TableCell>
         </TableRow>
       </TableBody>

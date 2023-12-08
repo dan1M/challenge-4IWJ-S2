@@ -55,6 +55,12 @@ const orderSchema = new Schema(
     tracking_url: {
       type: Schema.Types.String,
     },
+    invoice_pdf_url: {
+      type: Schema.Types.String,
+    },
+    hosted_invoice_url: {
+      type: Schema.Types.String,
+    },
     parcel_id: {
       type: Schema.Types.Number,
     },
