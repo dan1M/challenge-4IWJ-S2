@@ -16,8 +16,14 @@ import { useProductStore } from './stores/product-store';
 import { RouteRecordRaw, createRouter, createWebHistory } from 'vue-router';
 import VueCookies from 'vue-cookies';
 import VueNumberInput from '@chenfengyuan/vue-number-input';
+import 'bootstrap';
+import 'bootstrap/dist/css/bootstrap.min.css';
+
 import DefaultLayout from './layouts/DefaultLayout.vue';
 import DashboardLayout from './layouts/DashboardLayout.vue';
+import DashboardContent from './components/DashboardContent.vue';
+
+
 import NotFound from './pages/NotFound.vue';
 import Cgv from './pages/Cgv.vue';
 import LegalNotice from './pages/LegalNotice.vue';
@@ -32,11 +38,25 @@ import ResetPasswordPage from './pages/ResetPassword.vue';
 import ProfilePage from './pages/Profile.vue';
 import AppCredentials from './components/AppCredentials.vue';
 import AppUpdatePassword from './components/AppUpdatePassword.vue';
+import ColorPage from './pages/dashboard/color/ListColor.vue';
+import AddColorVue from './pages/dashboard/color/AddColor.vue';
+import EditColorVue from './pages/dashboard/color/EditColor.vue';
+import CategoryPage from './pages/dashboard/category/ListCategory.vue';
+import AddCategoryVue from './pages/dashboard/category/AddCategory.vue';
+import EditCategoryVue from './pages/dashboard/category/EditCategory.vue';
+import AddProductVue from './pages/dashboard/product/AddProduct.vue';
+import EditProductVue from './pages/dashboard/product/EditProduct.vue';
+import ListProductVue from './pages/dashboard/product/ListProduct.vue';
+import ListSizeVue from './pages/dashboard/size/ListSize.vue';
+import AddSizeVue from './pages/dashboard/size/AddSize.vue';
+import EditSizeVue from './pages/dashboard/size/EditSize.vue';
 import AppOrders from './components/AppOrders.vue';
 import CheckoutReturn from './pages/CheckoutReturn.vue';
 import AppAlerts from './components/AppAlerts.vue';
 import AppDeleteAccount from './components/AppDeleteAccount.vue';
 import AppForgotPassword from './components/AppForgotPassword.vue';
+import ListUserVue from './pages/dashboard/user/ListUser.vue';
+import EditUserVue from './pages/dashboard/user/EditUser.vue';
 
 import { useAlertStore } from './stores/alert-store';
 import { useCategoryStore } from './stores/category-store';
@@ -208,21 +228,110 @@ const routes: RouteRecordRaw[] = [
       },
     ],
   },
+
   {
     path: '/dashboard',
     component: DashboardLayout,
-    name: 'dashboard-layout',
     beforeEnter: async (to, from, next) => {
-      const { canAccessDashboard } = useUserStore();
-
+      const { canAccessDashboard} = useUserStore();
       if (!canAccessDashboard) {
         next({ name: 'home', replace: true });
+       
       } else {
         next();
       }
     },
+    name: 'dashboard',
+
+    children: [
+      {
+        path: 'dashboard',
+        name: 'homedashboard',
+        component: DashboardContent,
+      },
+      
+      {
+        path: 'colors',
+        name: 'colors',
+        component: ColorPage,
+      },
+      {
+        path: 'colors/add',
+        name: 'addColor',
+        component: AddColorVue,
+      },
+      {
+        path: 'colors/:id/edit',
+        name: 'editColor',
+        component: EditColorVue,
+      },
+
+      {
+        path: 'categories',
+        name: 'categories',
+        component: CategoryPage,
+      },
+      {
+        path: 'categories/add',
+        name: 'addCategories',
+        component: AddCategoryVue,
+      },
+      {
+        path: 'categories/:id/edit',
+        name: 'editCategories',
+        component: EditCategoryVue,
+      },
+
+      {
+        path: 'products',
+        name: 'productList',
+        component: ListProductVue,
+      },
+      {
+        path: 'products/add',
+        name: 'addProduct',
+        component: AddProductVue
+      },
+      {
+        path: 'products/:id/edit',
+        name: 'editProduct',
+        component: EditProductVue
+      },
+
+      {
+        path: 'sizes',
+        name: 'sizes',
+        component: ListSizeVue,
+      },
+      {
+        path: 'sizes/add',
+        name: 'addSize',
+        component: AddSizeVue,
+      },
+      {
+        path: 'sizes/:id/edit',
+        name: 'editSize',
+        component: EditSizeVue,
+      },
+
+
+      {
+        path: 'users',
+        name: 'users',
+        component: ListUserVue,
+      },
+      {
+        path: 'users/:id/edit',
+        name: 'editUser',
+        component: EditUserVue,
+      },
+      
+    ],
   },
+  
+  { path: '/:pathMatch(.*)*', name: 'not-found', component: NotFound },
 ];
+export const EventBus = createApp({});
 
 export const router = createRouter({
   history: createWebHistory(),

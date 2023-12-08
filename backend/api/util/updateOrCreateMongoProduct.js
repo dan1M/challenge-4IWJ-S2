@@ -43,6 +43,7 @@ async function updateOrCreateMongoProduct(productId) {
             id: findCategory.id,
             name: findCategory.name,
           },
+          img: product.img,
           variants: variants,
         });
         await existingProduct.save();

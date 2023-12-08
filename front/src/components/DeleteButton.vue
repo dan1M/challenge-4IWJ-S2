@@ -70,7 +70,6 @@ const { tableDelete, idToDelete, onSuccess } = defineProps([
   'idToDelete',
   'onSuccess',
 ]);
-
 const loading = ref(false);
 const displayError = ref('');
 const showModal = ref(false);

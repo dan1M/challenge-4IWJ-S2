@@ -12,6 +12,7 @@ const router = express.Router();
 
 router.get('/me', isAuth, userController.getUserInfo);
 
+router.get('/download', isAuth, userController.downloadUserData);
 router.patch(
   '/password',
   isAuth,
@@ -49,6 +50,8 @@ router.patch(
   ],
   userController.updatePassword,
 );
+
+router.post('/getUserByEmail', isAdmin, userController.getUserByEmail);
 
 router.get('/:userId', userController.getUser);
 

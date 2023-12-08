@@ -56,10 +56,17 @@ const { cart } = storeToRefs(useCartStore());
                 {{ userInfo.name }}
               </DropdownMenuLabel>
               <DropdownMenuSeparator />
+
               <DropdownMenuItem v-if="canAccessDashboard">
-                <Store class="mr-2 h-4 w-4" />
-                <span>Dashboard Admin</span>
+                <router-link
+                  :to="{ name: 'dashboard' }"
+                  class="flex items-center"
+                >
+                  <Store class="mr-2 h-4 w-4" />
+                  <span>Dashboard Admin</span>
+                </router-link>
               </DropdownMenuItem>
+
               <DropdownMenuItem>
                 <router-link :to="{ name: 'profile-credentials' }" class="flex items-center">
                   <User class="mr-2 h-4 w-4" />
