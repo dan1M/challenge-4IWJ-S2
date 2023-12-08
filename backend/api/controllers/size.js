@@ -96,19 +96,15 @@ exports.update = async (req, res, next) => {
   }
 
   try {
-    const [nbUpdated, sizes] = await Size.update(req.body, {
+    const [nbUpdated] = await Size.update(req.body, {
       where: {
         id: sizeId,
       },
       returning: true,
     });
-    const sizeMongo = await SizeMongo.updateOne(req.body);
+    await SizeMongo.updateOne(req.body);
 
-    if (sizes[0]) {
-      res.status(200).json(sizes[0]);
-    } else {
-      res.sendStatus(404);
-    }
+    res.sendStatus(200);
   } catch (err) {
     if (!err.statusCode) {
       err.statusCode = 500;

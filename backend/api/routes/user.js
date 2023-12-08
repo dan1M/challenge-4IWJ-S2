@@ -12,7 +12,6 @@ const router = express.Router();
 
 router.get('/me', isAuth, userController.getUserInfo);
 
-router.get('/download', isAuth, userController.download);
 
 router.patch(
   '/password',

@@ -9,7 +9,7 @@ const alertNewProduct = async product => {
   try {
     const alerts = await Alert.findAll({
       where: {
-        alert_type_id: 'ac2a1753-7fd9-46f4-9c6c-a16f5412d285',
+        label: 'new-product',
         category_id: product.category_id,
       },
     });
@@ -42,7 +42,7 @@ const alertProductStock = async product_id => {
   try {
     const alerts = await Alert.findAll({
       where: {
-        alert_type_id: 'dff2e704-2268-44b3-82fa-e90766750f87',
+        label: 'restock-product',
       },
     });
 
@@ -74,7 +74,7 @@ const alertPriceChange = async product_id => {
   try {
     const alerts = await Alert.findAll({
       where: {
-        alert_type_id: '759a4d41-0dae-47f8-8095-786ef1acd99b',
+        label: 'price-change',
       },
     });
 

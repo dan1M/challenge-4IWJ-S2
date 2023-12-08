@@ -12,7 +12,7 @@ import DeleteButton from './DeleteButton.vue';
 const { userInfo } = storeToRefs(useUserStore());
 // const { toast } = useToast();
 
-const { deleteAccount, logout } = useUserStore();
+const { deleteAccount, logout, download } = useUserStore();
 </script>
 
 <template>
@@ -45,4 +45,5 @@ const { deleteAccount, logout } = useUserStore();
       </div>
     </form>
   </main>
+  <button @click="download">Download</button>
 </template>

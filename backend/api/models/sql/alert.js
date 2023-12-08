@@ -18,6 +18,10 @@ const Alert = sequelize.define(
       type: DataTypes.UUID,
       allowNull: true,
     },
+    label: {
+      type: DataTypes.STRING,
+      allowNull: true,
+    },
     status: {
       type: DataTypes.BOOLEAN,
       allowNull: true,
