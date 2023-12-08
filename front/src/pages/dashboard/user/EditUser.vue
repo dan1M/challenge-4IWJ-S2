@@ -9,7 +9,7 @@ import { first } from 'lodash';
 const baseUrl = import.meta.env.VITE_BACKEND_URL || 'http://localhost:3000';
 
 const formData = {
-  roles: ['']
+  roles: ''
 };
 
 const validationSchema = z.object({
@@ -63,7 +63,7 @@ const fetchRole = async () => {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          roles: roles.value,
+          roles: [roles.value],
         }),
       });
       const data = await response.json();
