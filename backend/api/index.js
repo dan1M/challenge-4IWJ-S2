@@ -3,6 +3,8 @@ require('./models/nosql/db-nosql');
 const path = require('node:path');
 const cors = require('cors');
 const express = require('express');
+
+const multer = require('multer');
 const cookieParser = require('cookie-parser');
 const authRoutes = require('./routes/auth');
 const userRoutes = require('./routes/user');
@@ -37,6 +39,28 @@ const corsOptions = {
 app.use(cors(corsOptions));
 
 app.use(cookieParser(process.env.JWT_SECRET));
+
+const fileStorage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    cb(null, 'images');
+  },
+  filename: (req, file, cb) => {
+    cb(null, new Date().toISOString() + '-' + file.originalname);
+  },
+});
+
+const fileFilter = (req, file, cb) => {
+  if (
+    file.mimetype === 'image/png' ||
+    file.mimetype === 'image/jpg' ||
+    file.mimetype === 'image/jpeg'
+  ) {
+    cb(null, true);
+  } else {
+    cb(null, false);
+  }
+};
+multer({ storage: fileStorage, fileFilter: fileFilter }).single('image');
 
 app.use('/auth', authRoutes);
 app.use('/users', userRoutes);
