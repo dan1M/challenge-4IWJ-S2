@@ -169,7 +169,7 @@ exports.login = async (req, res, next) => {
       { expiresIn: '30d' },
     );
     res.cookie(process.env.JWT_NAME, token, {
-      // secure: true,
+      secure: true,
       signed: true,
       httpOnly: true,
     });
@@ -316,7 +316,7 @@ exports.forgotPassword = async (req, res, next) => {
           html: html,
         };
         res.cookie(process.env.JWT_RESET_PASSWORD, token.token, {
-          // secure: true,
+          secure: true,
           signed: true,
           httpOnly: true,
         });
