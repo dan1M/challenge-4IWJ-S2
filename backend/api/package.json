@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "dev": "node --watch index.js",
-    "start": "node --watch index.js",
+    "start": "node scheme.js && node --watch index.js",
     "test": "jest",
     "test:watch": "jest --watch",
     "migration": "node scheme.js"
