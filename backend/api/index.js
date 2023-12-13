@@ -35,7 +35,7 @@ app.use(express.json()); // application/json
 //   origin: process.env.FRONT_URL,
 //   credentials: true,
 // };
-app.use(cors(corsOptions));
+app.use(cors());
 
 app.use(cookieParser(process.env.JWT_SECRET));
 
