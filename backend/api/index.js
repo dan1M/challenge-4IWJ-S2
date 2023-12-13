@@ -31,11 +31,11 @@ app.listen(port || 3000, () => {
 
 app.use(express.urlencoded({ extended: true, limit: '16mb' })); // Adjust the limit as needed
 app.use(express.json()); // application/json
-// const corsOptions = {
-//   origin: process.env.FRONT_URL,
-//   credentials: true,
-// };
-app.use(cors());
+const corsOptions = {
+  origin: '*',
+  credentials: true,
+};
+app.use(cors(corsOptions));
 
 app.use(cookieParser(process.env.JWT_SECRET));
 
