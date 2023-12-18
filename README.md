@@ -2,7 +2,7 @@
 
 ## Listing des fonctionnalités
 
-| Daniel (git: dan1M) | Bastien (git: Bass913) | Taslima (git: Taslima-Ahamed-Mze) | Emmanuella (git: Manu1Mackenzii) |
+| Daniel (dan1M) | Bastien (Bass913) | Taslima (Taslima-Ahamed-Mze) | Emmanuella (Manu1Mackenzii) |
 | --- | --- | --- | --- |
 | - f1 | | | |
 | - f2 | | | |
