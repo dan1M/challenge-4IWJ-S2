@@ -32,7 +32,7 @@ app.listen(port || 3000, () => {
 app.use(express.urlencoded({ extended: true, limit: '16mb' })); // Adjust the limit as needed
 app.use(express.json()); // application/json
 const corsOptions = {
-  origin: process.env.FRONT_URL, // Remplacez par l'URL de votre frontend
+  origin: process.env.FRONT_URL,
   credentials: true,
 };
 app.use(cors(corsOptions));

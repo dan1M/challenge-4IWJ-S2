@@ -15,13 +15,12 @@ exports.getUserInfo = async (req, res, next) => {
   }
 };
 
-  
 exports.getUser = async (req, res, next) => {
   const userId = req.params.userId;
   try {
     const user = await User.findByPk(userId, {
       attributes: {
-        exclude: [ 'password', 'createdAt', 'updatedAt', 'active'],
+        exclude: ['password', 'createdAt', 'updatedAt', 'active'],
       },
     });
     if (!user) {
@@ -146,7 +145,6 @@ exports.delete = async (req, res, next) => {
     }
     next(err);
   }
-
 };
 
 exports.getUserByEmail = async (req, res, next) => {
@@ -155,7 +153,6 @@ exports.getUserByEmail = async (req, res, next) => {
       where: {
         email: req.body.email,
       },
-   
     });
     res.status(200).json(user);
   } catch (err) {
@@ -163,8 +160,8 @@ exports.getUserByEmail = async (req, res, next) => {
       err.statusCode = 500;
     }
     next(err);
-  } };
-
+  }
+};
 
 exports.downloadUserData = async (req, res, next) => {
   let userData = [];

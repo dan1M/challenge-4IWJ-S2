@@ -67,7 +67,7 @@ router.post(
 
 router.patch(
   '/:productId',
-  // isAdmin,
+  isAdmin,
   [
     body('title').optional().trim().isLength({ min: 2 }),
     body('description').optional().trim(),

@@ -13,7 +13,6 @@ const router = express.Router();
 router.get('/me', isAuth, userController.getUserInfo);
 
 router.get('/download', isAuth, userController.downloadUserData);
-
 router.patch(
   '/password',
   isAuth,
@@ -52,12 +51,12 @@ router.patch(
   userController.updatePassword,
 );
 
-router.post('/getUserByEmail', userController.getUserByEmail);
+router.post('/getUserByEmail', isAdmin, userController.getUserByEmail);
 
 router.get('/:userId', userController.getUser);
 
 router.patch('/:id', isAuth, userController.update);
 
-router.delete('/:id', userController.delete);
+router.delete('/:id', isAuth, userController.delete);
 
 module.exports = router;
