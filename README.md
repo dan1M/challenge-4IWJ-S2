@@ -1,5 +1,10 @@
 # Challenge-4IWJ-2 - Womeny
 
+## Installation & démarrage
+
+### Première étape: 
+
+
 ## Listing des fonctionnalités
 
 | Daniel (dan1M) | Bastien (Bass913) | Taslima (Taslima-Ahamed-Mze) | Emmanuella (Manu1Mackenzii) |
