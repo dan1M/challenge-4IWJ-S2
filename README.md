@@ -30,7 +30,7 @@ Si tout se passe bien, tous les conteneurs doivent être lancés et prêt à êt
 
 Vous pouvez vérifier le bon fonctionnement des conteneurs avec: `docker compose ps`
 
-Une fois que tout est bien lancé et fonctionnel, on dispose des URLs suivantes (à moins d'avoir changé les ports du docker compose):
+Une fois que tout est bien lancé et fonctionnel, on dispose des URLs suivantes (à moins d'avoir changé les ports dans le docker compose):
 - `http://localhost:5173`: front
 - `http://localhost:3000`: backend
 - `http://localhost:8080`: adminer
