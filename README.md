@@ -39,7 +39,7 @@ Une fois que tout est bien lancé et fonctionnel, on dispose des URLs suivantes 
 
 | Daniel (dan1M) | Bastien (Bass913) | Taslima (Taslima-Ahamed-Mze) | Emmanuella (Manu1Mackenzii) |
 | --- | --- | --- | --- |
-| - Back: Gestion complète du panier et des commandes (+ livraison & paiement), fonctions de vérifications régulières (CRON >> check paniers vides/invalides, check les comptes qui doivent mettre à jour leur mot de passe)  | --- | - Back : Gestion des produits et ses variants (couleur et taille), gestion des stocks | --- |
+| - Back: Gestion complète du panier et des commandes (+ livraison & paiement), fonctions de vérifications régulières (CRON >> check paniers vides/invalides, check les comptes qui doivent mettre à jour leur mot de passe)  | blabla | - Back : Gestion des produits et ses variants (couleur et taille), gestion des stocks | --- |
 | - Front: Page Accueil, layout des pages,  composable formulaire (useCustomForm), parcours panier complet (de ajout produit au panier >> création de commande), gestion des commandes | --- | - Front : page produit et détail produit, recherche produit, composant button de suppression | --- |
 | - Mise en production: Front: avec Vercel (vercel.com), Back: l'API Express avec Heroku, Database: Postgres avec Render (render.com) | --- | --- | --- |
 
